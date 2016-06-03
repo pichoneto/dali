@@ -143,7 +143,7 @@ export function collapseToolbar(id){
 
 //Async actions
 export function exportStateAsync(state){
-    return dispatch => {
+     return dispatch => {
 
         // First dispatch: the app state is updated to inform
         // that the API call is starting.
@@ -156,7 +156,7 @@ export function exportStateAsync(state){
         // This is not required by thunk middleware, but it is convenient for us.
         var data = {
             user_data:dali_editor_params.id,
-            dali_document: {json: state}
+            dali_document: state
         };
         return fetch(url_to_save, {
             method: 'POST',
@@ -169,10 +169,14 @@ export function exportStateAsync(state){
             .then(response => {
                 if(response.status >= 400)
                     throw new Error("Error while exporting");
-                return true;
+                return response.text();
             })
-            .then(response => {
-                window.parent.history.replaceState("","","/dali_document/id")
+            .then(result => {
+                var dali_id = JSON.parse(result).dali_id;
+                if(url_to_save == "/dali_documents/create_document"){
+                    window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit")
+                    url_to_save = "/dali_documents/" + dali_id;
+                }
                 dispatch(setBusy(false, "Success!"))
             })
             .then(data => console.log(data))
@@ -183,7 +187,7 @@ export function exportStateAsync(state){
 }
 
 export function importStateAsync(){
-   return dispatch => {
+      return dispatch => {
         dispatch(setBusy(true, "Importing..."));
 
         return fetch('http://127.0.0.1:8081/getConfig')
