@@ -3,8 +3,6 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'source-map',
     entry: [
-        'webpack-dev-server/client?http://localhost:8080',
-        'webpack/hot/only-dev-server',
         './index.jsx'
     ],
     module: {
@@ -12,7 +10,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'react-hot!babel'
+                loader: 'babel'
             },
             {
                 test: /\.scss$/,
@@ -31,10 +29,5 @@ module.exports = {
     devServer: {
         contentBase: './dist',
         hot: true
-    },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ]
+    }
 };
-
-//En terminal aparte añadir sass --watch sass/style.scss:dist/css/style.css

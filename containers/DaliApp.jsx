@@ -6,7 +6,7 @@ import {addNavItem, selectNavItem, expandNavItem, removeNavItem, reorderNavItem,
     addBox, selectBox, moveBox, resizeBox, updateBox, duplicateBox, deleteBox, reorderBox, dropBox, increaseBoxLevel,
     addSortableContainer, resizeSortableContainer, changeCols, changeRows,
     togglePageModal, toggleTextEditor, toggleTitleMode,
-    changeDisplayMode, exportStateAsync, importStateAsync, updateToolbar, collapseToolbar} from '../actions';
+    changeDisplayMode, exportStateAsync, importStateAsync, importState, updateToolbar, collapseToolbar} from '../actions';
 import {ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER, BOX_TYPES} from '../constants';
 import DaliCanvas from '../components/DaliCanvas';
 import DaliCarousel from '../components/DaliCarousel';
@@ -148,6 +148,11 @@ class DaliApp extends Component {
     }
 
     componentDidMount() {
+
+        if( dali_document_json != undefined && dali_document_json != ""){
+          this.props.dispatch(importState(JSON.parse(dali_document_json)));
+        }
+
         Dali.Plugins.loadAllAsync().then(pluginsLoaded => {
             pluginsLoaded.map((plugin) => {
                 Dali.Plugins.get(plugin).init();
@@ -214,7 +219,7 @@ class DaliApp extends Component {
     }
 
     getDuplicatedBoxesIds(descendants){
-      
+
       var newIds = {}
       var date = Date.now();
       descendants.map(box => {

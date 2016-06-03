@@ -154,22 +154,28 @@ export function exportStateAsync(state){
 
         // In this case, we return a promise to wait for.
         // This is not required by thunk middleware, but it is convenient for us.
-        return fetch('http://127.0.0.1:8081/saveConfig', {
+        var data = {
+            user_data:dali_editor_params.id,
+            dali_document: {json: state}
+        };
+        return fetch(url_to_save, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(state)
+            body: JSON.stringify(data)
         })
             .then(response => {
                 if(response.status >= 400)
                     throw new Error("Error while exporting");
                 return true;
             })
-            .then(result => {
+            .then(response => {
+                window.parent.history.replaceState("","","/dali_document/id")
                 dispatch(setBusy(false, "Success!"))
             })
+            .then(data => console.log(data))
             .catch(e =>{
                 dispatch(setBusy(false, e.message));
             });
@@ -177,7 +183,7 @@ export function exportStateAsync(state){
 }
 
 export function importStateAsync(){
-    return dispatch => {
+   return dispatch => {
         dispatch(setBusy(true, "Importing..."));
 
         return fetch('http://127.0.0.1:8081/getConfig')
