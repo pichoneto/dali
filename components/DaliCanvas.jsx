@@ -19,8 +19,16 @@ export default class DaliCanvas extends Component{
             }
             titles.reverse();
         }
-         var paddings= (this.props.navItemSelected.type!= "slide") ? ('0px 0px 0px 0px') : ('30px 0px 30px 0px')
-         return (<Col id="canvas" md={12} xs={12} style={{height:"100%", padding:0}}>
+        let paddings= (this.props.navItemSelected.type!= "slide") ? ('0px 0px 0px 0px') : ('30px 0px 30px 0px')
+        let maincontent = document.getElementById('maincontent');
+        let actualHeight; 
+        if (maincontent){
+            actualHeight = parseInt(maincontent.scrollHeight);
+            actualHeight = (parseInt(maincontent.clientHeight) < actualHeight) ? (actualHeight) +'px' : '100%';
+        }
+        let overlayHeight = actualHeight ? actualHeight:'100%';
+
+        return (<Col id="canvas" md={12} xs={12} style={{height:"100%", padding:0}}>
             <div className="outter" style={{position: 'absolute', width: '100%', height:'100%', padding: (paddings)}} >
                 <div  id="maincontent"
                       onClick={e => {this.props.onBoxSelected(-1)}}
@@ -34,12 +42,11 @@ export default class DaliCanvas extends Component{
                                showButton={true} />
                                <br/>
                     <div style={{
-                        width: "100%",
-                        minHeight: "100%",
+                        width: "100%",  
                         background: "black",
-                        height: document.getElementById('maincontent') ? document.getElementById('maincontent').scrollHeight:'100%',
+                        height: overlayHeight,
                         position: "absolute",
-                        top:0,
+                        top: 0,
                         opacity: 0.4,
                         visibility: (this.props.boxLevelSelected > 0) ? "visible" : "collapse"
                         }}>
@@ -101,7 +108,7 @@ export default class DaliCanvas extends Component{
                 let position = {
                     x: event.dragEvent.clientX - event.target.getBoundingClientRect().left,
                     y: event.dragEvent.clientY - event.target.getBoundingClientRect().top,
-                }
+                };
                 let initialParams = {
                     parent: this.props.navItemSelected.id,
                     container: 0,
@@ -114,39 +121,6 @@ export default class DaliCanvas extends Component{
                 event.target.classList.remove('drop-active');
                 event.target.classList.remove("drop-target");
             }
-        });
-
-        Dali.API.Private.listenEmission(Dali.API.Private.events.getPluginsInCurrentView, e => {
-            let plugins = {};
-            this.props.navItemSelected.boxes.map(id => {
-                let toolbar = this.props.toolbars[id];
-                if(toolbar.buttons) {
-                    let lastButton = toolbar.buttons[toolbar.buttons.length - 1];
-                    if (lastButton.humanName === "Alias" && lastButton.value !== "" && toolbar.config.name) {
-                        if(!plugins[toolbar.config.name]){
-                            plugins[toolbar.config.name] = [];
-                        }
-                        plugins[toolbar.config.name].push(lastButton.value);
-                    }
-                }else if(id.indexOf(ID_PREFIX_SORTABLE_BOX) !== -1){
-                    this.props.boxes[id].children.map(idContainer => {
-                        this.props.boxes[id].sortableContainers[idContainer].children.map(idBox => {
-                            toolbar = this.props.toolbars[idBox];
-                            if(toolbar.buttons) {
-                                let lastButton = toolbar.buttons[toolbar.buttons.length - 1];
-                                if (lastButton.humanName === "Alias" && lastButton.value !== "" && toolbar.config.name) {
-                                    if(!plugins[toolbar.config.name]){
-                                        plugins[toolbar.config.name] = [];
-                                    }
-                                    plugins[toolbar.config.name].push(lastButton.value);
-                                }
-                            }
-                        });
-                    });
-                }
-            });
-
-            Dali.API.Private.answer(Dali.API.Private.events.getPluginsInCurrentView, plugins);
         });
     }
 }

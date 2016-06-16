@@ -1,5 +1,8 @@
 Dali.Plugins["CajasColor"] = function (base){
     return{
+        init: function(){
+            base.registerExtraFunction(this.clicky);
+        },
         getConfig: function(){
             return {
                 name: 'CajasColor',
@@ -85,7 +88,7 @@ Dali.Plugins["CajasColor"] = function (base){
             var template = "<div style='width: 100%; height: 100%'>";
             var width = 100 / state.nBoxes;
             for(var i = 0; i < state.nBoxes; i++){
-                template += "<div onclick='$dali$.click()' style='background-color: " + state.colors[i] + "; height: 100%; width: " + width + "%; float: left'><plugin plugin-data-key='title" + i + "' plugin-data-default='BasicText' " + (i % 2 === 0 ? "plugin-data-resizable plugin-data-initialHeight='200px'" : "") + " /></div>";
+                template += "<div onclick='$dali$.clicky()' style='background-color: " + state.colors[i] + "; height: 100%; width: " + width + "%; float: left'><plugin plugin-data-key='title" + i + "' plugin-data-default='BasicText' " + (i % 2 === 0 ? "plugin-data-resizable plugin-data-initialHeight='200px'" : "") + " /></div>";
             }
 
             template += "</div><div>";
@@ -106,8 +109,8 @@ Dali.Plugins["CajasColor"] = function (base){
                 base.setState(name, value);
             }
         },
-        click: function(key){
-            alert(key);
+        clicky: function(event, element, parent){
+            console.log([event, element, parent]);
         }
     }
 }

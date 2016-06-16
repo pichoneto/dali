@@ -1,5 +1,8 @@
-Dali.Visor.Plugins["BasicImage"] = function (){
+Dali.Visor.Plugins["BasicImage"] = function (base){
     return {
+        init: function(){
+            base.registerExtraFunction(this.imageClick, "click");
+        },
         getRenderTemplate: function (state) {
             return "<div style=\"width: 100%; height: 100%\">" +
                 "<img style=\"width: 100%; " +
@@ -9,8 +12,9 @@ Dali.Visor.Plugins["BasicImage"] = function (){
                 "src=\"" + state.url + "\" onclick='$dali$.imageClick()'/>" +
                 "</div>";
         },
-        imageClick: function()
+        imageClick: function(e)
         {
+            console.log(e);
             alert("Miau");
         }
     }

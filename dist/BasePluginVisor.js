@@ -1,4 +1,6 @@
-Dali.Visor.Plugin = function (descendant) {
+Dali.Visor.Plugin = function () {
+    var descendant;
+    var extraFunctions = {};
 
     var parseJson = function (json, state, hasVisorTemplate, name) {
         if (json.child) {
@@ -27,7 +29,7 @@ Dali.Visor.Plugin = function (descendant) {
             }
         }
         if (name && json.attr) {
-            Object.keys(json.attr).forEach(function(key) {
+            Object.keys(json.attr).forEach(function (key) {
                 if (typeof json.attr[key] === "string" && json.attr[key].indexOf("$dali$") !== -1) {
                     var fnName = json.attr[key].replace(/[$]dali[$][.]/g, "").replace(/[(].*[)]/g, "");
                     json.attr[key] = hasVisorTemplate ? Dali.Visor.Plugins.get(name)[fnName] : Dali.Plugins.get(name)[fnName];
@@ -54,7 +56,28 @@ Dali.Visor.Plugin = function (descendant) {
     }
 
     var plugin = {
-        export: function(state, name, hasChildren){
+        create: function (obj) {
+            descendant = obj;
+
+            Object.keys(descendant).map(function (id) {
+                if (id !== 'init' &&
+                    id !== 'getConfig' &&
+                    id !== 'getToolbar' &&
+                    id !== 'getSections' &&
+                    id !== 'getInitialState' &&
+                    id !== 'handleToolbar' &&
+                    id !== 'getConfigTemplate' &&
+                    id !== 'getRenderTemplate') {
+                    plugin[id] = descendant[id];
+                }
+            });
+        },
+        init: function () {
+            if (descendant.init) {
+                descendant.init();
+            }
+        },
+        export: function (state, name, hasChildren) {
             var plugin, template, hasVisorTemplate;
 
             if (!Dali.Visor.Plugins[name]) {
@@ -66,46 +89,44 @@ Dali.Visor.Plugin = function (descendant) {
             }
             if (!plugin.getRenderTemplate) {
                 if (state.__text) {
-                    template = state.__text.replace(/[$]dali[$][.]/g, "");
+                    template = state.__text;
                 } else {
                     template = "<div></div>";
                     console.error("Plugin %s has not defined getRenderTemplate", name);
                 }
             } else {
-                template = plugin.getRenderTemplate(state).replace(/[$]dali[$][.]/g, "");
+                template = plugin.getRenderTemplate(state);
             }
+
+            var regexp = new RegExp(/[$]dali[$][.][\w\s]+[(]([^)]*)/g);
+            var match = regexp.exec(template);
+            var matches = [];
+
+            while (match !== null) {
+                matches.push(match);
+                match = regexp.exec(template);
+            }
+            matches.map(function (match) {
+                if (match[1].length === 0) {
+                    template = template.replace(match[0], match[0] + "event, this, __getPlugin(this)");
+                } else {
+                    template = template.replace(match[0], match[0].replace(match[1], "event, this, __getPlugin(this)"));
+                }
+                template = template.replace(/[$]dali[$][.]/, "");
+            });
+
             if (template.indexOf("pointer-events") !== -1) {
                 template = template.replace(/pointer-events:[\s'"]+none[\s'"]+/g, "");
             }
 
-            var scripts = "";
-            Object.keys(plugin).map(function (fn) {
-                if (fn !== 'init' &&
-                    fn !== 'getConfig' &&
-                    fn !== 'getToolbar' &&
-                    fn !== 'getSections' &&
-                    fn !== 'getInitialState' &&
-                    fn !== 'handleToolbar' &&
-                    fn !== 'getConfigTemplate' &&
-                    fn !== 'getRenderTemplate') {
-                    scripts += (scripts.length === 0 ? "<script type='text/javascript'>" : "") + plugin[fn].toString().replace("function", "function " + fn).replace(/\n/g, "").replace(/[ ]+/g, " ");
-                }
-            });
-            if (scripts.length !== 0) {
-                scripts += "</script>";
-            }
-
-            var firstTag = template.substring(0, template.indexOf(">") + 1);
-            template = template.substring(template.indexOf(">") + 1);
-            var result = firstTag + scripts + template;
             if (!hasChildren) {
-                return result;
+                return template;
             }
-            var json = html2json(result);
+            var json = html2json(template);
             parseJson(json, state, hasVisorTemplate);
             return json;
         },
-        render: function(state, name){
+        render: function (state, name) {
             var json, plugin, hasVisorTemplate;
 
             if (!Dali.Visor.Plugins[name]) {
@@ -128,26 +149,26 @@ Dali.Visor.Plugin = function (descendant) {
             parseJson(json, state, hasVisorTemplate, name);
             return json;
         },
+        registerExtraFunction: function (fn, alias) {
+            if (!alias) {
+                Object.keys(descendant).forEach(function (prop) {
+                    if (descendant[prop] === fn) {
+                        alias = prop;
+                    }
+                });
+            }
+            extraFunctions[alias] = fn;
+        },
+        getExtraFunctions: function () {
+            return Object.keys(extraFunctions);
+        },
         callExtraFunction: function (alias, fnAlias) {
             var element = $.find("[data-alias='" + alias + "']");
             if (element && extraFunctions && extraFunctions[fnAlias]) {
-                extraFunctions[fnAlias].bind(element[0])();
+               extraFunctions[fnAlias].bind(element[0])();
             }
         }
     }
-
-    Object.keys(descendant).map(function (id) {
-        if (id !== 'init' &&
-            id !== 'getConfig' &&
-            id !== 'getToolbar' &&
-            id !== 'getSections' &&
-            id !== 'getInitialState' &&
-            id !== 'handleToolbar' &&
-            id !== 'getConfigTemplate' &&
-            id !== 'getRenderTemplate') {
-            plugin[id] = descendant[id];
-        }
-    });
 
     return plugin;
 };
