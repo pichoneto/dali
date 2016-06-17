@@ -25,7 +25,7 @@ class DaliApp extends Component {
         this.state = {
             pluginTab: 'all',
             hideTab: 'hide',
-            visor: false,
+            visorVisible: false,
             carouselShow: true
         };
     }
@@ -46,7 +46,7 @@ class DaliApp extends Component {
                                 boxSelected={boxSelected}
                                 undo={() => {dispatch(ActionCreators.undo())}}
                                 redo={() => {dispatch(ActionCreators.redo())}}
-                                visor={() =>{this.setState({visor:true })}}
+                                visor={() =>{this.setState({visorVisible: true })}}
                                 export={() => {DaliVisor.exports(this.props.store.getState().present)}}
                                 scorm={() => {DaliScorm.exports(this.props.store.getState().present)}}
                                 save={() => {dispatch(exportStateAsync({present: this.props.store.getState().present}))}}
@@ -66,16 +66,17 @@ class DaliApp extends Component {
                                   navItems={navItems}
                                   navItemSelected={navItemSelected}
                                   displayMode={displayMode}
+                                  onBoxAdded={(ids, type,  draggable, resizable, content, toolbar, config, state) => dispatch(addBox(ids, type, draggable, resizable, content, toolbar, config, state))}
                                   onPageAdded={(caller, value) => dispatch(togglePageModal(caller, value))}
-                                  onSectionAdded={(id, name, parent, children, level, type, position) => dispatch(addNavItem(id, name, parent, children, level, type, position))}
+                                  onSectionAdded={(id, name, parent, children, level, type, position, titlesReduced) => dispatch(addNavItem(id, name, parent, children, level, type, position, titlesReduced))}
                                   onNavItemSelected={id => dispatch(selectNavItem(id))}
                                   onNavItemExpanded={(id, value) => dispatch(expandNavItem(id, value))}
-                                  onNavItemRemoved={(ids, parent,boxes) => {
-                                if(navItemsIds.length == ids.length){
-                                  this.setState({hideTab: 'hide'})
-                                }
-                                dispatch(removeNavItem(ids, parent, boxes));
-                              }}
+                                  onNavItemRemoved={(ids, parent, boxes) => {
+                                    if(navItemsIds.length == ids.length){
+                                      this.setState({hideTab: 'hide'})
+                                    }
+                                    dispatch(removeNavItem(ids, parent, boxes));
+                                  }}
                                   onNavItemReorded={(itemId,newParent,type,newIndId,newChildrenInOrder) => dispatch(reorderNavItem(itemId,newParent,type,newIndId,newChildrenInOrder))}
                                   onDisplayModeChanged={mode => dispatch(changeDisplayMode(mode))}
                                   carouselShow={this.state.carouselShow}
@@ -98,7 +99,7 @@ class DaliApp extends Component {
                                         boxLevelSelected={boxLevelSelected}
                                         navItems={navItems}
                                         navItemSelected={navItems[navItemSelected]}
-                                        showCanvas={(navItemsIds.length !== 0)}
+                                        showCanvas={(navItemSelected !== 0)}
                                         toolbars={toolbars}
                                         onBoxSelected={(id) => dispatch(selectBox(id))}
                                         onBoxLevelIncreased={() => dispatch(increaseBoxLevel())}
@@ -118,10 +119,10 @@ class DaliApp extends Component {
                            navItemsIds={navItemsIds}
                            onBoxAdded={(ids, type,  draggable, resizable, content, toolbar, config, state) => dispatch(addBox(ids, type, draggable, resizable, content, toolbar, config, state))}
                            onVisibilityToggled={(caller, value) => dispatch(togglePageModal(caller, value))}
-                           onPageAdded={(id, name, parent, children, level, type, position) => dispatch(addNavItem(id, name, parent, children, level, type, position))}/>
+                           onPageAdded={(id, name, parent, children, level, type, position, titlesReduced) => dispatch(addNavItem(id, name, parent, children, level, type, position, titlesReduced))}/>
                 <Visor id="visor"
-                       visor={this.state.visor}
-                       onVisibilityToggled={()=> this.setState({visor:!this.state.visor })}
+                       visorVisible={this.state.visorVisible}
+                       onVisibilityToggled={()=> this.setState({visorVisible: !this.state.visorVisible })}
                        state={this.props.store.getState().present}/>
                 <PluginConfigModal />
 
@@ -135,7 +136,7 @@ class DaliApp extends Component {
                                onToolbarUpdated={(id, tab, accordion, name, value) => dispatch(updateToolbar(id, tab, accordion, name, value))}
                                onToolbarCollapsed={(id) => dispatch(collapseToolbar(id))}
                                onBoxDuplicated={(id, parent, container)=> dispatch( duplicateBox( id, parent, container, this.getDescendants(boxes[id]), this.getDuplicatedBoxesIds(this.getDescendants(boxes[id]) ), Date.now()-1 ))}
-                               onBoxDeleted={(id, parent, container)=> dispatch(deleteBox(id, parent, container, this.getDescendants(boxes[id]))) } />
+                               onBoxDeleted={(id, parent, container)=> dispatch(deleteBox(id, parent, container, this.getDescendants(boxes[id]))) }/>
 
             </Grid>
         );
@@ -155,10 +156,11 @@ class DaliApp extends Component {
 
         Dali.Plugins.loadAllAsync().then(pluginsLoaded => {
             pluginsLoaded.map((plugin) => {
-                Dali.Plugins.get(plugin).init();
+                if (plugin) {
+                    Dali.Plugins.get(plugin).init();
+                }
             })
         });
-
         Dali.API.Private.listenEmission(Dali.API.Private.events.render, e => {
             this.index = 0;
             let newPluginState = {};
@@ -188,7 +190,37 @@ class DaliApp extends Component {
                 this.addDefaultContainerPlugins(e.detail, e.detail.content);
             }
         });
+        Dali.API.Private.listenEmission(Dali.API.Private.events.getPluginsInView, e => {
+            let plugins = {};
+            let ids = [];
+            let view = e.detail.view ? e.detail.view : this.props.navItemSelected;
 
+            this.props.navItems[view].boxes.map(id => {
+                ids.push(id);
+                ids = ids.concat(this.getDescendants(this.props.boxes[id]));
+            });
+
+            ids.map(id => {
+                let toolbar = this.props.toolbars[id];
+                if (e.detail.getAliasedPugins) {
+                    if(id.indexOf(ID_PREFIX_SORTABLE_BOX) === -1) {
+                        let button = toolbar.controls.other.accordions.extra.buttons.alias;
+                        if (button.value.length !== 0) {
+                            if(!plugins[toolbar.config.name]){
+                                plugins[toolbar.config.name] = [];
+                            }
+                            plugins[toolbar.config.name].push(button.value);
+                        }
+                    }
+                } else {
+                    if (!plugins[toolbar.config.name]) {
+                        plugins[toolbar.config.name] = true;
+                    }
+                }
+            });
+
+            Dali.API.Private.answer(Dali.API.Private.events.getPluginsInView, plugins);
+        });
         window.onkeyup = function (e) {
             var key = e.keyCode ? e.keyCode : e.which;
             if (key == 90 && e.ctrlKey) {
@@ -218,16 +250,16 @@ class DaliApp extends Component {
         return selected;
     }
 
-    getDuplicatedBoxesIds(descendants){
+    getDuplicatedBoxesIds(descendants) {
         var newIds = {};
         var date = Date.now();
         descendants.map(box => {
-            newIds[box.substr(3)] =  date++;
+            newIds[box.substr(3)] = date++;
         });
         return newIds
     }
 
-    parsePluginContainers(obj, state){
+    parsePluginContainers(obj, state) {
         if (obj.child) {
             for (let i = 0; i < obj.child.length; i++) {
                 if (obj.child[i].tag && obj.child[i].tag === "plugin") {
