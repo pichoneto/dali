@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { FormControl, FormGroup, Radio, ControlLabel, Checkbox,  Button, ButtonGroup, PanelGroup, Accordion, Panel, Tabs, Tab} from 'react-bootstrap';
+import {Tooltip, FormControl, OverlayTrigger, FormGroup, Radio, ControlLabel, Checkbox,  Button, ButtonGroup, PanelGroup, Accordion, Panel, Tabs, Tab} from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import GridConfigurator from '../components/GridConfigurator.jsx';
 import Select from 'react-select';
@@ -20,9 +20,18 @@ export default class PluginToolbar extends Component {
     }
 
     render() {
-        if (this.props.boxSelected === -1) {
-            return <div></div>;
-        }
+        if (this.props.boxSelected == -1) {
+            return (
+                <div id="wrap"
+                     className="wrapper hiddenWrapper"
+                     style={{
+                        top: this.props.top,
+                     }}>
+                    <div id="tools"  className="toolbox">
+                    </div>
+                </div>);
+        } 
+
         let toolbar = this.props.toolbars[this.props.box.id];
         let textButton;
         if (toolbar.config && toolbar.config.needsTextEdition) {
@@ -31,6 +40,14 @@ export default class PluginToolbar extends Component {
                                   onClick={() => {
                                     this.props.onTextEditorToggled(toolbar.id, !toolbar.showTextEditor, (toolbar.showTextEditor) ? CKEDITOR.instances[toolbar.id].getData() : null)}} >
                 Edit text</Button>);
+        }
+        let xmlButton;
+        if (toolbar.config && toolbar.config.needsXMLEdition) {
+            xmlButton = (<Button key={'xml'}
+                                  className={toolbar.showXMLEditor ? 'toolbarButton textediting' : 'toolbarButton'}
+                                  onClick={() => {
+                                    this.props.onXMLEditorToggled()}}>
+                Edit XML</Button>);
         }
         let configButton;
         if (toolbar.config && toolbar.config.needsConfigModal) {
@@ -50,7 +67,7 @@ export default class PluginToolbar extends Component {
                                     onClick={e => {
                                         this.props.onBoxDeleted(this.props.box.id, this.props.box.parent, this.props.box.container);
                                         e.stopPropagation();
-                                    }}><i className="fa fa-trash-o fa-2x"></i></Button>);
+                                    }}><i className="material-icons">delete</i></Button>);
         }
         let duplicateButton;
         if (this.props.box.id[1] != 's') {
@@ -59,35 +76,38 @@ export default class PluginToolbar extends Component {
                                        onClick={e => {
                                           this.props.onBoxDuplicated(this.props.box.id, this.props.box.parent, this.props.box.container);
                                           e.stopPropagation();
-                                       }}><i className="fa fa-files-o fa-2x"></i></Button>);
+                                       }}><i className="material-icons">content_copy</i></Button>);
         }
 
-        let visible = (Object.keys(toolbar.controls).length !== 0 || this.props.box.children.length !== 0) ? 'visible' : 'hidden';
+        let visible = (Object.keys(toolbar.controls).length !== 0 || this.props.box.children.length !== 0); //? 'visible' : 'hidden';
 
         return (<div id="wrap"
                      className="wrapper"
                      style={{
                         right: '0px',
-                        top: '60px',
+                        top: this.props.top,
                         visibility: visible
                      }}>
-            <div className="pestana" onClick={() => {this.setState({open: !this.state.open})}}>
-              {/*  <i className="fa fa-gear fa-2x"></i>*/}
-            </div>
-            <div id="tools" style={{width: this.state.open? '250px':'80px'}} className="toolbox">
-                <p  onClick={() => {this.setState({open: !this.state.open})}} style={{display: this.state.open? 'none':'block', textAlign: 'center'}} className={this.props.carouselShow ? 'carouselListTitle toolbarSpread':'carouselListTitle toolbarHide'}>
-                 <br/> <i className="fa fa-wrench fa-2x"></i><br/>CONF.
-                </p>
+            <div className="pestana" onClick={() => {this.setState({open: !this.state.open})}}> </div>
+            <div id="tools" style={{width:  this.state.open? '250px':'40px'}} className="toolbox">
+                <OverlayTrigger placement="left" overlay={ <Tooltip className={this.state.open ? 'hidden':''} id="tooltip_props">propiedades</Tooltip>}>
+                    <p  onClick={() => {this.setState({open: !this.state.open})}} style={{display: this.props.carouselShow? 'block':'none'}} className={this.state.open ? 'carouselListTitle toolbarSpread':'carouselListTitle toolbarHide'}>
+                      <i className="material-icons">palette</i>  
+                      <span className="toolbarTitle">Propiedades  </span><br/>
+                      <span className="pluginTitleInToolbar">   {toolbar.config.name || ""}</span>
+                    </p>
+                </OverlayTrigger>
                 <div id="insidetools" style={{display: this.state.open? 'block':'none'}}>
-
-                    <Tabs className="toolbarTabs" ref="tabs" activeKey={this.state.activeKey} animation={false}
-                          onSelect={(key) => this.handleSelect(key)} id="controlledTabs">
+                    <div className="toolbarTabs" id="controlledTabs">
+                    {/*<Tabs className="toolbarTabs" ref="tabs" activeKey={this.state.activeKey} animation={false}
+                                             onSelect={(key) => this.handleSelect(key)} id="controlledTabs">*/}
                         {Object.keys(toolbar.controls).map((tabKey, index) => {
                             let tab = toolbar.controls[tabKey];
                             return (
-                                <Tab key={index} className="toolbarTab" eventKey={index} title={tab.__name}>
-                                <ButtonGroup style={{width: '100%'}}> {deletebutton} {duplicateButton} </ButtonGroup>
-                                    <br/><br/>
+                                <div  key={index}  className={"toolbarTab"}>
+                                    {/*<Tab key={index} className={"toolbarTab"} eventKey={index} title={tab.__name}>
+                                            <ButtonGroup style={{width: '100%'}}> {deletebutton} {duplicateButton} </ButtonGroup>
+                                        <br/><br/>*/}
                                     <PanelGroup>
                                         {Object.keys(tab.accordions).map((accordionKey, index) => {
                                             let accordion = tab.accordions[accordionKey];
@@ -96,25 +116,30 @@ export default class PluginToolbar extends Component {
                                         {this.props.box.children.map((id, index) => {
                                             let container = this.props.box.sortableContainers[id];
                                             if (tabKey === "main") {
-                                                return (<Panel key={id} className="panelPluginToolbar" collapsible
-                                                               header={'Caja '+ (index + 1)}>
-                                                    <GridConfigurator id={id}
-                                                                      parentId={this.props.box.id}
-                                                                      container={container}
-                                                                      onColsChanged={this.props.onColsChanged}
-                                                                      onRowsChanged={this.props.onRowsChanged}/>
-                                                </Panel>)
+                                                return (
+                                                    <Panel  key={id} 
+                                                            className="panelPluginToolbar" 
+                                                            collapsible
+                                                            header={'Caja '+ (index + 1)}>
+                                                        <GridConfigurator id={id}
+                                                                          parentId={this.props.box.id}
+                                                                          container={container}
+                                                                          onColsChanged={this.props.onColsChanged}
+                                                                          onRowsChanged={this.props.onRowsChanged}/>
+                                                    </Panel>)
                                             }
                                         })}
                                     </PanelGroup>
                                      
                                     {textButton}
+                                    {xmlButton}
                                     {configButton}
-
-                                </Tab>
+                                    {/* </Tab>*/}
+                               </div>
                             );
                         })}
-                    </Tabs>
+                    {/*</Tabs>*/}
+                    </div>
                 </div>
             </div>
         </div>);
@@ -166,22 +191,22 @@ export default class PluginToolbar extends Component {
                 if (buttonKey == 'width') {
                     if (!this.aspectRatio) {
                         this.props.onBoxResized(id, value + '%', this.props.box.height);
-                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, value);
+                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, parseFloat(value));
                     } else {
-                        let newHeight = (parseFloat(this.props.box.height) * value / parseFloat(this.props.box.width));
+                        let newHeight = (parseFloat(this.props.box.height) * parseFloat(value) / parseFloat(this.props.box.width));
                         this.props.onBoxResized(id, value + '%', newHeight + '%');
-                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, value);
+                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, parseFloat(value));
                         this.props.onToolbarUpdated(id, tabKey, accordionKeys, 'height', newHeight);
                     }
                 }
                 if (buttonKey == 'height') {
                     if (!this.aspectRatio) {
                         this.props.onBoxResized(id, this.props.box.width, value + '%');
-                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, value);
+                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, parseFloat(value));
                     } else {
-                        let newWidth = (parseFloat(this.props.box.width) * value / parseFloat(this.props.box.height));
+                        let newWidth = (parseFloat(this.props.box.width) * parseFloat(value) / parseFloat(this.props.box.height));
                         this.props.onBoxResized(id, newWidth + '%', value + '%');
-                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, value);
+                        this.props.onToolbarUpdated(id, tabKey, accordionKeys, buttonKey, parseFloat(value));
                         this.props.onToolbarUpdated(id, tabKey, accordionKeys, 'width', newWidth);
                     }
                 }
@@ -274,7 +299,8 @@ export default class PluginToolbar extends Component {
             return React.createElement(FormGroup, props, children);
 
         } else {
-            return React.createElement(FormGroup, {key: button.__name}, [React.createElement(ControlLabel, {key: 'label_' + button.__name}, button.__name),
+            let output = button.type == "range" ? "   " + button.value : null;
+            return React.createElement(FormGroup, {key: button.__name}, [React.createElement(ControlLabel, {key: 'label_' + button.__name}, button.__name),  React.createElement("span", {key:  'output_span' + button.__name, className: 'rangeOutput'}, output),
                 React.createElement(FormControl, props, null)]);
         }
 

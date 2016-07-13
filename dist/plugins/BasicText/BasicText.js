@@ -6,7 +6,7 @@ Dali.Plugins["BasicText"] = function (base) {
                 category: 'text',
                 needsConfigModal: false,
                 needsTextEdition: true,
-                icon: 'fa-align-left'
+                icon: 'format_color_text'
             };
         },
         getToolbar: function () {
@@ -14,15 +14,7 @@ Dali.Plugins["BasicText"] = function (base) {
                 main: {
                     __name: "Main",
                     accordions: {
-                        basic: {
-                            __name: "Basic",
-                            buttons: {}
-                        }
-                    }
-                },
-                font: {
-                    __name: "Font",
-                    accordions: {
+                         
                         size: {
                             __name: "Size",
                             buttons: {
@@ -45,18 +37,13 @@ Dali.Plugins["BasicText"] = function (base) {
                                     value: 'black'
                                 }
                             }
-                        }
-                    }
-                },
-                box: {
-                    name: "Box",
-                    accordions: {
+                        },
                         layout: {
                             __name: "Layout",
                             buttons: {
                                 opacity: {
                                     __name: 'Opacity',
-                                    type: 'number',
+                                    type: 'range',
                                     value: 1,
                                     min: 0,
                                     max: 1,
@@ -66,16 +53,11 @@ Dali.Plugins["BasicText"] = function (base) {
                                     __name: 'Padding (px)',
                                     type: 'number',
                                     units: 'px',
-                                    value: 0,
+                                    value: 1,
                                     min: 0
                                 }
                             }
-                        }
-                    }
-                },
-                other: {
-                    __name: "Other",
-                    accordions: {
+                        },
                         extra: {
                             __name: "Extra",
                             buttons: {}

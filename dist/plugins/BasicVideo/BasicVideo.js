@@ -6,7 +6,7 @@ Dali.Plugins["BasicVideo"] = function (base){
                 category: 'multimedia',
                 needsConfigModal: false,
                 needsTextEdition: false,
-                icon: 'fa-video-camera'
+                icon: 'play_arrow'
             };
         },
         getToolbar: function () {
@@ -51,7 +51,7 @@ Dali.Plugins["BasicVideo"] = function (base){
                             buttons: {
                                 opacity: {
                                     __name: 'Opacity',
-                                    type: 'number',
+                                    type: 'range',
                                     value: 1,
                                     min: 0,
                                     max: 1,
@@ -88,12 +88,7 @@ Dali.Plugins["BasicVideo"] = function (base){
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit']
                                 },
                             }
-                        }
-                    }
-                },
-                other: {
-                    __name: "Other",
-                    accordions: {
+                        },
                         extra: {
                             __name: "Extra",
                             buttons: {
@@ -126,7 +121,7 @@ Dali.Plugins["BasicVideo"] = function (base){
             return "<div> Url: <input type=\"text\" autofocus id=\"BasicImage_input\" value=\"" + state.url + "\"><br><button onclick=\"$dali$.showPreview()\">Show preview</button><iframe width=\"560\" height=\"315\"id=\"BasicImage_preview\" frameborder=\"0\" allowfullscreen src=\"" + state.url + "\" style=\"width: 180px; height: auto; visibility: " + state.thumbnailVisibility + ";\"  ></video></div>";
         },
         getRenderTemplate: function (state) {
-            return "<video width=\"560\" height=\"315\" onclick=\"$dali$.click()\"" + ((state.controls == "checked") ? "controls=\"controls\" " : " ") + " frameBorder=\"0\" allowFullScreen style=\"width: 100%; height: 100%; pointer-events: 'none'; border: " + state.borderStyle + " " + state.borderSize + "px " + state.borderColor + "; z-index:0;\" src=\"" + state.url + "\"></video>";
+            return "<video width=\"560\" height=\"315\" autoplay onclick=\"$dali$.click()\"" + ((state.controls == "checked") ? "controls=\"controls\" " : " ") + " frameBorder=\"0\" allowFullScreen style=\"width: 100%; height: 100%; pointer-events: 'none'; border: " + state.borderStyle + " " + state.borderSize + "px " + state.borderColor + "; z-index:0;\" src=\"" + state.url + "\"></video>";
         },
         handleToolbar: function (name, value) {
             base.setState(name, value);
@@ -134,10 +129,8 @@ Dali.Plugins["BasicVideo"] = function (base){
         showPreview: function () {
             var vid = $('#BasicImage_preview');
             var input = $('#BasicImage_input');
-            // base.setState('url', input.val());
-            base.setState('thumbnailVisibility', 'visible');
-            // vid.attr('src', input.val());
-            vid.css('visibility', 'visible');
+             base.setState('thumbnailVisibility', 'visible');
+             vid.css('visibility', 'visible');
         },
         click: function(){
             alert("Guau");

@@ -7,7 +7,7 @@ Dali.Plugins["BasicImage"] = function (base){
                 needsConfigModal: false,
                 needsTextEdition: false,
                 aspectRatioButtonConfig: {name: "Aspect Ratio", location: ["main", "basic"], defaultValue: "checked"},
-                icon: 'fa-picture-o'
+                icon: 'panorama'
             };
         },
         getToolbar: function(){
@@ -31,11 +31,11 @@ Dali.Plugins["BasicImage"] = function (base){
                             buttons: {
                                 opacity: {
                                     __name: 'Opacity',
-                                    type: 'number',
+                                    type: 'range',
                                     value: 1,
                                     min: 0,
                                     max: 1,
-                                    step: 0.1
+                                    step: 0.01
                                 },
                                 borderSize: {
                                     __name: 'Border Size',
@@ -67,12 +67,7 @@ Dali.Plugins["BasicImage"] = function (base){
                                     autoManaged: false
                                 }
                             }
-                        }
-                    }
-                },
-                other: {
-                    __name: "Other",
-                    accordions: {
+                        },
                         extra: {
                             __name: "Extra",
                             buttons: {

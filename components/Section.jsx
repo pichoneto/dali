@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button} from 'react-bootstrap';
 import {ID_PREFIX_SECTION, ID_PREFIX_PAGE, ID_PREFIX_SORTABLE_BOX, BOX_TYPES} from '../constants';
+import DaliIndexTitle from '../components/DaliIndexTitle';
 
 export default class Section extends Component {
     render() {
@@ -12,61 +13,51 @@ export default class Section extends Component {
                 this.props.onNavItemSelected(navItem.id);
                 e.stopPropagation();
             }}>
-            <div >
-                <button   className="expandir" onClick={e => {
-                    this.props.onNavItemExpanded(navItem.id, !navItem.isExpanded)
-                    e.stopPropagation();
-                }}><i onClick={e => {
-                    this.props.onNavItemExpanded(navItem.id, !navItem.isExpanded)
-                    e.stopPropagation();}} className={navItem.isExpanded ? "fa fa-chevron-down" : "fa fa-chevron-right"}></i></button>
+                <div className={"navItemBlock " + classSelected}>
+                    <span style={{marginLeft: 20*(this.props.navItems[this.props.id].level-1)}}>
+                    <button className="expandir" onClick={e => {
+                        this.props.onNavItemExpanded(navItem.id, !navItem.isExpanded)
+                        e.stopPropagation();
+                    }}><i onClick={e => {
+                        this.props.onNavItemExpanded(navItem.id, !navItem.isExpanded)
+                        e.stopPropagation();}} className={classSelected + '  material-icons'} >{navItem.isExpanded ? "arrow_drop_down" : "play_arrow"}</i></button>
 
-                <span className={classSelected}style={{ display: 'inline'}}>{navItem.name}</span>
-
-            </div>
-            <div style={{display: (navItem.isExpanded ? 'block' : 'none'), borderLeft: '1px dotted white'}}>
-                
-                <div style={{marginLeft: 20}}>
-                    <div ref="sortableListS" style={{paddingTop: (navItem.children.length > 0 ? 2 : 20) }} className="sectionList connectedSortables">
-                        {
-                            navItem.children.map((id, index) => {
-                                if (id.indexOf(ID_PREFIX_SECTION) !== -1) {
-                                    return <Section id={id}
-                                                    key={index}
-                                                    navItemsIds={this.props.navItemsIds}
-                                                    navItems={this.props.navItems}
-                                                    navItemSelected={this.props.navItemSelected}
-                                                    onBoxAdded={this.props.onBoxAdded}
-                                                    onPageAdded={this.props.onPageAdded}
-                                                    onSectionAdded={this.props.onSectionAdded}
-                                                    onNavItemSelected={this.props.onNavItemSelected}
-                                                    onNavItemExpanded={this.props.onNavItemExpanded}
-                                                    onNavItemReorded={this.props.onNavItemReorded}/>;
-                                } else if (id.indexOf(ID_PREFIX_PAGE) !== -1) {
-                                   // let classSelected = this.props.navItemSelected === id ? 'selected' : 'notSelected';
-                                    let classSelected = this.props.navItemSelected === id ? 'selected dragS' : 'notSelected dragS';
-                                    
-                                    let color = this.props.navItemSelected === id ? '#f87060' : '#555';
-                                    return <h4 key={index} id={id} className={classSelected} onMouseDown={e => {
-                                        this.props.onNavItemSelected(id);
-                                        e.stopPropagation();
-                                    }}>{this.props.navItems[id].name}</h4>;
-                                }
-                            })}
-                     </div>
-                  </div>
-                <div style={{marginTop: 10, marginLeft: 20}}>
-
-                 {/* <Button onClick={e => {
-                                         let idnuevo = ID_PREFIX_SECTION + Date.now();
-                                         this.props.onSectionAdded(idnuevo, navItem.name + "." +this.calculateName(navItem), navItem.id, [], navItem.level + 1, 'section', this.calculatePosition(), 'expanded');
-                                         this.props.onBoxAdded({parent: idnuevo, container: 0, id: ID_PREFIX_SORTABLE_BOX + Date.now()}, BOX_TYPES.SORTABLE, false, false);
-                                         e.stopPropagation();
-                                     }}><i className="fa fa-folder-o"></i></Button>
-                                     <Button onClick={e => {
-                                         this.props.onPageAdded(navItem.id, true)
-                                         e.stopPropagation();
-                                     }}><i className="fa fa-file-o"></i></Button>*/}
+                    <span className={classSelected} style={{display: 'inline'}}><i className={classSelected + '  material-icons'} >folder</i>   <DaliIndexTitle id={this.props.id} title={this.props.navItems[this.props.id].name} onTitleChange={this.props.onTitleChange} /></span>
+                    </span>
                 </div>
+                <div style={{display: (navItem.isExpanded ? 'block' : 'none') }}>
+                    
+                   
+                        <div ref="sortableListS" style={{paddingTop: (navItem.children.length > 0 ? 2 : 5) }} className="sectionList connectedSortables">
+                            {
+                                navItem.children.map((id, index) => {
+                                    if (id.indexOf(ID_PREFIX_SECTION) !== -1) {
+                                        return <Section id={id}
+                                                        key={index}
+                                                        navItemsIds={this.props.navItemsIds}
+                                                        navItems={this.props.navItems}
+                                                        navItemSelected={this.props.navItemSelected}
+                                                        onBoxAdded={this.props.onBoxAdded}
+                                                        onPageAdded={this.props.onPageAdded}
+                                                        onSectionAdded={this.props.onSectionAdded}
+                                                        onTitleChange={this.props.onTitleChange}                                                       
+                                                        onNavItemSelected={this.props.onNavItemSelected}
+                                                        onNavItemExpanded={this.props.onNavItemExpanded}
+                                                        onNavItemReorded={this.props.onNavItemReorded}/>;
+                                    } else if (id.indexOf(ID_PREFIX_PAGE) !== -1) {
+                                        let classSelected = this.props.navItemSelected === id ? 'selected dragS' : 'notSelected dragS';
+                                        let color = this.props.navItemSelected === id ? '#f87060' : '#555';
+                                        return <h4  key={index} id={id} className={'navItemBlock ' + classSelected} onMouseDown={e => {
+                                                 this.props.onNavItemSelected(id);
+                                                 e.stopPropagation();}}>
+                                                <span style={{marginLeft: 20*(this.props.navItems[id].level-1)}}>
+                                                    <i className="material-icons">insert_drive_file</i>    <DaliIndexTitle id={id} title={this.props.navItems[id].name} onTitleChange={this.props.onTitleChange} />
+                                                </span>
+                                               </h4>;
+                                    }
+                                })}
+                         </div>
+                      
                 </div>
             </div>
         );
@@ -108,16 +99,33 @@ export default class Section extends Component {
         list.sortable({ 
             tolerance: 'intersect',
             connectWith: '.connectedSortables',
+            placeholder: "sortable-placeholder",
+             over: (event, ui) => {
+                $(".carList").css("border-left", "none");
+                $(".sectionList").css("border-top", "none");
+                $(event.target).css("border-top", "3px solid #F47920");
+            },
+            out: (event, ui) => {
+                    $(".carList").css("border-left", "none");
+                  $(".sectionList").css("border-top", "none");
+                $(event.target).css("border-top", "none");
+            },
+            start: (event,ui) => {
+                //$(".selected").css("background-color", "rgba(84, 84, 84 , 0.5)");
+            },
             stop: (event, ui) => {
+                //$(".selected").css("background-color", "rgba(84, 84, 84 , 1)");
                 const reorderedIndexesId = list.sortable('toArray', {attribute: 'id'}); //Obtiene la nueva disposición de elementos por id esta es la válida.
                 const selected = this.props.navItemSelected;
                 const previos = this.props.navItemsIds;
                 const parent =this.props.navItems[selected].parent;
                           
+
                 var oldChilds = this.props.navItems[this.props.id].children; //Saca los hijos del pasado del elemento seleccionado       
                 var newChilds = reorderedIndexesId;
 
                 if( newChilds.indexOf(selected) >= 0 && oldChilds.indexOf(selected) >= 0){
+
                     list.sortable('cancel');
                     
                     var part1 = previos.slice(0,previos.indexOf(parent)+1);
@@ -184,7 +192,8 @@ export default class Section extends Component {
                 }       
             }.bind(this),
             receive: (event, ui) => {
-                                
+                  //$(".selected").css("background-color", "rgba(84, 84, 84 , 1)");
+
                 const id = this.props.id;
                 const selec = this.props.navItemSelected;
                 const parent = this.props.navItems[this.props.navItemSelected].parent;

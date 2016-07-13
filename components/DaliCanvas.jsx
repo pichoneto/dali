@@ -2,12 +2,19 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import DaliBox from '../components/DaliBox';
 import DaliBoxSortable from '../components/DaliBoxSortable';
+import DaliShortcuts from '../components/DaliShortcuts';
 import {Col} from 'react-bootstrap';
 import DaliTitle from '../components/DaliTitle';
 import interact from 'interact.js';
 import {BOX_TYPES, ID_PREFIX_SORTABLE_BOX} from '../constants';
 
 export default class DaliCanvas extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            showTitle: false
+        };
+    }
     render() {
         let titles = [];
         if (this.props.navItemSelected.id !== 0) {
@@ -19,32 +26,46 @@ export default class DaliCanvas extends Component{
             }
             titles.reverse();
         }
-        let paddings= (this.props.navItemSelected.type!= "slide") ? ('5px 5px 5px 5px') : ('30px 0px 30px 0px')
+        let paddings= /*(this.props.navItemSelected.type!= "slide") ? (*/'5px 5px 5px 5px'/*) : ('30px 0px 30px 0px')*/
+
         let maincontent = document.getElementById('maincontent');
         let actualHeight; 
         if (maincontent){
             actualHeight = parseInt(maincontent.scrollHeight);
             actualHeight = (parseInt(maincontent.clientHeight) < actualHeight) ? (actualHeight) +'px' : '100%';
         }
+        
         let overlayHeight = actualHeight ? actualHeight:'100%';
-
+   
         return (<Col id="canvas" md={12} xs={12} style={{height:"100%", padding:0}}>
             <div className="outter" style={{position: 'absolute', width: '100%', height:'100%', padding: (paddings)}} >
                 <div  id="maincontent"
-                      onClick={e => {this.props.onBoxSelected(-1)}}
-                      className={this.props.navItems[this.props.navItemSelected.id].type == 'slide' ? 'slide sli':'slide doc'}
-                      style={{visibility: (this.props.showCanvas ? 'visible' : 'hidden'), position: 'relative'}}>
+                      onClick={e => {
+                        this.props.onBoxSelected(-1);
+                        this.setState({showTitle:false})
+                       }}
+                      className={this.props.navItems[this.props.navItemSelected.id].type == 'slide' ? 'innercanvas sli':'innercanvas doc'}
+                      style={{visibility: (this.props.showCanvas ? 'visible' : 'hidden')}}>
 
-                    {/*<div className="canvasHelper" style={{visibility: (this.props.showCanvas ? 'hidden' : 'visible'), position: 'relative'}}>
-                        <div className="canvasMessage" >CREA UNA SECCIÓN PARA EMPEZAR</div>
-                    </div>*/}
 
-                    <DaliTitle titles={titles}
-                               isReduced={this.props.navItemSelected.titlesReduced}
-                               navItemId={this.props.navItemSelected.id}
-                               titleModeToggled={this.props.titleModeToggled}
-                               showButton={true} />
-                               <br/>
+                    <DaliTitle  titles={titles}
+                                boxSelected={this.props.boxSelected}
+                                showButtons={this.state.showTitle}
+                                onShowTitle={()=>this.setState({showTitle:true})}
+                                onBoxSelected={this.props.onBoxSelected}
+                                courseTitle={this.props.title}
+                                isReduced={this.props.navItemSelected.titlesReduced}
+                                navItemId={this.props.navItemSelected.id}
+                                titleModeToggled={this.props.titleModeToggled}
+                                showButton={true} />
+                     <br/>
+                    <DaliShortcuts  box={this.props.boxSelected == -1 ? -1 : this.props.boxes[this.props.boxSelected]}
+                                    onTextEditorToggled={this.props.onTextEditorToggled} 
+                                    onBoxResized={this.props.onBoxResized}
+                                    onBoxDeleted={this.props.onBoxDeleted}
+                                    toolbar={this.props.toolbars[this.props.boxSelected]} />
+
+                     
                     <div style={{
                         width: "100%",  
                         background: "black",
@@ -65,6 +86,7 @@ export default class DaliCanvas extends Component{
                                             boxSelected={this.props.boxSelected}
                                             boxLevelSelected={this.props.boxLevelSelected}
                                             toolbars={this.props.toolbars}
+                                            lastActionDispatched={this.props.lastActionDispatched}
                                             onBoxSelected={this.props.onBoxSelected}
                                             onBoxLevelIncreased={this.props.onBoxLevelIncreased}
                                             onBoxMoved={this.props.onBoxMoved}
@@ -81,6 +103,7 @@ export default class DaliCanvas extends Component{
                                             boxSelected={this.props.boxSelected}
                                             boxLevelSelected={this.props.boxLevelSelected}
                                             toolbars={this.props.toolbars}
+                                            lastActionDispatched={this.props.lastActionDispatched}
                                             onBoxSelected={this.props.onBoxSelected}
                                             onBoxLevelIncreased={this.props.onBoxLevelIncreased}
                                             onBoxMoved={this.props.onBoxMoved}
@@ -95,7 +118,14 @@ export default class DaliCanvas extends Component{
            </Col>);
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.boxSelected !=-1){
+            this.setState({showTitle: false});
+        }      
+    }
+
     componentDidMount(){
+ 
         interact(ReactDOM.findDOMNode(this)).dropzone({
             accept: '.rib',
             overlap: 'pointer',
@@ -110,8 +140,8 @@ export default class DaliCanvas extends Component{
             },
             ondrop: function (event) {
                 let position = {
-                    x: event.dragEvent.clientX - event.target.getBoundingClientRect().left,
-                    y: event.dragEvent.clientY - event.target.getBoundingClientRect().top,
+                    x: event.dragEvent.clientX - event.target.getBoundingClientRect().left - document.getElementById('maincontent').offsetLeft,
+                    y: event.dragEvent.clientY - event.target.getBoundingClientRect().top  + document.getElementById('maincontent').scrollTop ,
                 };
                 let initialParams = {
                     parent: this.props.navItemSelected.id,

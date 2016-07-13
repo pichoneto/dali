@@ -3,6 +3,8 @@ import {Breadcrumb, BreadcrumbItem, Button} from 'react-bootstrap';
 
 export default class DaliTitle extends Component {
 
+ 
+
     render() {
         let content;
         let unidad = "";
@@ -12,13 +14,14 @@ export default class DaliTitle extends Component {
         if(currentstatus=='reduced') {
     
             let titles = this.props.titles;
-            let actualTitle = titles.pop();
+
+            let actualTitle = titles[titles.length-1];
             unidad = titles[0];
             content = React.createElement("div", {},
                 React.createElement("h3", {},
                     React.createElement(Breadcrumb,{ style: { margin: 0, backgroundColor: 'inherit' }},
-                        titles.map((item, index) => {
-                            if(index!=0) {
+                         titles.map((item, index) => {
+                            if(index != 0 && index != titles.length - 1) {
                                 return React.createElement(BreadcrumbItem, {key: index}, item);
                             }
                         })
@@ -41,50 +44,67 @@ export default class DaliTitle extends Component {
                 })
             );
         } 
-    
-        
-        let nextstatus ;
+ 
 
-        if (currentstatus == 'hidden') {
-            nextstatus = 'expanded'; 
-        } else if (currentstatus == 'expanded') {
-            nextstatus = 'reduced';
-        } else {
-            nextstatus = 'hidden';
-        }
 
-        let icons = {'reduced':'fa fa-minus',
-                     'expanded':'fa fa-plus',
-                     'hidden': 'fa fa-eye-slash'};
-
-        let currenticon = icons[nextstatus];
         return (
-            <div className="title" style={{ visibility: currentstatus=='hidden'? 'hidden':'inherit'}}>
-                <div className="caja">
-                    <div className="cab" style={{backgroundColor: 'transparent'}}>
+            <div className="title" onClick={(e) => {
+                                    this.props.onBoxSelected(-1);
+                                    this.props.onShowTitle();
+                                    e.stopPropagation(); }} > 
+                <div id="daliTitleButtons"   style={{height:'40px'}}  >
+                                            
+                    <button className={((!this.props.showButtons || currentstatus == 'hidden' )? 'daliTitleButton hidden ' : ' daliTitleButton ')  
+                                     + ((currentstatus == 'expanded') ? ' activeTitle' : ' ')}
+                            onClick={(e) => {
+                                this.props.titleModeToggled(this.props.navItemId, 'expanded' );
+                                e.stopPropagation(); }} >
+                        <i className="material-icons">vertical_align_bottom</i>
+                    </button>
+                    <button className={((!this.props.showButtons || currentstatus == 'hidden' )? ' daliTitleButton hidden ' : ' daliTitleButton ')  
+                                     + ((currentstatus == 'reduced') ? ' activeTitle ' : ' ')}
+                            onClick={(e) => {
+                                this.props.titleModeToggled(this.props.navItemId, 'reduced');
+                                e.stopPropagation();}}>
+                        <i className="material-icons">keyboard_tab</i>
+                    </button>
+                    <button className={((!this.props.showButtons || currentstatus == 'hidden' )? 'daliTitleButton hidden activeTitle' : 'daliTitleButton ')}
+                            onClick={(e) => {
+                                this.props.titleModeToggled(this.props.navItemId, 'hidden');
+                                e.stopPropagation();}}>
+                                <i className="material-icons">visibility_off</i>
+                    </button>
+                    <button className={currentstatus == 'hidden' ? 'daliTitleButton  ' : 'daliTitleButton hidden'} 
+                             onClick={(e) => {
+                                this.props.titleModeToggled(this.props.navItemId, 'reduced');
+                                this.props.onShowTitle();
+                                e.stopPropagation();}}>
+                        <i className="material-icons">visibility</i>
+                    </button>
+           
+
+                </div>
+                <div className={this.props.showButtons ?  "caja selectedTitle selectedBox":"caja"} >
+                    <div className="cab" style={{backgroundColor: 'transparent',  visibility: currentstatus=='hidden'? 'hidden':'inherit'}}>
                         <div className="cabtabla_numero">1</div>
                         <div className="tit_ud_cap">
-                           <h1>Título Curso</h1>
+                           <h1>{this.props.courseTitle}</h1>
                            <h2>{unidad}</h2>
                         </div>
-                        <div className="cabtabla_lapiz">            
-                            <Button className="buttonTitle" 
-                                    style={{visibility: (this.props.showButton && !hideButton)? 'visible' : 'hidden'}} 
-                                    onClick={() => {
-                                        this.props.titleModeToggled(this.props.navItemId, nextstatus);}}>
-                                <i className={currenticon}></i>
-                            </Button>
-                            <img style={{visibility: currentstatus=='hidden'? 'hidden':'inherit'}} src="images/ico_alumno.gif" alt="Alumno"/>
-                            <div id="alumno2"> Alumno</div>
+                        <div   className="cabtabla_lapiz">            
+
+                            <img style={{display: 'none', visibility: currentstatus=='hidden'? 'hidden':'inherit'}} src="images/ico_alumno.gif" alt="Alumno"/>
+                            <div style={{display: 'none'}} id="alumno2"> Alumno</div>
                         </div>
-                        <div className="clear"></div>
+                        <div style={{display: 'none'}}  className="clear"></div>
                     </div>
-                    <div className="contenido" style={{backgroundColor: 'transparent'}}>
+                    <div className="contenido" style={{backgroundColor: 'transparent',  display: currentstatus=='hidden'? 'none':'block'}}>
                         {content}
                     </div>
                 </div>
-                <br style={{clear:'both'}}/>
+                <br style={{clear:'both',  visibility: currentstatus=='hidden'? 'hidden':'inherit'}}/>
             </div>
         );
     }
+     
 }

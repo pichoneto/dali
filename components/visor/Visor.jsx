@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
 import {Modal, Row, Col, Grid, Button, ButtonGroup} from 'react-bootstrap';
-import VisorPluginPlaceholder from '../visor/VisorPluginPlaceholder';
-import DaliTitle from '../DaliTitle';
-import VisorDaliBox from '../visor/VisorDaliBox'
-import VisorDaliBoxSortable from '../visor/VisorDaliBoxSortable'
 import {BOX_TYPES, ID_PREFIX_SORTABLE_BOX} from '../../constants';
 
 export default class Visor extends Component{
@@ -20,16 +16,16 @@ export default class Visor extends Component{
         let navItemsById = this.props.state.navItemsById;
         let navItem = navItemsById[navItemSelected];
 
-        let display = navItem.type == "slide"? "sli slide":"sli doc";
+        let display = navItem.type == "slide"? "innercanvas sli ":"innercanvas doc";
         let firstParent = navItem.parent || 0;
         let parentName = navItemsById[firstParent].name || 'Section 0';
         let patt = /([0-9]+((\.[0-9]+)+)?)/;  //Detecta número de sección. Ej. Section (2.3.4.2)
         let sectionTitle = patt.exec(parentName)? patt.exec(parentName)[0] : '0';
         let today = new Date();
         let strDate = 'd-m-Y'
-        .replace('d', today.getDate())
-        .replace('m', today.getMonth()+1)
-        .replace('Y', today.getFullYear());
+            .replace('d', today.getDate())
+            .replace('m', today.getMonth()+1)
+            .replace('Y', today.getFullYear());
         let boxes = navItemSelected!=-1? navItem.boxes : [];
         let titles = [];
         if (navItemSelected !== 0) {
@@ -54,31 +50,14 @@ export default class Visor extends Component{
                     <Modal.Title><span id="previewTitle">Preview</span></Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body style={{position: 'absolute', top: '56px', padding: 0, bottom: 0, width: '100%', overflowY: 'auto'}}>
-                    {/*
-                        <Grid fluid={true} style={{height: '100%'}}>
-                            <Row style={{height: '100%', margin:'0'}}>
-                                <Col md={12} xs={12} style={{padding: 0, height: '100%'}}>
-                                    <div className="outter" style={{paddingTop:'0px'}}>
-                                        <div id="maincontents" className={display} style={{visibility: 'visible'}}>
-                                            <DaliTitle titles={titles}
-                                                       isReduced={navItem.titlesReduced}
-                                                       navItemId={navItem}
-                                                       titleModeToggled={this.props.state.titleModeToggled}
-                                                       showButton={false}/><br/>
-                                            <div style={{width: "100%", height: "100%"}}
-                                                 dangerouslySetInnerHTML={{__html: DaliVisor.exportPage(this.props.state)}}></div>
-                                        </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Grid>
-                    */}
-                    <div ref={el => {
+                <Modal.Body style={{position: 'absolute', top: '56px', padding: 0, bottom: 0, width: '100%'}}>
+                    <iframe ref={el => {
                         if(el !== null && this.props.visorVisible){
-                            $(el).html(DaliVisor.exportPage(this.props.state));
+                            el.contentWindow.document.open();
+                            el.contentWindow.document.write(DaliVisor.exportPage(this.props.state));
+                            el.contentWindow.document.close();
                         }
-                    }} style={{width: "100%", height: "100%"}}></div>
+                    }} style={{width: "100%", height: "100%", border: 0}}></iframe>
                 </Modal.Body>
             </Modal>
         )

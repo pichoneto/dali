@@ -58,13 +58,14 @@ Dali.Plugin = function () {
             }
         },
         getConfig: function () {
-            var name, category, callback, needsConfigModal, needsTextEdition, icon, aspectRatioButtonConfig;
+            var name, category, callback, needsConfigModal, needsTextEdition, needsXMLEdition, icon, aspectRatioButtonConfig;
             if (descendant.getConfig) {
                 name = descendant.getConfig().name;
                 category = descendant.getConfig().category;
                 icon = descendant.getConfig().icon;
                 needsConfigModal = descendant.getConfig().needsConfigModal;
                 needsTextEdition = descendant.getConfig().needsTextEdition;
+                needsXMLEdition = descendant.getConfig().needsXMLEdition;
                 aspectRatioButtonConfig = descendant.getConfig().aspectRatioButtonConfig;
             }
 
@@ -72,6 +73,7 @@ Dali.Plugin = function () {
             category = defaultFor(category, 'text', "Plugin category not assigned");
             needsConfigModal = defaultFor(needsConfigModal, false);
             needsTextEdition = defaultFor(needsTextEdition, false);
+            needsXMLEdition = defaultFor(needsXMLEdition, false);
             icon = defaultFor(icon, 'fa-cogs', "Plugin icon not assigned");
 
             if(aspectRatioButtonConfig){
@@ -98,6 +100,11 @@ Dali.Plugin = function () {
                         }
                     }
                 }
+                if(needsXMLEdition){
+                    if(!state["__xml"]){
+                        state["__xml"] = null;
+                    }
+                }
                 initialParams = initParams;
                 if (needsConfigModal) {
                     this.openConfigModal(false, state);
@@ -112,6 +119,7 @@ Dali.Plugin = function () {
                 callback: callback,
                 needsConfigModal: needsConfigModal,
                 needsTextEdition: needsTextEdition,
+                needsXMLEdition: needsXMLEdition,
                 aspectRatioButtonConfig: aspectRatioButtonConfig,
                 icon: icon
             };
@@ -202,9 +210,15 @@ Dali.Plugin = function () {
                     {
                         position: initialParams.position,
                         row: initialParams.row,
-                        col: initialParams.col
+                        col: initialParams.col,
+                        isDefaultPlugin: defaultFor(initialParams.isDefaultPlugin, false)
                     }
                 );
+            }
+        },
+        afterRender: function(element, state){
+            if(descendant.afterRender){
+                descendant.afterRender(element, state);
             }
         },
         update: function (oldState, name, value, sender) {
@@ -220,6 +234,9 @@ Dali.Plugin = function () {
         },
         getState: function () {
             return state;
+        },
+        setCompleteState: function (newState) {
+            state = newState;
         },
         registerExtraFunction: function() { }
     };

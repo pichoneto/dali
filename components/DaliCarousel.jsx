@@ -9,18 +9,18 @@ export default class DaliCarousel extends Component{
         let displayModeClassName = "";
         let carrouselContent;
         if (this.props.displayMode === "list") {
-            displayModeClassName = "fa fa-th-large";
-            carrouselContent = <CarrouselList boxes={this.props.boxes}
-                                              navItemsIds={this.props.navItemsIds}
-                                              navItems={this.props.navItems}
-                                              navItemSelected={this.props.navItemSelected}
-                                              onBoxAdded={this.props.onBoxAdded}
-                                              onPageAdded={this.props.onPageAdded}
-                                              onSectionAdded={this.props.onSectionAdded}
-                                              onNavItemSelected={this.props.onNavItemSelected}
-                                              onNavItemExpanded={this.props.onNavItemExpanded}
-                                              onNavItemRemoved={this.props.onNavItemRemoved}
-                                              onNavItemReorded={this.props.onNavItemReorded}  />;
+             carrouselContent = <CarrouselList boxes={this.props.boxes}
+                                               navItemsIds={this.props.navItemsIds}
+                                               navItems={this.props.navItems}
+                                               navItemSelected={this.props.navItemSelected}
+                                               onBoxAdded={this.props.onBoxAdded}
+                                               onPageAdded={this.props.onPageAdded}
+                                               onTitleChange={this.props.onTitleChange}
+                                               onSectionAdded={this.props.onSectionAdded}
+                                               onNavItemSelected={this.props.onNavItemSelected}
+                                               onNavItemExpanded={this.props.onNavItemExpanded}
+                                               onNavItemRemoved={this.props.onNavItemRemoved}
+                                               onNavItemReorded={this.props.onNavItemReorded}  />;
         }
         return( 
 
@@ -29,8 +29,11 @@ export default class DaliCarousel extends Component{
             <p  style={{textAlign: this.props.carouselShow ? 'left' : 'center'}} 
                 onClick={() => {this.toggleWidth()}} 
                 className={this.props.carouselShow ? 'carouselListTitle toolbarSpread':'carouselListTitle toolbarHide'}>
-              <i className={this.props.carouselShow ? "fa fa-list-ol":"fa fa-list-ol fa-2x" }></i> {!this.props.carouselShow ? <br/>:null} ÍNDICE
+              <i style={{fontSize: this.props.carouselShow ? "16px":"32px" }} className="material-icons">format_list_numbered
+              
+              </i> {!this.props.carouselShow ? <br/>:null} ÍNDICE
             </p>
+            <p className="courseTitleCarousel"> {this.props.title}</p>
             <div id="indice" 
                  className="daliCarousel" 
                  key="indice" 
@@ -40,7 +43,7 @@ export default class DaliCarousel extends Component{
             <div className="pestanaCarousel"  
                  id="pestcar" 
                  onClick={() => {this.toggleWidth() }}>
-                 {/*  <i className="fa fa-list-alt fa-2x"> </i> */}           
+                
              </div>
          
             </div>

@@ -3,56 +3,6 @@
 var DaliScorm = {
 
 
-    exports: function(state){
-
-        var today = new Date();
-        var strDate = 'd-m-Y'
-          .replace('d', today.getDate())
-          .replace('m', today.getMonth()+1)
-          .replace('Y', today.getFullYear());
-
-        JSZipUtils.getBinaryContent('/lib/scorm/scorm.zip', function(err, data) {
-
-            if(err) {
-                throw err; // or handle err
-            }
-
-            var zip = new JSZip(data);
-            var navs = state.navItemsById;
-            var sections = [];
-            state.navItemsIds.map(function(page){
-
-                var inner = new EJS({url: '/lib/visor/index.ejs'}).render({
-                 page: page,
-                 navs: navs,
-                 boxesById: state.boxesById,
-                 boxes: state.boxes,
-                 toolbarsById: state.toolbarsById,
-                 strDate: strDate
-                });
-
-                var nombre = navs[page].name;
-                sections.push(nombre);
-
-                zip.file(nombre+".html", inner);
-            });
-
-            zip.file("imsmanifest.xml",DaliScorm.testXML("Título Curso", sections));
-
-
-
-            var content = zip.generate({type:"blob"});
-            saveAs(content, "scorm.zip");
-
-
-
-        });
-
-
-
-    } ,
-
-
     testXML: function(title, sections){
       var doc = document.implementation.createDocument("", "", null);
 
@@ -132,7 +82,12 @@ var DaliScorm = {
 
       doc.appendChild(manifest);
 
-      return new XMLSerializer().serializeToString(doc)
+      return (new XMLSerializer().serializeToString(doc));
+    },
+
+    getIndex: function(navs){
+      var path = '/lib/scorm/scorm_nav.ejs';
+      return (new EJS({url: path}).render({  navs: navs }));
     }
 
 

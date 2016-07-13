@@ -1,12 +1,20 @@
-.drop-active {
-    border: dashed 2px #aaa;
+.drop-active:not(#canvas):not(.daliBoxSortable), .drop-active .dragContentHere {
+    border: 1px  dashed #aaa;
     border-radius: 4px;
     transition: background-color 0.3s;
 }
 
-.drop-target {
-    background-color: $grisclaro;
+.drop-target:not(.daliBoxSortable), .drop-target .dragContentHere {
+    background-color: $naranjaclaro;
     border-color: #fff;
     border-style: solid;
     z-index:0;
+}
+
+
+#clone {
+    position:absolute;
+	color: $verdeoscurogrisaceo;
+	border: 2px dashed $verdeoscurogrisaceo;
+	background-color: white;
 }

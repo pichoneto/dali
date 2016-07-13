@@ -28,6 +28,8 @@ export default class PluginPlaceholder extends Component {
                     border: "solid pink 5px",
                     width: "100%",
                     height: container ? container.height : "100%",
+                    overflow: "hidden",
+                    display: "table",
                     position: 'relative'}}
                  className={"drg" + this.props.pluginContainer}>
                 <div style={{
@@ -43,7 +45,7 @@ export default class PluginPlaceholder extends Component {
                     if (container.cols[i]) {
                         return (
                             <div key={i}
-                                 style={{width: col + "%", height: '100%', float: 'left'}}>
+                                 style={{width: col + "%", height: '100%', display: "table-cell", verticalAlign: "top"}}>
                                 {container.cols[i].map((row, j) => {
                                     return (<div key={j}
                                                  style={{width: "100%", height: row + "%", position: 'relative'}}
@@ -75,6 +77,9 @@ export default class PluginPlaceholder extends Component {
                                                                     let boxDragged = this.props.boxes[this.props.boxSelected];
                                                                     if(boxDragged && (boxDragged.col !== i || boxDragged.row !== j)){
                                                                         this.props.onBoxDropped(this.props.boxSelected, j, i);
+
+                                                                        let clone = document.getElementById('clone');
+                                                                        clone.parentElement.removeChild(clone);
                                                                     }
                                                                 }
                                                             }.bind(this),
@@ -93,6 +98,7 @@ export default class PluginPlaceholder extends Component {
                                                                  boxSelected={this.props.boxSelected}
                                                                  boxLevelSelected={this.props.boxLevelSelected}
                                                                  toolbars={this.props.toolbars}
+                                                                 lastActionDispatched={this.props.lastActionDispatched}
                                                                  onBoxSelected={this.props.onBoxSelected}
                                                                  onBoxLevelIncreased={this.props.onBoxLevelIncreased}
                                                                  onBoxMoved={this.props.onBoxMoved}
@@ -104,7 +110,10 @@ export default class PluginPlaceholder extends Component {
                                                                  onTextEditorToggled={this.props.onTextEditorToggled}/>);
                                             }
                                         })}
+                                        {(container.children.length == 0) ? (<br/>):null}
+                                  
                                     </div>)
+
                                 })}
                             </div>
                         )
@@ -141,7 +150,12 @@ export default class PluginPlaceholder extends Component {
 
         return this.isAncestorOrSibling(searchingId, parentId);
     }
-
+/*
+    componentDidUpdate(){
+        let node = ReactDOM.findDOMNode(this);
+        node.setAttribute("data-computed-height", node.getBoundingClientRect().height);
+    }
+*/
     componentDidMount() {
         interact(ReactDOM.findDOMNode(this))
             .dropzone({

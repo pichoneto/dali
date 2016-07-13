@@ -8,23 +8,20 @@
 }
 
 
-.slide {
+.innercanvas {
 	height: 100%;
 	background-color: white;
 
 }
 
 .outter > .sli{
-	
 	padding-bottom: 1%;
-
-
 }
 
 .sli {
 	height: 100%;
 	background-color: white ;
-	margin: 0px 100px 0px 100px;  
+	// margin: 0px 100px 0px 100px;  
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
@@ -36,9 +33,7 @@
 	overflow-y: auto;
 }
 
-.wholebox {
-	// border:5px solid transparent;
-	}
+ 
 
 .title{
 	margin-left: 30px;
@@ -53,6 +48,11 @@
 	position: absolute;
 	top:20px;
 	right:75px;
+	padding:6px 8px;
+	.material-icons {
+		margin:0;
+		vertical-align: text-bottom;
+	}
 }
 
 
@@ -76,3 +76,12 @@
 		border: 5px dashed $naranjaadams;
 	}
 }
+
+#canvas{
+	position: relative; 
+	width: calc(100% - 40px);
+ }
+
+ #maincontent{
+ 	position:relative;
+ }
