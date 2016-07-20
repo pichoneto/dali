@@ -14,52 +14,61 @@ Dali.Plugins["BasicText"] = function (base) {
                 main: {
                     __name: "Main",
                     accordions: {
-                         
-                        size: {
-                            __name: "Size",
+                        style: {
+                            __name: "Estilo caja",
+                            icon: 'style',
                             buttons: {
-                                fontSize: {
-                                    __name: 'Font Size (ems)',
+                                padding: {
+                                    __name: 'Padding',
                                     type: 'number',
-                                    units: 'em',
-                                    value: 1,
-                                    min: 1,
-                                    max: 10
-                                }
-                            }
-                        },
-                        color: {
-                            __name: "Color",
-                            buttons: {
-                                color: {
-                                    __name: 'Font color',
-                                    type: 'text',
-                                    value: 'black'
-                                }
-                            }
-                        },
-                        layout: {
-                            __name: "Layout",
-                            buttons: {
+                                    value: '15px',
+                                    min: 0,
+                                    max: 100,
+                                    units: 'px' 
+                                },
+      
+                                borderWidth: {
+                                    __name: 'Grosor de borde',
+                                    type: 'number',
+                                    value: '0px',
+                                    min: 0,
+                                    max: 10 
+                                },
+                                borderStyle: {
+                                    __name: 'Estilo de borde',
+                                    type: 'select',
+                                    value: 'solid',
+                                    options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'] 
+                                    
+                                },
+                                borderColor: {
+                                    __name: 'Color de borde',
+                                    type: 'color',
+                                    value: '#000000' 
+                                },
+                                borderRadius: {
+                                    __name: 'Radio',
+                                    type: 'number',
+                                    value: '0%',
+                                    min: '0',
+                                    max: '50',
+                                    step:'5',
+                                    units: '%'
+
+                                },
                                 opacity: {
-                                    __name: 'Opacity',
+                                    __name: 'Opacidad',
                                     type: 'range',
                                     value: 1,
                                     min: 0,
                                     max: 1,
-                                    step: 0.1
-                                },
-                                padding: {
-                                    __name: 'Padding (px)',
-                                    type: 'number',
-                                    units: 'px',
-                                    value: 1,
-                                    min: 0
+                                    step: 0.01
                                 }
                             }
                         },
-                        extra: {
-                            __name: "Extra",
+                        '~extra': {
+                            icon: 'link',
+                            __name: "Alias",
                             buttons: {}
                         }
                     }

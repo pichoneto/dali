@@ -2,7 +2,7 @@ import {combineReducers} from 'redux';
 import undoable, {excludeAction} from 'redux-undo';
 import './utils';
 import {ADD_BOX, SELECT_BOX, MOVE_BOX, DUPLICATE_BOX, RESIZE_BOX, UPDATE_BOX, DELETE_BOX, REORDER_BOX, DROP_BOX, INCREASE_LEVEL,
-    ADD_SORTABLE_CONTAINER, RESIZE_SORTABLE_CONTAINER, CHANGE_COLS, CHANGE_ROWS,
+    ADD_SORTABLE_CONTAINER, RESIZE_SORTABLE_CONTAINER, CHANGE_COLS, CHANGE_ROWS, CHANGE_SORTABLE_PROPS,
     ADD_NAV_ITEM, SELECT_NAV_ITEM, EXPAND_NAV_ITEM, REMOVE_NAV_ITEM, REORDER_NAV_ITEM, CHANGE_SECTION_TITLE,
     TOGGLE_PAGE_MODAL, TOGGLE_TEXT_EDITOR, TOGGLE_TITLE_MODE, CHANGE_TITLE,
     CHANGE_DISPLAY_MODE, SET_BUSY, UPDATE_TOOLBAR, COLLAPSE_TOOLBAR, IMPORT_STATE
@@ -15,23 +15,27 @@ function boxCreator(state = {}, action = {}) {
         case ADD_BOX:
             let position, width, height;
             let level = (state[action.payload.ids.parent]) ? state[action.payload.ids.parent].level + 1 : 0;
-            switch (action.payload.type) {
+             switch (action.payload.type) {
                 case 'sortable':
-                    position = {x: 0, y: 0};
+                    position = {x: 0, y: 0, type: 'relative'};
                     width = '100%';
                     level = -1;
                     break;
                 default:
-                    position = {x: Math.floor(Math.random() * 200), y: Math.floor(Math.random() * 200)}
+                    position = {x: Math.floor(Math.random() * 200), y: Math.floor(Math.random() * 200), type: 'absolute'}
                     width = 200;
-                    height = 200;
+                    height = 'auto'; 
                     break;
             }
             if (action.payload.ids.container !== 0) {
                 position.x = 0;
                 position.y = 0;
+                position.type = 'relative'
                 width = '100%';
-                height = '100%';
+                if (action.payload.ids.parent.indexOf(ID_PREFIX_SORTABLE_BOX) != -1) {
+                    width = '25%';
+                } 
+                height = 'auto';
             }
             let col = 0;
             let row = 0;
@@ -56,7 +60,8 @@ function boxCreator(state = {}, action = {}) {
                         children.push(pluginContainers[key].id);
                         sortableContainers[pluginContainers[key].id] = {
                             children: [],
-                            height: pluginContainers[key].height,
+                            style: {padding: '0px', borderColor: '#ffffff', borderWidth: '0px', borderStyle: 'solid', opacity: '1'}, 
+                            height: pluginContainers[key].height || 'auto',
                             colDistribution: [100],
                             cols: [
                                 [100]
@@ -101,6 +106,7 @@ function sortableContainerCreator(state = {}, action = {}) {
                     }) : {
                     children: [action.payload.ids.id],
                     height: "auto",
+                    style: {padding: '0px', borderColor: '#ffffff', borderWidth: '0px', borderStyle: 'solid', opacity: 1},
                     colDistribution: [100],
                     cols: [
                         [100]
@@ -159,7 +165,6 @@ function boxesById(state = {}, action = {}) {
     switch (action.type) {
         case ADD_BOX:
             let box = boxCreator(state, action);
-
             if (action.payload.ids.parent.indexOf(ID_PREFIX_SORTABLE_BOX) !== -1 || action.payload.ids.container !== 0) {
                 return Object.assign({}, state, {
                     [action.payload.ids.id]: box,
@@ -180,7 +185,8 @@ function boxesById(state = {}, action = {}) {
                 [action.payload.id]: Object.assign({}, state[action.payload.id], {
                     position: {
                         x: action.payload.x,
-                        y: action.payload.y
+                        y: action.payload.y,
+                        type: action.payload.position
                     }
                 })
             });
@@ -200,7 +206,7 @@ function boxesById(state = {}, action = {}) {
             }
 
             return Object.assign({}, defState, {
-                [newId]: Object.assign({}, defState[newId], {position: {x: 0, y: 0}})
+                [newId]: Object.assign({}, defState[newId], {position: {x: 0, y: 0, position: 'absolute'}})
             });
 
         case RESIZE_BOX:
@@ -227,6 +233,7 @@ function boxesById(state = {}, action = {}) {
                     if (!newState[action.payload.id].sortableContainers[container.id]) {
                         sortableContainers[container.id] = {
                             children: [],
+                            style: container.style ||  {padding: '0px', borderColor: '#ffffff', borderWidth: '0px', borderStyle: 'solid', opacity: '1'},
                             height: container.height,
                             colDistribution: [100],
                             cols: [
@@ -244,6 +251,10 @@ function boxesById(state = {}, action = {}) {
             newState[action.payload.id].children = children;
             newState[action.payload.id].sortableContainers = sortableContainers;
             return newState;
+        case CHANGE_SORTABLE_PROPS:
+            let changedState = Object.assign({},state);
+            changedState[action.payload.parent].sortableContainers[action.payload.id].style[action.payload.prop] = action.payload.value;
+            return changedState;
         case DROP_BOX:
             return Object.assign({}, state, {
                 [action.payload.id]: Object.assign({}, state[action.payload.id], {
@@ -337,6 +348,9 @@ function boxLevelSelected(state = 0, action = {}) {
 function boxSelected(state = -1, action = {}) {
     switch (action.type) {
         case ADD_BOX:
+            if (action.payload.ids.id.indexOf(ID_PREFIX_SORTABLE_BOX) != -1) {
+                return -1;
+            }
             return (action.payload.initialParams && action.payload.initialParams.isDefaultPlugin) ? state : action.payload.ids.id;
         case SELECT_BOX:
             return action.payload.id;
@@ -432,7 +446,7 @@ function recalculateNames(state = {}, old = {}, resta = 0, numeroBorrados = 0) {
     });
 
     pages.forEach((page, index) => {
-        items[page].name = 'Page ' + (index + 1);
+        // items[page].name = 'Page ' + (index + 1);
     });
 
     // Rename sections
@@ -449,10 +463,10 @@ function recalculateNames(state = {}, old = {}, resta = 0, numeroBorrados = 0) {
 
     sections.forEach((section, index) => {
         if (items[section].level == 1) {
-            items[section].name = 'Section ' + (mainindex++);
+            // items[section].name = 'Section ' + (mainindex++);
         } else {
             var sub = items[items[section].parent].children.filter(s => s[0] == 's').indexOf(section) + 1
-            items[section].name = items[items[section].parent].name + '.' + sub;
+            //items[section].name = items[items[section].parent].name + '.' + sub;
         }
     });
 
@@ -463,7 +477,7 @@ function navItemsIds(state = [], action = {}) {
     switch (action.type) {
         case ADD_NAV_ITEM:
             let nState = state.slice();
-            nState.splice(action.payload.position, 0, action.payload.id);
+            nState.splice(action.payload.position-1, 0, action.payload.id);
             return nState;
         case REMOVE_NAV_ITEM:
             let newState = state.slice();
@@ -559,12 +573,9 @@ function navItemsById(state = {}, action = {}) {
             }
         case CHANGE_SECTION_TITLE:
             return Object.assign({}, state, {
-                    [action.payload.id ]: Object.assign({},state[action.payload.id],{name: action.payload.title}) 
+                    [action.payload.id ]: Object.assign({},state[action.payload.id],{name: action.payload.title})
                     });
-                
 
-            // return Object.assign({}, state, {action.payload.id:});
-            return state;
         case ADD_BOX:
             if (action.payload.ids.parent && action.payload.ids.parent.indexOf(ID_PREFIX_PAGE) !== -1 || action.payload.ids.parent.indexOf(ID_PREFIX_SECTION) !== -1) {
                 return Object.assign({}, state, {
@@ -628,57 +639,129 @@ function createSortableButtons(controls, width, height) {
         controls.main = {
             __name: "Main",
             accordions: {
-                sortable: {
-                    __name: "Sortable",
+                _sortable: {
+                    __name: "Estructura",
+                    icon: 'border_all',
                     buttons: {}
                 }
             }
         };
-    } else if (!controls.main.accordions.sortable) {
-        controls.main.accordions.sortable = {
-            __name: "Dimensions",
+    } else if (!controls.main.accordions._sortable) {
+        controls.main.accordions._sortable = {
+            __name: "Estructura",
+            icon: 'border_all',
             buttons: {}
         };
     }
-    controls.main.accordions.sortable.buttons.width = {
+    controls.main.accordions._sortable.buttons.width = {
         __name: 'Width (%)',
         type: 'number',
         value: width || 100,
         min: 0,
         max: 100,
         step: 5,
+        units: '%',
         autoManaged: true
     };
-    controls.main.accordions.sortable.buttons.height = {
+    controls.main.accordions._sortable.buttons.height = {
         __name: 'Height (%)',
         type: 'number',
-        value: height || 100,
+        value: 'auto',
         min: 0,
         max: 100,
         step: 5,
+        units: '%',
         autoManaged: true
     };
+    controls.main.accordions._sortable.buttons.___heightAuto = {
+        __name: 'Height Auto',
+        type: 'checkbox',
+        value: 'checked',
+        checked: 'true',
+        autoManaged: true
+    };
+    controls.main.accordions._sortable.buttons.___position = {
+        __name: 'Position',
+        type: 'radio',
+        value: 'relative',
+        options: ['absolute', 'relative'],
+        autoManaged: true
+    };    
 
 }
 
-function createAliasButton(controls, alias) {
+function createFloatingBoxButtons(controls, width, height) {
     if (!controls.main) {
         controls.main = {
-            __name: "Other",
+            __name: "Main",
             accordions: {
-                extra: {
-                    __name: "Extra",
+                _sortable: {
+                    __name: "Estructura",
+                    icon: 'border_all',
                     buttons: {}
                 }
             }
         };
-    } else if (!controls.main.accordions.extra) {
-        controls.main.accordions.extra = {
-            __name: "Extra",
+    } else if (!controls.main.accordions._sortable) {
+        controls.main.accordions._sortable = {
+            __name: "Estructura",
+            icon: 'border_all',
             buttons: {}
         };
     }
-    controls.main.accordions.extra.buttons.alias = {
+     
+    controls.main.accordions._sortable.buttons.width = {
+        __name: 'Width (px)',
+        type: 'number',
+        value: width || 100,
+        min: 0,
+        max: 100,
+        step: 5,
+        units: 'px',
+        autoManaged: true
+    };
+    controls.main.accordions._sortable.buttons.height = {
+        __name: 'Height (px)',
+        type: 'number',
+        value: 'auto',
+        min: 0,
+        max: 100,
+        step: 5,
+        units: 'px',
+        autoManaged: true
+    };
+    controls.main.accordions._sortable.buttons.___heightAuto = {
+        __name: 'Height Auto',
+        type: 'checkbox',
+        value: 'checked',
+        checked: 'true',
+        autoManaged: true
+    };
+      
+
+}
+
+
+function createAliasButton(controls, alias) {
+    if (!controls.main) {
+        controls.main = {
+            __name: "Alias",
+            icon: 'link',
+            accordions: {
+                '~extra': {
+                    __name: "Alias",
+                    buttons: {}
+                }
+            }
+        };
+    } else if (!controls.main.accordions['~extra']) {
+        controls.main.accordions['~extra'] = {
+            __name: "Alias",
+            icon: 'link',
+            buttons: {}
+        };
+    }
+    controls.main.accordions['~extra'].buttons.alias = {
         __name: 'Alias',
         type: 'text',
         value: alias || "",
@@ -703,14 +786,17 @@ function toolbarsById(state = {}, action = {}) {
                     toolbar.config.name = 'Contenedor';
                 }
             }
+            
             if (action.payload.ids.container !== 0) {
                 createSortableButtons(toolbar.controls);
+            } else if(action.payload.ids.id.indexOf(ID_PREFIX_SORTABLE_BOX) == -1) {
+                createFloatingBoxButtons(toolbar.controls);
+                 
             }
 
             if (action.payload.ids.id.indexOf(ID_PREFIX_SORTABLE_BOX) === -1) {
                 createAliasButton(toolbar.controls);
             }
-
             if (toolbar.config && toolbar.config.aspectRatioButtonConfig) {
                 let arb = toolbar.config.aspectRatioButtonConfig;
                 let button = {
@@ -770,6 +856,30 @@ function toolbarsById(state = {}, action = {}) {
             return Object.assign({}, state, {
                 [action.payload.id]: Object.assign({}, state[action.payload.id], {isCollapsed: !(state[action.payload.id].isCollapsed)})
             });
+        case RESIZE_BOX:
+            var newState = Object.assign({}, state);
+            let height = action.payload.height;
+            let width = action.payload.width;
+            let heightAuto = height == 'auto';
+
+            if (newState[action.payload.id] && newState[action.payload.id].controls){
+                if (newState[action.payload.id].controls.main && newState[action.payload.id].controls.main.accordions) {
+                    if (newState[action.payload.id].controls.main.accordions['_sortable']) {
+                        let buttons = newState[action.payload.id].controls.main.accordions['_sortable'].buttons
+                        if (buttons.___heightAuto) {
+                            newState[action.payload.id].controls.main.accordions['_sortable'].buttons.___heightAuto.checked = heightAuto;
+                            newState[action.payload.id].controls.main.accordions['_sortable'].buttons.___heightAuto.value = heightAuto  ? 'checked' : 'unchecked';                          
+                        }   
+                        if (buttons.height && buttons.width) {
+                            newState[action.payload.id].controls.main.accordions['_sortable'].buttons.height.value = height;
+                            newState[action.payload.id].controls.main.accordions['_sortable'].buttons.width.value = height;
+                        }   
+                    }
+                }
+            }
+             
+            return newState;
+       
         case UPDATE_BOX:
             let controls = action.payload.toolbar;
             for (let tabKey in controls) {
@@ -799,12 +909,12 @@ function toolbarsById(state = {}, action = {}) {
             try {
                 createSortableButtons(
                     controls,
-                    state[action.payload.id].controls.main.accordions.sortable.buttons.width.value,
-                    state[action.payload.id].controls.main.accordions.sortable.buttons.height.value
+                    state[action.payload.id].controls.main.accordions._sortable.buttons.width.value,
+                    state[action.payload.id].controls.main.accordions._sortable.buttons.height.value
                 );
                 createAliasButton(
                     controls,
-                    state[action.payload.id].controls.other.accordions.extra.buttons.alias.value
+                    state[action.payload.id].controls.other.accordions['~extra'].buttons.alias.value
                 );
             } catch (e) {
             }

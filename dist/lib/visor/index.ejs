@@ -10,9 +10,11 @@
 <link rel="stylesheet" href="css/textStyles.css">
 <link rel="stylesheet" href="css/pluginsCss/jquery-animVert.css">
 <link rel="stylesheet" href="css/pluginsCss/cajascolor.css">
+<link rel="stylesheet" href="css/compiledsass.css">
 <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="lib/jquery-ui.js"></script>
 <script src="lib/jquery.ui.touch-punch.min.js"></script>
+</head>
 <body  style="margin: 0px; height: 100%">
 <div style="height:100%;" id="editor truevisor">
 <div style="height:100%;" id="root" style="height: 100%">
@@ -39,7 +41,7 @@
         <div class="clear"></div>
     </div>
 
-    <div class="contenido" style="height:auto;">
+    <div class="contenido canvasvisor" style="height:auto; pointer-events: all !important;">
         <!--DALITITLE-->
         <%
         var alltitles = [];
@@ -96,7 +98,7 @@
 
             <!-RENDER CHILDREN->
             <%function renderChildren(id, markup, key){
-                if(typeof markup === "string"){%>
+                 if(typeof markup === "string"){%>
                     <%= markup %>
                 <%   return;
                 }
@@ -134,11 +136,12 @@
                         <% }
                         break;
                     case 'text':%>
+                        
                         <%= markup.text%>
                         <% break;
                     case 'root': %>
                         <div style="width:100%; height:100%;">
-                        <% if (markup.child) {
+                        <%if (markup.child) {
                             markup.child.forEach(function(child, index){
                                 renderChildren(id, child, index);
                             });
@@ -155,10 +158,12 @@
             var box = boxesById[id];
             var toolbar =  toolbarsById[id];
             var style = "width: 100%; height: 100%; position: relative; word-wrap: break-word;";
-            var attrs = " ";
-
+            var attrs = " " 
             if(toolbar.buttons) {
+
+                console.log(toolbar.buttons)
                 toolbar.buttons.map(function(item, index){
+                     console.log(item)
                     if (item.autoManaged) {
                         if (!item.isAttribute) {
                             if(item.name !== 'width' && item.name !== 'height') {
@@ -173,20 +178,20 @@
                         }
                     }
                 });
-            };%>
-            <div class="wholebox"
+            };
+            %><div class="wholebox"
                  style="position: <%=box.container !== 0 ? '' : 'absolute'%>;
                          left: <%=box.position.x%>px;
                          top: <%=box.position.y%>px;
+                         pointer-events: all  !important;
                          width: <%=box.width %><%=(box.width  && isNaN(box.width ))? "" : "px" %>;
                          height: <%=box.height%><%=(box.height && isNaN(box.height))? "" : "px" %>;
-                         cursor:  default ;"  >
-
-                <div style="<%= style%>"  <%= attrs%> >
+                         cursor:  default ; "  >
+                 <div class="insidewb" style="<%= style%>"  <%= attrs%> >
                     <%renderChildren(id, Dali.Visor.Plugins.get(toolbar.config.name).export(toolbar.state, toolbar.config.name, box.children.length !== 0), 0)%>
                 </div>
-            </div>
-        <%}%>
+            </div><%}%>
+        
 
         <!-- VISORDALIBOXSORTABLE-->
         <%function daliBoxSortable(id){
@@ -194,18 +199,23 @@
             <div>
                 <div ref="sortableContainer"  style="position: relative;" >
                 <%box.children.map(function(idContainer, index){
-                    var container = box.sortableContainers[idContainer];%>
+                    var container = box.sortableContainers[idContainer];
+                    var style = container.style;
+                     %>
                     <div class="daliBoxSortableContainer"
                          data-id="idContainer"
-                         style="
-                  width: 100%;
-                  height: <%=container.height%><%=(container.height && isNaN(container.height))? "" : "px" %>; 
-                  box-sizing: border-box;
-                  position: relative;">
-
+                         style="display: table;
+                          width: 100%;
+                          height: <%=container.height == 'auto' ? container.height : container.height + 'px'%>; 
+                          box-sizing: border-box;
+                          position: relative;
+                          border: <%=style.borderWidth + " " + style.borderStyle +" " + style.borderColor%>;
+                          padding: <%=style.padding%>;
+                          opacity: <%=style.opacity%>;
+                          "> 
                         <%container.colDistribution.map(function(col, i){
                             if(container.cols[i]) { %>
-                                <div style="width: <%=col%>%; height: 100%; float: left;">
+                                <div style="width: <%=col%>%; height: 100%; display:table-cell; ">
                                 <%container.cols[i].map(function(row, j){ %>
                                     <div style="width: 100%; height: <%=row%>%; position: relative;"  >
                                     <%container.children.map(function(idBox, index){
@@ -253,7 +263,7 @@
             if(box.type === 'normal'){
                 daliBox(box.id);
             }else if(box.type === 'sortable') {
-                daliBoxSortable(box.id )
+                daliBoxSortable(box.id)
         }})%>
     </div>
 </div>

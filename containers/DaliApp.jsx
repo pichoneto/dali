@@ -4,9 +4,10 @@ import {ActionCreators} from 'redux-undo';
 import {Grid, Col, Row, Button, OverlayTrigger, Popover} from 'react-bootstrap';
 import {addNavItem, selectNavItem, expandNavItem, removeNavItem, reorderNavItem, changeSectionTitle,
     addBox, changeTitle, selectBox, moveBox, resizeBox, updateBox, duplicateBox, deleteBox, reorderBox, dropBox, increaseBoxLevel,
-    addSortableContainer, resizeSortableContainer, changeCols, changeRows,
+    addSortableContainer, resizeSortableContainer, changeCols, changeRows, changeSortableProps,
     togglePageModal, toggleTextEditor, toggleTitleMode,
     changeDisplayMode, exportStateAsync, importStateAsync, importState, updateToolbar, collapseToolbar} from '../actions';
+
 import {ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER, BOX_TYPES} from '../constants';
 import DaliCanvas from '../components/DaliCanvas';
 import DaliCarousel from '../components/DaliCarousel';
@@ -123,7 +124,7 @@ class DaliApp extends Component {
                                         lastActionDispatched={this.state.lastAction}
                                         onBoxSelected={(id) => this.dispatchAndSetState(selectBox(id))}
                                         onBoxLevelIncreased={() => this.dispatchAndSetState(increaseBoxLevel())}
-                                        onBoxMoved={(id, x, y) => this.dispatchAndSetState(moveBox(id, x, y))}
+                                        onBoxMoved={(id, x, y, position) => this.dispatchAndSetState(moveBox(id, x, y, position))}
                                         onBoxResized={(id, width, height) => this.dispatchAndSetState(resizeBox(id, width, height))}
                                         onSortableContainerResized={(id, parent, height) => this.dispatchAndSetState(resizeSortableContainer(id, parent, height))}
                                         onBoxReorder={(ids, parent) => this.dispatchAndSetState(reorderBox(ids, parent))}
@@ -164,7 +165,10 @@ class DaliApp extends Component {
                                onColsChanged={(id, parent, distribution) => this.dispatchAndSetState(changeCols(id, parent, distribution))}
                                onRowsChanged={(id, parent, column, distribution) => this.dispatchAndSetState(changeRows(id, parent, column, distribution))}
                                onBoxResized={(id, width, height) => this.dispatchAndSetState(resizeBox(id, width, height))}
+                               onBoxMoved={(id, x, y, position) => this.dispatchAndSetState(moveBox(id, x, y, position))}
                                onTextEditorToggled={(caller, value) => this.dispatchAndSetState(toggleTextEditor(caller, value))}
+                               onSortableContainerResized={(id, parent, height) => this.dispatchAndSetState(resizeSortableContainer(id, parent, height))}
+                               onChangeSortableProps={(id, parent, prop, value) => this.dispatchAndSetState(changeSortableProps(id, parent, prop, value))}
                                onToolbarUpdated={(id, tab, accordion, name, value) => this.dispatchAndSetState(updateToolbar(id, tab, accordion, name, value))}
                                onToolbarCollapsed={(id) => this.dispatchAndSetState(collapseToolbar(id))}
                                onBoxDuplicated={(id, parent, container)=> this.dispatchAndSetState( duplicateBox( id, parent, container, this.getDescendants(boxes[id]), this.getDuplicatedBoxesIds(this.getDescendants(boxes[id]) ), Date.now()-1 ))}
@@ -236,7 +240,7 @@ class DaliApp extends Component {
                 let toolbar = this.props.toolbars[id];
                 if (e.detail.getAliasedPugins) {
                     if(id.indexOf(ID_PREFIX_SORTABLE_BOX) === -1) {
-                        let button = toolbar.controls.other.accordions.extra.buttons.alias;
+                        let button = toolbar.controls.other.accordions['~extra'].buttons.alias;
                         if (button.value.length !== 0) {
                             if(!plugins[toolbar.config.name]){
                                 plugins[toolbar.config.name] = [];
@@ -262,13 +266,16 @@ class DaliApp extends Component {
                 this.dispatchAndSetState(ActionCreators.redo())
             }
             else if (key == 46) {
-                if (this.props.boxSelected != -1) {
-                    let box = this.props.boxes[this.props.boxSelected];
-                    let toolbar = this.props.toolbars[this.props.boxSelected];
-                    if(!toolbar.showTextEditor){
-                      this.dispatchAndSetState(deleteBox(box.id, box.parent, box.container, this.getDescendants(box)));
-                    }
+              let focus = document.activeElement.className;
+              if (this.props.boxSelected != -1 && this.props.boxSelected.indexOf(ID_PREFIX_SORTABLE_BOX) == -1)  {
+                if( focus.indexOf('form-control') == -1 && focus.indexOf('tituloCurso') == -1 && focus.indexOf('cke_editable') == -1) {
+                  let box = this.props.boxes[this.props.boxSelected];
+                  let toolbar = this.props.toolbars[this.props.boxSelected];
+                  if(!toolbar.showTextEditor){
+                    this.dispatchAndSetState(deleteBox(box.id, box.parent, box.container, this.getDescendants(box)));
+                  }
                 }
+              }
             }
         }.bind(this);
     }
@@ -295,13 +302,14 @@ class DaliApp extends Component {
     }
 
     parsePluginContainers(obj, state) {
+
         if (obj.child) {
             for (let i = 0; i < obj.child.length; i++) {
                 if (obj.child[i].tag && obj.child[i].tag === "plugin") {
                     if (obj.child.length > 1) {
                         console.error("A plugin tag must not have siblings. Please check renderTemplate method");
                     }
-                    let height = "100%";
+                    let height = "auto";
                     let child = obj.child[i];
                     if (child.attr) {
                         if (child.attr['plugin-data-height']) {
@@ -309,7 +317,7 @@ class DaliApp extends Component {
                         } else if (child.attr['plugin-data-initialHeight']) {
                             height = child.attr['plugin-data-initialHeight'];
                         } else {
-                            height = child.attr.hasOwnProperty('plugin-data-resizable') ? "auto" : "100%";
+                            height = child.attr.hasOwnProperty('plugin-data-resizable') ? "auto" : "auto";
                         }
                     }
                     if (!obj.attr) {
@@ -338,7 +346,7 @@ class DaliApp extends Component {
 
                 }
                 if (!obj.attr['plugin-data-height']) {
-                    obj.attr['plugin-data-height'] = obj.attr['plugin-data-initialHeight'] || (obj.attr.hasOwnProperty('plugin-data-resizable') ? "auto" : "100%");
+                    obj.attr['plugin-data-height'] = obj.attr['plugin-data-initialHeight'] || (obj.attr.hasOwnProperty('plugin-data-resizable') ? "auto" : "100px");
                 }
                 if (obj.attr['plugin-data-key'] && !state[obj.attr['plugin-data-key']]) {
                     state[obj.attr['plugin-data-key']] = {
@@ -357,7 +365,7 @@ class DaliApp extends Component {
     addDefaultContainerPlugins(eventDetails, obj) {
         if (obj.child) {
             for (let i = 0; i < obj.child.length; i++) {
-                this.addDefaultContainerPlugins(eventDetails, obj.child[i]);
+                 this.addDefaultContainerPlugins(eventDetails, obj.child[i]);
             }
         }
         if (obj.tag && obj.tag === "plugin" && obj.attr['plugin-data-default']) {
@@ -379,7 +387,7 @@ class DaliApp extends Component {
 
 }
 
- 
+
 
 function mapStateToProps(state) {
     return {

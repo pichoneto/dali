@@ -10,7 +10,9 @@ export default class DaliBoxSortable extends Component {
         let box = this.props.boxes[this.props.id];
          return (
             <div className="daliBoxSortable" onClick={e => {
-                this.props.onBoxSelected(this.props.id, 0);
+                if(box.children.length != 0) {
+                    this.props.onBoxSelected(this.props.id, 0);
+                }
                 e.stopPropagation();
             }}>
                 <div ref="sortableContainer"
@@ -26,13 +28,15 @@ export default class DaliBoxSortable extends Component {
                     return (<div key={index}
                                  className="daliBoxSortableContainer" 
                                  data-id={idContainer}
-                                 style={{
+                                 id={idContainer}
+                                 style={Object.assign({},{
                                     width: '100%',
-                                    height: container.height,
+                                    height: container.height == 'auto' ? container.height : container.height + 'px',
                                    /* overflow: 'hidden',*/
-                                    border: 0,
+                                   /* border: 0,
+                                    borderBottom: '5px solid rgba(255,121,32,0.5)',*/
                                     boxSizing: 'border-box',
-                                    position: 'relative'}}>
+                                    position: 'relative'},container.style)}>
                             <div style={{display: "table", width: "100%", height: "100%"}}>
                             {container.colDistribution.map((col, i) => {
                                 if (container.cols[i]) {
@@ -43,14 +47,14 @@ export default class DaliBoxSortable extends Component {
                                                 return (<div key={j}
                                                              style={{width: "100%", height: row + "%", position: 'relative'}}
                                                              ref={e => {
-                                                        if(e !== null){
-                                                            let selector = ".rib, .dnd" + idContainer;
-                                                            this.dropZone(ReactDOM.findDOMNode(e), "render", selector, {idContainer:idContainer, i:i, j:j});
-                                                        }
-                                                    }}>
+                                                                if(e !== null){
+                                                                    let selector = ".rib, .dnd" + idContainer;
+                                                                    this.dropZone(ReactDOM.findDOMNode(e), "render", selector, {idContainer:idContainer, i:i, j:j});
+                                                                }
+                                                              }}>
                                                     {container.children.map((idBox, index) => {
-                                                        if (this.props.boxes[idBox].col === i && this.props.boxes[idBox].row === j) {
-                                                            return (<DaliBox id={idBox}
+                                                         if (this.props.boxes[idBox].col === i && this.props.boxes[idBox].row === j) {
+                                                             return (<DaliBox id={idBox}
                                                                              key={index}
                                                                              boxes={this.props.boxes}
                                                                              boxSelected={this.props.boxSelected}
@@ -65,14 +69,23 @@ export default class DaliBoxSortable extends Component {
                                                                              onBoxModalToggled={this.props.onBoxModalToggled}
                                                                              onSortableContainerResized={this.props.onSortableContainerResized}
                                                                              onTextEditorToggled={this.props.onTextEditorToggled}/>);
+ 
+                                                        } else if (index == container.children.length - 1) {
+                                                            return (<span><br /><br /></span> )
                                                         }
-                                                    })}</div>);
-                                            })}
-                                        </div>);
+                                                    })
+                                                }
+
+                                            </div>);
+                                        })}
+                                    </div>);
                                 }
                             })}
                             </div>
-                            <i style={{verticalAlign: 'middle'}} className="material-icons drag-handle">swap_vert</i>
+                            <i style={{verticalAlign: 'middle', 
+                                        position: 'absolute', bottom: '0px', left: '0px',
+                                       /*display: 'inline-block', position: container.height == 'auto' ? 'relative' : 'absolute', marginTop: container.height == 'auto' ? '0px' : '-24px'*/
+                                   }} className="material-icons drag-handle">swap_vert</i>
                         </div>);
                     })}
                 </div>
@@ -87,6 +100,9 @@ export default class DaliBoxSortable extends Component {
         this.dropZone(".daliBoxSortableContainer", "first", ".rib", 0);
         interact(".daliBoxSortableContainer").resizable({
             edges: {left: false, right: false, bottom: true, top: false},
+            onstart: (event) => {
+                this.props.onSortableContainerResized(event.target.getAttribute("data-id"), this.props.id, parseInt(event.target.style.height));
+            },            
             onmove: (event) => {
                 event.target.style.height = event.rect.height + 'px';
             },

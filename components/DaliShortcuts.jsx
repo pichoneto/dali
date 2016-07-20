@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {Input,Button, Tooltip, OverlayTrigger} from 'react-bootstrap';
+import {Input, Button, Tooltip, OverlayTrigger} from 'react-bootstrap';
 import interact from 'interact.js';
- import {BOX_TYPES, ID_PREFIX_BOX, ID_PREFIX_PAGE, ID_PREFIX_SECTION, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER} from '../constants';
+import {BOX_TYPES, ID_PREFIX_BOX, ID_PREFIX_PAGE, ID_PREFIX_SECTION, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER} from '../constants';
 
 export default class DaliShortcuts extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ export default class DaliShortcuts extends Component {
                    <OverlayTrigger placement="top" overlay={ <Tooltip id="ajustaradocumento"> Ajustar a documento </Tooltip>}> 
                         <button className="daliTitleButton"
                             onClick={(e) => {
-                                let newWidth = (box.width == '100%') ? '200px': '100%'
+                                let newWidth = (box.width == '100%') ? '20%': '100%'
                                 this.props.onBoxResized(toolbar.id, newWidth, 'auto');
                                 e.stopPropagation(); }} >
                             <i className="material-icons">code</i>

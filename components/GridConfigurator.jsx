@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
-import { Button, FormControl, InputGroup, FormGroup, ControlLabel, OverlayTrigger, Popover} from 'react-bootstrap';
+import { Button, FormControl, InputGroup, FormGroup, ControlLabel, OverlayTrigger, Popover, Tooltip} from 'react-bootstrap';
 
 export default class GridConfigurator extends Component {
+    constructor(props) {
+        super(props);
+
+        this.height = 200
+    }
     render() {
         let advancedColumns= (
                 <FormGroup>
@@ -13,18 +18,61 @@ export default class GridConfigurator extends Component {
                        style={{width: '100%'}}
                        onChange={e => {
                             let dist = e.target.value.split(" ").map(function (i){
-                                if(i && !isNaN(parseFloat(i))){
+                                if (i && !isNaN(parseFloat(i))) {
                                     return parseFloat(i);
-                                } else{ 
+                                } else {
                                   return 0;
                                 }
                             });
                             this.props.onColsChanged(this.props.id, this.props.parentId, dist);
                        }} />
                 </FormGroup>);
-              
+        let tooltip = <Tooltip id="tooltipHeight">Sólo si fijas una altura podrán tener alturas relativas las cajas en su interior</Tooltip>
+        let height = this.props.sortableProps.height;
         return (
-            <div style={{width: '100%'}}>
+          <div style={{width: '100%'}}>
+            <h4 className="sortableToolbarTitle">Estructura</h4>
+            <FormGroup>
+                <OverlayTrigger trigger="click" placement="left" overlay={height != 'auto' ? tooltip: <Tooltip id="none" style={{display: 'none'}}/>}>
+                  <InputGroup style={{width: '10%', float: 'right'}}>
+                  <ControlLabel> auto</ControlLabel>
+                      <FormControl type="checkbox"
+                               key="height"
+                               value={height == 'auto' ? "checked" : "unchecked"}
+                               checked={height == 'auto'}
+                               label="Height auto"
+                               style={{width: '100%'}}
+                               onChange={e => {
+                                  let current = height == 'auto'
+                                  let newHeight = current ? parseFloat(document.getElementById(this.props.id).clientHeight) : 'auto';
+                                  this.props.onSortableContainerResized(this.props.id, this.props.parentId, newHeight);
+                               }} />
+                  </InputGroup>
+                </OverlayTrigger>
+                <ControlLabel>Height</ControlLabel>
+                <InputGroup style={{width: '50%'}}>
+                    <FormControl type={height == 'auto' ? 'text' : 'number'}
+                             key="height"
+                             disabled={height == 'auto'}
+                             value={height == 'auto' ? 'auto' : parseFloat(height) /*parseFloat(document.getElementById(this.props.id).style.height)*/}
+                             label="Block Height"
+                             style={{width: '100%'}}
+                             min={1}
+                             step={1}
+                             onChange={e => {
+                               this.props.onSortableContainerResized(this.props.id, this.props.parentId, e.target.value);
+                             }} />
+                </InputGroup>
+            </FormGroup>
+            <div className="configurator">
+              { this.props.container.cols.map((item, index) => {
+                  return (<div className="gc_columns" key={index} style={{width: this.props.container.colDistribution[index]+'%'}}>
+                    { item.map((it, index) => {
+                        return <div className="gc_rows" key={index} style={{ height: it+'%'}}></div>
+                    })}
+                  </div>);
+              })}
+            </div>
             <FormGroup>
                 <ControlLabel>Column number</ControlLabel>
                 <InputGroup style={{width: '50%'}}>
@@ -48,15 +96,7 @@ export default class GridConfigurator extends Component {
                       </OverlayTrigger>
                   </InputGroup>
             </FormGroup>
-            <div className="configurator">
-              { this.props.container.cols.map((item, index) => {
-                  return (<div className="gc_columns" key={index} style={{width: this.props.container.colDistribution[index]+'%'}}>
-                    { item.map((it, index) => {
-                        return <div className="gc_rows" key={index} style={{ height: it+'%'}}></div>
-                    })}
-                  </div>);
-              })}
-            </div>
+
                 { this.props.container.cols.map((item, index) => {
                     let advancedRows = (
                         <FormGroup key={index}>
@@ -71,17 +111,16 @@ export default class GridConfigurator extends Component {
                                               let dist = e.target.value.split(" ").map(function (i){
                                                   if(i && !isNaN(parseFloat(i))){
                                                     return parseFloat(i);
-                                                  } else { 
+                                                  } else {
                                                     return 0;
                                                   }
                                               });
-                                              console.log(dist)
-                                              this.props.onRowsChanged(this.props.id, this.props.parentId, index, dist);
+                                               this.props.onRowsChanged(this.props.id, this.props.parentId, index, dist);
                                         }} />
                         </FormGroup>
 
-                      )
-                      return ( 
+                      );
+                      return (
                        <FormGroup key={index+'_0'}>
                         <ControlLabel>{"Row number in col " + (index + 1)}</ControlLabel>
                         <InputGroup style={{width: '50%'}}>
@@ -106,7 +145,70 @@ export default class GridConfigurator extends Component {
                       </FormGroup> )
                   })
                 }
+                <h4 className="sortableToolbarTitle">Estilo</h4>
+                <FormGroup>
+                  <ControlLabel>Padding (px)</ControlLabel>
+                  <FormControl  type="number"
+                                value={this.props.container.style ? parseFloat(this.props.container.style.padding) : 0}
+                                label={"Padding"}
+                                min={0}
+                                max={100}
+                                style={{width: '100%'}}
+                                onChange={e => {
+                                    this.props.onChangeSortableProps(this.props.id, this.props.parentId, 'padding', e.target.value + 'px');
+                                }} />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Color del borde</ControlLabel>
+                  <FormControl  type="color"
+                                value={this.props.container.style ? this.props.container.style.borderColor : '#ffffff'}
+                                label={"Color del borde"}
+                                style={{width: '100%'}}
+                                onChange={e => {
+                                    this.props.onChangeSortableProps(this.props.id, this.props.parentId, 'borderColor', e.target.value);
+                                }} />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Grosor del borde</ControlLabel>
+                  <FormControl  type="number"
+                                value={this.props.container.style ? parseFloat(this.props.container.style.borderWidth) : 0}
+                                label={"Grosor del borde"}
+                                min={0}
+                                style={{width: '100%'}}
+                                onChange={e => {
+                                    this.props.onChangeSortableProps(this.props.id, this.props.parentId, 'borderWidth', e.target.value + 'px');
+                                }} />
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Opacidad</ControlLabel>
+                  <span className='rangeOutput'  >{this.props.container.style ? this.props.container.style.opacity : 1+'%'}</span>     
+                  <FormControl  type="range"
+                                value={this.props.container.style ? this.props.container.style.opacity : 1+'%'}
+                                label={"Opacidad"}
+                                style={{width: '100%'}}
+                                min={0}
+                                step={0.05}
+                                max={1}
+                                onChange={e => {
+                                    this.props.onChangeSortableProps(this.props.id, this.props.parentId, 'opacity', e.target.value );
+                                }} />
+                </FormGroup>
 
+                              
+
+                {React.createElement(FormGroup, {key: 'borderstyle'}, 
+                    [React.createElement(ControlLabel, {key: 'estiloborde'}, 'Estilo borde'),
+                     React.createElement(FormControl, {componentClass: 'select', value: this.props.container.style ? this.props.container.style.borderStyle : 'none', key:'sel', onChange: e => {this.props.onChangeSortableProps(this.props.id, this.props.parentId, 'borderStyle', e.target.value )}},
+                      ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit']
+                        .map((option, index) => {
+                             return (React.createElement('option', 
+                                {key: 'child_' + index, value: option}, option))
+                         }))]) 
+                } 
+                                                                                  
+
+                
+                 
 
             </div>
         )

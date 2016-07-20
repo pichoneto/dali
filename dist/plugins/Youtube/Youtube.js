@@ -6,6 +6,7 @@ Dali.Plugins["Youtube"] = function (base) {
                 category: 'multimedia',
                 needsConfigModal: false,
                 needsTextEdition: false,
+                aspectRatioButtonConfig: {name: "Aspect Ratio", location: ["main", "_sortable"], defaultValue: "checked"},
                 icon: 'slideshow'
             };
         },
@@ -15,39 +16,96 @@ Dali.Plugins["Youtube"] = function (base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: "Basic",
+                            __name: "Video",
+                            icon: 'build',
                             buttons: {
                                 url: {
                                     __name: 'URL',
                                     type: 'text',
                                     autoManaged: false,
                                     value: 'https://www.youtube.com/watch?v=S9M3c1_yl-E'
-                                }
+                                },
+                                /*aspectRatio: {
+                                    __name: 'Aspect Ratio',
+                                    type: 'checkbox',
+                                    value: 'unchecked',
+                                    checked: 'false',
+                                    autoManaged: false
+                                },
+                                allowFullScreen: {
+                                    __name: 'Allow FullScreen',
+                                    type: 'checkbox',
+                                    value: 'unchecked',
+                                    checked: 'false',
+                                    autoManaged: false
+                                },
+                                controls: {
+                                    __name: 'Show Controls',
+                                    type: 'checkbox',
+                                    value: 'unchecked',
+                                    checked: 'false',
+                                    autoManaged: false
+                                },*/
                             }
                         },
-                        box: {
-                            __name: "Box",
+                        style: {
+                            __name: "Estilo caja",
+                            icon: 'style',
                             buttons: {
+                                padding: {
+                                    __name: 'Padding',
+                                    type: 'number',
+                                    value: 0,
+                                    min: 0,
+                                    units: 'px',
+                                    max: 100,
+                                    autoManaged: false
+                                },
+                                borderSize: {
+                                    __name: 'Grosor de borde',
+                                    type: 'number',
+                                    value: 0,
+                                    min: 0,
+                                    units: 'px',
+                                    max: 10,
+                                    autoManaged: false
+                                },
+                                borderStyle: {
+                                    __name: 'Estilo de borde',
+                                    type: 'select',
+                                    value: 'solid',
+                                    options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
+                                    autoManaged: false
+                                },
+                                borderColor: {
+                                    __name: 'Color de borde',
+                                    type: 'color',
+                                    value: '#000000',
+                                    autoManaged: false
+                                },
+                                borderRadius: {
+                                    __name: 'Radio',
+                                    type: 'number',
+                                    units: '%',
+                                    value: '0',
+                                    min: '0',
+                                    max: '50',
+                                    autoManaged: false
+                                },
                                 opacity: {
-                                    __name: 'Opacity',
+                                    __name: 'Opacidad',
                                     type: 'range',
                                     value: 1,
                                     min: 0,
                                     max: 1,
-                                    step: 0.1
-                                },
-                                borderSize: {
-                                    __name: 'Border Size',
-                                    type: 'number',
-                                    value: 0,
-                                    min: 0,
-                                    max: 10,
-                                    autoManaged: false
+                                    step: 0.05
                                 }
+                                
                             }
                         },
-                        extra: {
-                            __name: "Extra",
+                        '~extra': {
+                            __name: "Alias",
+                            icon: 'link',
                             buttons: {
                                 test: {
                                     __name: 'Test',
@@ -58,7 +116,7 @@ Dali.Plugins["Youtube"] = function (base) {
                         }
                     }
                 }
-            };
+            }
         },
         getSections: function () {
             return [
@@ -77,17 +135,24 @@ Dali.Plugins["Youtube"] = function (base) {
         getInitialState: function () {
             return {
                 url: 'https://www.youtube.com/watch?v=S9M3c1_yl-E',
-                borderSize: 0,
-                thumbnailVisibility: 'hidden'
+                borderSize: '0px',
+                thumbnailVisibility: 'hidden',
+                borderStyle:'solid', 
+                borderRadius: '0%', 
+                borderColor: '#000000', 
+                backgroundColor: '#ffffff',
+                padding: '0px',
+                opacity: 1
             };
         }
         ,
         getConfigTemplate: function (state) {
             return "<div> Url: <input type=\"text\" autofocus id=\"BasicImage_input\" value=\"" + state.url + "\"><br><button onclick=\"$dali$.showPreview()\">Show preview</button><iframe width=\"560\" height=\"315\"id=\"BasicImage_preview\" frameborder=\"0\" allowfullscreen src=\"" + this.parseURL(state.url) + "\" style=\"width: 180px; height: auto; visibility: " + state.thumbnailVisibility + ";\"></iframe></div>";
+        
         }
         ,
         getRenderTemplate: function (state) {
-            return "<iframe width=\"560\" height=\"315\" controls frameBorder=\"0\" allowFullScreen style=\"width: 100%; height: 100%; pointer-events: none; border: solid " + state.borderSize + "px green; z-index:0;\" src=\"" + this.parseURL(state.url) + "\"></iframe>"
+            return "<iframe width=\"560\" height=\"315\" controls frameBorder=\"0\" allowFullScreen style=\"width: 100%; height: 100%;  padding:" + state.padding + "; border-radius:" + state.borderRadius + "; opacity: " + state.opacity + "; border:" + state.borderSize + " " + state.borderStyle + " " + state.borderColor + "; z-index:0;\" src=\"" + this.parseURL(state.url) + "\"></iframe>"
         }
         ,
         handleToolbar: function (name, value) {

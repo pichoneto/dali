@@ -10,7 +10,7 @@
 	margin: 0;
     position: fixed;
    	bottom:0;
- 
+
 
 }
 /*Wrapper when no box is selected*/
@@ -31,11 +31,29 @@
     overflow-x:hidden;
     overflow-y:auto;
 
-    input[type="checkbox"]{
+		.form-group{
+    	margin: 10px 0;
+    }
+		/* Input text */
+		.form-control {
+    	-webkit-box-shadow: none;
+    	-moz-box-shadow: none;
+    	box-shadow: none;
+    	border-radius: 0;
+    	border:0;
+    	background-color: $darkinput;
+			color: black;
+    	&:active,&:focus {
+    		border-color: orange;
+    	}
+    }
+
+		input[type="checkbox"]{
     	padding:0 !important;
     	margin-left:0;
     	position:relative;
     	display:inline-block;
+    	background-color: white;
     	line-height: 5px;
     	vertical-align: text-bottom;
     }
@@ -45,36 +63,12 @@
     	padding: 0 !important;
     	font-size: inherit;
     	font-weight: normal;
-
-    }
-
- 
-    .form-control {
-    	height: auto;
-    	-webkit-box-shadow: none;
-    	-moz-box-shadow: none;
-    	box-shadow: none;
-    	// border: 1px solid $naranjaadams;
-    	border-radius: 0;
-    	border:0;
-    	background-color: $darkinput;
-    	&:active,&:focus {
-    		border-color: orange;
-    	}
-    	color:black;
-    }
-
-    input.form-control[type="range"]{
-    	background-color: transparent;
-    	outline:none;
     }
 
     .radio{
     	margin-left: 20px;
     }
-    .form-group{
-    	margin-top: 15px;
-    }
+
 
     .toolbarButton{
     	border-radius: 0;
@@ -100,7 +94,7 @@
 		a {
 			border-color: transparent;
 			color: $lightestgrey;
-			border-radius:0;	
+			border-radius:0;
 			padding: 10px 12px;
 			&:hover{
 				border-color: transparent;
@@ -108,7 +102,7 @@
 				color: $naranjaadams;
 			}
 		}
-		
+
 	}
 
 }
@@ -134,42 +128,52 @@
 
 /*Collapsible panel*/
 .panelPluginToolbar{
-	border:0;
-	border-radius:0;
+	border: 0;
+	border-radius: 0;
+
 	.toolbarTab{
 		color:$naranjaadams;
 	}
-
 	a {
 		display:block;
-		&:hover, &:focus, &:active {
-			text-decoration: none;
-			color: $naranjaadams;
-		}
-
+		text-decoration: none;
+		font-size: 0.9em;
 	}
-	
+
 	.panel-body {
 		border:0 !important;
 		background-color: $greyInsidePanels;
 		margin-bottom: -6px;
+		padding: 5px 25px;
 	}
-	
-	.panel-heading{
+
+	.panel-heading {
 		border:0;
 		border-radius:0;
 		color:$lightestgrey;
-		background-color: #121212
+		background-color: #121212;
+		@include animacion(all,0.2s);
+		&:hover, &:active, &:focus {
+			border-left: 3px solid $naranjaadams;
+			border-radius: 0;
+		}
 	}
 
+	
+	
+ 
 	.panel-group, .panel {
 	    margin-bottom: 0;
 	    border-radius: 0;
 	    border: 0;
-	}	
+	}
 
 }
 
+.extendedPanel .panel-heading{
+	border-left: 3px solid $naranjaadams;
+	border-radius: 0;
+}
 
 
 #insidetools {
@@ -197,16 +201,14 @@
 .toolbarSpread {
 	text-align: left;
 	font-weight: bold;
+	color: white;
 	.material-icons{
 		font-size: 16px;
 	}
-	color: white;
-	.toolbarTitle{
-		font-variant: small-caps;
 
-	}
+
 	.pluginTitleInToolbar{
-		margin-left: 34px;
+		margin: 0 0 7px 36px;
 		color: $naranjaadams;
 	}
 
@@ -219,7 +221,7 @@
 	&:hover{
 		color:white;
 	}
-	.toolbarTitle, .pluginTitleInToolbar { 
+	.toolbarTitletxt, .pluginTitleInToolbar {
 		display:none;
 
 	}
@@ -229,4 +231,134 @@
 	color: $darkest;
 	float:right;
 	margin-right: 12px;
+}
+
+
+
+/******Input type range (slider)*******/
+#tools {
+	/*
+		Generated with
+		http://danielstern.ca/range.css/?ref=css-tricks#/
+	*/
+
+	input[type=range] {
+	  -webkit-appearance: none;
+	  width: 100%;
+	  margin: 5.7px 0;
+	}
+	input[type=range]:focus {
+	  outline: none  !important;
+	}
+	input[type=range]::-webkit-slider-runnable-track {
+	  width: 100%;
+	  height: 4.6px;
+	  cursor: pointer;
+	  box-shadow: 0px 0px 0.6px #ffffff, 0px 0px 0px #ffffff;
+	  background: #cccccc;
+	  border-radius: 25px;
+	  border: 0px solid #ffffff;
+	}
+	input[type=range]::-webkit-slider-thumb {
+	  box-shadow: 0px 0px 0px rgba(255, 255, 255, 0), 0px 0px 0px rgba(255, 255, 255, 0);
+	  border: 1px solid #999999;
+	  height: 16px;
+	  width: 16px;
+	  border-radius: 50px;
+	  background: #ffffff;
+	  cursor: pointer;
+	  -webkit-appearance: none;
+	  margin-top: -5.7px;
+	}
+	input[type=range]:focus::-webkit-slider-runnable-track {
+	  background: #cccccc;
+	}
+	input[type=range]::-moz-range-track {
+	  width: 100%;
+	  height: 4.6px;
+	  cursor: pointer;
+	  box-shadow: 0px 0px 0.6px #ffffff, 0px 0px 0px #ffffff;
+	  background: #cccccc;
+	  border-radius: 25px;
+	  border: 0px solid #ffffff;
+	}
+	input[type=range]::-moz-range-thumb {
+	  box-shadow: 0px 0px 0px rgba(255, 255, 255, 0), 0px 0px 0px rgba(255, 255, 255, 0);
+	  border: 1px solid #999999;
+	  height: 16px;
+	  width: 16px;
+	  border-radius: 50px;
+	  background: #ffffff;
+	  cursor: pointer;
+	}
+	input[type=range]::-ms-track {
+	  width: 100%;
+	  height: 4.6px;
+	  cursor: pointer;
+	  background: transparent;
+	  border-color: transparent;
+	  color: transparent;
+	}
+	input[type=range]::-ms-fill-lower {
+	  background: #cccccc;
+	  border: 0px solid #ffffff;
+	  border-radius: 50px;
+	  box-shadow: 0px 0px 0.6px #ffffff, 0px 0px 0px #ffffff;
+	}
+	input[type=range]::-ms-fill-upper {
+	  background: #cccccc;
+	  border: 0px solid #ffffff;
+	  border-radius: 50px;
+	  box-shadow: 0px 0px 0.6px #ffffff, 0px 0px 0px #ffffff;
+	}
+	input[type=range]::-ms-thumb {
+	  box-shadow: 0px 0px 0px rgba(255, 255, 255, 0), 0px 0px 0px rgba(255, 255, 255, 0);
+	  border: 1px solid #999999;
+	  height: 16px;
+	  width: 16px;
+	  border-radius: 50px;
+	  background: #ffffff;
+	  cursor: pointer;
+	  height: 4.6px;
+	}
+	input[type=range]:focus::-ms-fill-lower {
+	  background: #cccccc;
+	}
+	input[type=range]:focus::-ms-fill-upper {
+	  background: #cccccc;
+	}
+
+    input.form-control[type="range"]{
+    	background-color: transparent;
+    	outline:none !important;
+
+    }
+	input[type='range'],
+	input[type='range']:focus,
+	input[type='range']:active,
+	input[type='range']::-moz-focus-inner,
+	input[type='range']:-moz-focusring {
+	    border: 0 !important;
+	    outline: none !important;
+	}
+	input[type=range]::-moz-focus-outer {
+    border: 0;
+    }
+
+}
+
+
+
+.toolbarIcons {
+	font-size: 14px;
+	width:24px;
+}
+
+
+.p_open {
+	color: red;
+}
+
+.p_close {
+	color: blue;	
 }

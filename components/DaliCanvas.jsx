@@ -38,7 +38,7 @@ export default class DaliCanvas extends Component{
         let overlayHeight = actualHeight ? actualHeight:'100%';
    
         return (<Col id="canvas" md={12} xs={12} style={{height:"100%", padding:0}}>
-            <div className="outter" style={{position: 'absolute', width: '100%', height:'100%', padding: (paddings)}} >
+            <div className="outter canvaseditor" style={{position: 'absolute', width: '100%', height:'100%', padding: (paddings)}} >
                 <div  id="maincontent"
                       onClick={e => {
                         this.props.onBoxSelected(-1);
@@ -142,6 +142,7 @@ export default class DaliCanvas extends Component{
                 let position = {
                     x: event.dragEvent.clientX - event.target.getBoundingClientRect().left - document.getElementById('maincontent').offsetLeft,
                     y: event.dragEvent.clientY - event.target.getBoundingClientRect().top  + document.getElementById('maincontent').scrollTop ,
+                    type: 'absolute'
                 };
                 let initialParams = {
                     parent: this.props.navItemSelected.id,

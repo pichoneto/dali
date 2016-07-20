@@ -35,7 +35,7 @@ export default class CarrouselList extends Component{
                                                     e.stopPropagation();
                                                }}>
                                         <span style={{marginLeft: 20*(this.props.navItems[id].level-1)}} >
-                                            <i className="material-icons">insert_drive_file</i>   <DaliIndexTitle id={id} title={this.props.navItems[id].name} onTitleChange={this.props.onTitleChange} /></span>
+                                            <i className="material-icons fileIcon">insert_drive_file</i>   <DaliIndexTitle id={id} title={this.props.navItems[id].name} onTitleChange={this.props.onTitleChange} /></span>
                                      </h4>
                                               
                                             
@@ -45,7 +45,7 @@ export default class CarrouselList extends Component{
                 <div style={{width: '100%', borderTop: '1px solid grey', marginTop: '0px'}}>
                     <Button className="carrouselButton"  onClick={e => {
                                     let idnuevo = ID_PREFIX_SECTION + Date.now();
-                                    this.props.onSectionAdded(idnuevo, "Section "+this.sections(), 0, [], 1, 'section', this.props.navItemsIds.length, 'expanded');
+                                    this.props.onSectionAdded(idnuevo, "Section "+this.sections(), 0, [], 1, 'section', this.props.navItemsIds.length+1, 'expanded');
                                     this.props.onBoxAdded({parent: idnuevo, container: 0, id: ID_PREFIX_SORTABLE_BOX + Date.now()}, BOX_TYPES.SORTABLE, false, false);
                                     e.stopPropagation();
                                 }}>
@@ -54,11 +54,12 @@ export default class CarrouselList extends Component{
 
                     <PageMenu caller={0}
                                navItems={this.props.navItems}
+                                navItemSelected={this.props.navItemSelected}
                                navItemsIds={this.props.navItemsIds}
                                onBoxAdded={this.props.onBoxAdded}   
                                onPageAdded={this.props.onSectionAdded} /> 
 
-                    <OverlayTrigger trigger="focus" placement="top" overlay={
+                    <OverlayTrigger trigger="click" rootClose placement="top" overlay={
                         <Popover id="popov" title="Eliminar página">
                             <i style={{color: 'yellow', fontSize: '13px'}} className="material-icons">warning</i> Esta acción borrará todo el contenido de la página.<br/>
                                 <Button className="popoverButton" 
@@ -166,11 +167,12 @@ export default class CarrouselList extends Component{
                 //$(event.target).css("border-left", "none");
             },
             start: (event,ui) => {
-                //$(".selected").css("background-color", "rgba(84, 84, 84 , 0.5)")
-                console.log($(".selected").css("background-color"));
+                $("#"+this.props.navItemSelected).css("opacity", "0.5");
+                // console.log($(".selected").css("background-color"));
             },
             stop: (event, ui) => {
                 //$(".selected").css("background-color", "rgba(84, 84, 84 , 1)");
+                $("#"+this.props.navItemSelected).css("opacity", "1");
                 const reorderedIndexesId = list.sortable('toArray', {attribute: 'id'})
       
                 const select = this.props.navItemSelected;

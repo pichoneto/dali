@@ -13,6 +13,7 @@ export const INCREASE_LEVEL = 'INCREASE_LEVEL';
 export const DUPLICATE_SECTION = 'DUPLICATE_SECTION';
 
 export const RESIZE_SORTABLE_CONTAINER = 'RESIZE_SORTABLE_CONTAINER';
+export const CHANGE_SORTABLE_PROPS = 'CHANGE_SORTABLE_PROPS'
 export const CHANGE_COLS = 'CHANGE_COLS';
 export const CHANGE_ROWS = 'CHANGE_ROWS';
 
@@ -66,8 +67,8 @@ export function selectBox(id){
     return {type: SELECT_BOX, payload: {id}};
 }
 
-export function moveBox(id, x, y){
-    return {type: MOVE_BOX, payload: {id, x, y}};
+export function moveBox(id, x, y, position){
+    return {type: MOVE_BOX, payload: {id, x, y, position}};
 }
 
 export function duplicateBox(id, parent, container, children, newIds, newId){
@@ -102,6 +103,9 @@ export function resizeSortableContainer(id, parent, height){
     return {type: RESIZE_SORTABLE_CONTAINER, payload: {id, parent, height}};
 }
 
+export function changeSortableProps(id, parent, prop, value){
+    return {type: CHANGE_SORTABLE_PROPS, payload: {id, parent, prop, value}};
+}
 export function changeCols(id, parent, distribution){
     return {type: CHANGE_COLS, payload: {id, parent, distribution}};
 }

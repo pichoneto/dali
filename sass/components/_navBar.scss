@@ -16,6 +16,7 @@
 	    }
 	}
 	.dropdown-menu{
+		border-radius:0;
 		right:0;
 		left:auto;
 		.disabled .dropdownButton{ 
@@ -101,26 +102,6 @@ button[disabled].navButton {
 	}
 }
 /*************************************************/
-/****Make navbar icons fit into smaller screens****/
-.hideonresize{
-	font-size: 12px;
-	vertical-align: middle;
-	margin:auto;
-}
-
-@media screen and (max-width: 1147px) {
-	.hideonresize{
-		display: none;
-	}
-	.navButtonPlug{
-		min-width:7%;
-		padding:5px;
-	 	.active{ 
-	  		color:white !important;
-	  	}
-	}
-}
-/****************************************************/
 
 /*Plugin buttons: Image, Text, Multimedia...*/
 .navButtonPlug{
@@ -142,6 +123,41 @@ button[disabled].navButton {
 	 }
 }
 
+/****Make navbar icons fit into smaller screens****/
+.hideonresize{
+	font-size: 12px;
+	vertical-align: middle;
+	margin:auto;
+}
+
+@media screen and (max-width: 1147px) {
+	.hideonresize{
+		display: none;
+	}
+	.navButtonPlug{
+		min-width: 55px;
+		width: auto;
+		padding:5px;
+	 	.active{ 
+	  		color:white !important;
+	  	}
+	}
+}
+
+@media screen and (max-width: 700px) {
+	.hideonresize{
+		display: none;
+	}
+	.navButtonPlug{
+		min-width: 15px;
+		width: auto;
+		padding:5px;
+	 	.active{ 
+	  		color:white !important;
+	  	}
+	}
+}
+/****************************************************/
  
 
 
@@ -181,7 +197,7 @@ button[disabled].navButton {
 	border:8px solid transparent;
 	border-bottom-color: $darkest;
 	position: absolute;
-	margin-top: -16px;
+	margin-top: -15px;
 	right:25px;
 	top:0%; 
  

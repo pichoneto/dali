@@ -4,7 +4,7 @@ Dali.Plugins["CajasColorBis"] = function (base){
         getConfig: function(){
             return {
                 name: 'CajasColorBis',
-                category: 'text',
+                category: 'animations',
                 icon: 'view_column'
             }
         },
@@ -30,6 +30,7 @@ Dali.Plugins["CajasColorBis"] = function (base){
                                     __name: "Border redondeado",
                                     type: 'checkbox',
                                     value: 'unchecked',
+                                    units: '%',
                                     autoManaged: false 
                                 },
                                /* wayHorizontal:{
