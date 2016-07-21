@@ -1,3 +1,3 @@
 Dali.Config = {
-    xml_path: "dali/documents/xml"
+    xml_path: "/dali_documents/add_xml"
 };
