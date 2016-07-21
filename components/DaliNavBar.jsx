@@ -8,7 +8,7 @@ export default class DaliNavBar extends Component {
     openPlugin(categoria) {
         this.props.setcat(categoria)
     }
- 
+
 
     render() {
         let disablePlugins = (this.props.navItemsIds.length === 0  || this.props.navItemSelected == 0) ? true : false
@@ -18,23 +18,23 @@ export default class DaliNavBar extends Component {
             <Col id="iconBar">
                 <img src="images/icon.png"/>
                 <div className="navBarSpace" >
-                  <i className="material-icons">mode_edit</i>   
+                  <i className="material-icons">mode_edit</i>
                   <span className="tituloCurso" contentEditable suppressContentEditableWarning id="mainTitle"
                         onKeyDown={(e) => {
                             if (e.keyCode == 13) { // Enter Key
                                 this.props.changeTitle(e.target.innerHTML)
                                 e.preventDefault();
                                 document.getElementById("mainTitle").blur();
-                            }  
+                            }
                             if (e.keyCode == 27) { // Escape key
-                                document.getElementById("mainTitle").innerHTML = this.props.title; 
-                                document.getElementById("mainTitle").blur();                
-                            }  
+                                document.getElementById("mainTitle").innerHTML = this.props.title;
+                                document.getElementById("mainTitle").blur();
+                            }
                         }}
                         onBlur={(e) => {
                             e.target.scrollLeft = 0;
                             this.props.changeTitle(e.target.innerHTML);
-                        }}  
+                        }}
                         onFocus={(e) =>  {
                             var range = document.createRange();
                             range.selectNodeContents(e.target);
@@ -46,7 +46,7 @@ export default class DaliNavBar extends Component {
                          }>
                    {this.props.title}</span>
                  </div>
- 
+
                 <button
                     className={ this.props.hideTab == 'show' && this.props.categoria == 'text' ? 'navButtonPlug active':'navButtonPlug' }
                     title='Text' disabled={false /*disablePlugins*/}
@@ -73,7 +73,7 @@ export default class DaliNavBar extends Component {
                     onClick={() => {this.openPlugin('exercises') }}><i className="material-icons">school</i><br/> <span
                     className="hideonresize">Ejercicios</span></button>
 
-               
+
 
                 <Dropdown  id="dropdown-menu" style={{float:'right'}}>
                     <Dropdown.Toggle noCaret className="navButton">
@@ -91,22 +91,12 @@ export default class DaliNavBar extends Component {
                                     onClick={() => this.props.scorm() }><i className="material-icons">class</i> Exportar a Scorm
                             </button>
                         </MenuItem>
-                        <MenuItem divider />
-                        <MenuItem eventKey="3"  >
-                            <button  className="dropdownButton"
-                                     onClick={(e) => {
-                                        this.props.serverModalOpen()
-                                        this.props.opens()
-                               }}>
-                               <i className="material-icons">folder_open</i> Abrir
-                            </button>
-                        </MenuItem>
                     </Dropdown.Menu>
                 </Dropdown>
 
-                <button className="navButton" 
-                        style={{float:'right', marginRight: '30px'}} 
-                        title="Preview" 
+                <button className="navButton"
+                        style={{float:'right', marginRight: '30px'}}
+                        title="Preview"
                         disabled={this.props.undoDisabled}
                         onClick={() =>this.props.visor()}><i className="material-icons">visibility</i>
                     <br/>
@@ -116,7 +106,7 @@ export default class DaliNavBar extends Component {
     }
 
 
- 
+
 }
 
 
