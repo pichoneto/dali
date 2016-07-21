@@ -4,6 +4,7 @@ module.exports = {
     entry: [
         'bootstrap-loader', //Loads Twitter Bootstrap
         './index.jsx'
+
     ],
     module: {
         loaders: [
@@ -66,7 +67,7 @@ module.exports = {
     ],
     output: {
         path: __dirname + '/dist',
-        publicPath: '/',
+        publicPath: '/', //This is used to generate URLs to e.g. images
         filename: 'bundle.js'
     },
     devServer: {

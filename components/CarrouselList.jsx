@@ -59,7 +59,7 @@ export default class CarrouselList extends Component{
                                onBoxAdded={this.props.onBoxAdded}   
                                onPageAdded={this.props.onSectionAdded} /> 
 
-                    <OverlayTrigger trigger="click" rootClose placement="top" overlay={
+                    <OverlayTrigger trigger={"click", "focus"}   placement="top" overlay={
                         <Popover id="popov" title="Eliminar página">
                             <i style={{color: 'yellow', fontSize: '13px'}} className="material-icons">warning</i> Esta acción borrará todo el contenido de la página.<br/>
                                 <Button className="popoverButton" 
@@ -154,7 +154,7 @@ export default class CarrouselList extends Component{
     componentDidMount(){
         let list = jQuery(this.refs.sortableList);
         let props = this.props;
-        list.sortable({ 
+        list.sortable({
            // handle: '.drag-handle' ,
             tolerance: 'intersect',
             connectWith: '.connectedSortables',
@@ -262,8 +262,7 @@ export default class CarrouselList extends Component{
                 }         
 
                 this.props.onNavItemReorded(this.props.navItemSelected, 0,4,newIndexesAux,reorderedIndexesId);
-            
-            }.bind(this)
+            }
         }).bind(this);
     }
 }
