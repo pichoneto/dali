@@ -2,6 +2,7 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: [
+        'bootstrap-loader', //Loads Twitter Bootstrap
         './index.jsx'
     ],
     module: {
