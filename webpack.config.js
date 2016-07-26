@@ -110,6 +110,14 @@ module.exports = {
         //This options prohibits overwriting prototypes of native objects such as Array, Date and so on.
         freeze: true,
 
+        // This option can be used to specify a white list of global variables that are not formally defined in the source code.
+        globals: {
+            "Dali": true,
+            "dali_document_json": true,
+            "url_to_save": true,
+            "dali_editor_params": true
+        },
+
         // This option requires the code to run in ECMAScript 5's strict mode.
         //strict: true,
 
@@ -126,7 +134,6 @@ module.exports = {
         browser: true,
         devel: true,
         jquery: true,
-        predef: ["Dali", "CKEDITOR", "dali_document_json", "url_to_save", "dali_editor_params"]
+        predef: ["html2json", "CKEDITOR", "EJS"]
     }
 };
-
