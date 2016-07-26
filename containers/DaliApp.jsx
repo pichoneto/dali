@@ -186,7 +186,7 @@ class DaliApp extends Component {
 
     componentDidMount() {
 
-        if( dali_document_json != undefined && dali_document_json != ""){
+        if( dali_document_json !== undefined && dali_document_json !== ""){
           this.props.dispatch(importState(JSON.parse(dali_document_json)));
         }
 

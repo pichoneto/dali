@@ -126,7 +126,7 @@ module.exports = {
         browser: true,
         devel: true,
         jquery: true,
-        predef: ["Dali", "CKEDITOR"]
+        predef: ["Dali", "CKEDITOR", "dali_document_json", "url_to_save", "dali_editor_params"]
     }
 };
 

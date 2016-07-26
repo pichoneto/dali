@@ -184,15 +184,16 @@ export function exportStateAsync(state) {
             .then(response => {
                 if (response.status >= 400) {
                     throw new Error("Error while exporting");
+                }
                 return response.text();
             })
             .then(result => {
                 var dali_id = JSON.parse(result).dali_id;
-                if(url_to_save == "/dali_documents/create_document"){
-                    window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit")
+                if(url_to_save === "/dali_documents/create_document"){
+                    window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
                 }
-                dispatch(setBusy(false, "Success!"))
+                dispatch(setBusy(false, "Success!"));
             })
             .then(data => console.log(data))
             .catch(e =>{
@@ -200,6 +201,7 @@ export function exportStateAsync(state) {
             });
     };
 }
+
 
 export function importStateAsync() {
     return dispatch => {
