@@ -7,7 +7,19 @@ module.exports = {
 
     ],
     module: {
+        preLoaders: [
+            {
+                test: /\.(es6|jsx|js)$/,
+                exclude: /node_modules/,
+                loader: 'jshint-loader',
+            },
+        ],
         loaders: [
+            {
+                test: /\.es6$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader?presets[]=es2015',
+            },
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
@@ -52,7 +64,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx', '.es6']
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -73,9 +85,48 @@ module.exports = {
     devServer: {
         contentBase: './dist',
         hot: true
+    },
+    jshint: {
+        // http://www.jshint.com/docs/options/
+
+        // This option prohibits the use of bitwise operators such as ^ (XOR), | (OR) and others.
+        // Bitwise operators are very rare in JavaScript programs and quite often & is simply a mistyped &&
+        bitwise: true,
+
+        // This option requires you to always put curly braces around blocks in loops and conditionals
+        curly: true,
+
+        // This options prohibits the use of == and != in favor of === and !==
+        eqeqeq: true,
+
+        // This option is used to specify the ECMAScript version to which the code must adhere
+        esversion: 6,
+
+        // This option requires all for in loops to filter object's items. The for in statement
+        // allows for looping through the names of all of the properties of an object including
+        // those inherited through the prototype chain.
+        //forin: true,
+
+        //This options prohibits overwriting prototypes of native objects such as Array, Date and so on.
+        freeze: true,
+
+        // This option requires the code to run in ECMAScript 5's strict mode.
+        //strict: true,
+
+        // This option prohibits the use of explicitly undeclared variables.
+        undef: true,
+
+        // This option warns when you define and never use your variables.
+        unused: false,
+
+        // This option suppresses warnings about functions inside of loops.
+        loopfunc: true,
+
+        // These options let JSHint know about some pre-defined global variables
+        browser: true,
+        devel: true,
+        jquery: true,
+        predef: ["Dali", "CKEDITOR"]
     }
 };
-
-
-//En terminal aparte añadir sass --watch sass/style.scss:dist/css/compiledsass.css
 
