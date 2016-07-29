@@ -11,14 +11,14 @@ module.exports = {
             {
                 test: /\.(es6|jsx|js)$/,
                 exclude: /node_modules/,
-                loader: 'jshint-loader',
-            },
+                loader: 'jshint-loader'
+            }
         ],
         loaders: [
             {
                 test: /\.es6$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader?presets[]=es2015',
+                loader: 'babel-loader?presets[]=es2015'
             },
             {
                 test: /\.jsx?$/,
@@ -44,22 +44,11 @@ module.exports = {
                 loader: 'url-loader?limit=10000' },
             {
                 test: /\.(ttf|eot)$/,
-                loader: 'file-loader' },/*
+                loader: 'file-loader'
+            },
             {
                 test: require.resolve('jquery'),
                 loader: 'expose?jQuery!expose?$!expose?window.jQuery'  //expose-loader, exposes as global variable
-            }*/
-            {
-                test: require.resolve('jszip'),
-                loader: 'expose?JSZip'
-            },
-            {
-                test: require.resolve('jszip-utils'),
-                loader: 'expose?JSZipUtils'
-            },
-            {
-                test: require.resolve('file-saver'),
-                loader: 'expose?FileSaver'
             }
         ]
     },
@@ -74,11 +63,14 @@ module.exports = {
         }),
         new webpack.ProvidePlugin({
             'Promise': 'es6-promise', // Thanks Aaron (https://gist.github.com/Couto/b29676dd1ab8714a818f#gistcomment-1584602)
-            'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-        }),
+            //'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
+            '$': 'jquery',
+            'jQuery': 'jquery',
+            'window.jQuery': 'jquery'
+        })
     ],
     output: {
-        path: __dirname + '/dist',
+        path: './dist',
         publicPath: '/', //This is used to generate URLs to e.g. images
         filename: 'bundle.js'
     },
@@ -112,7 +104,6 @@ module.exports = {
 
         // This option can be used to specify a white list of global variables that are not formally defined in the source code.
         globals: {
-            "Dali": true,
             "dali_document_json": true,
             "url_to_save": true,
             "dali_editor_params": true
@@ -134,6 +125,6 @@ module.exports = {
         browser: true,
         devel: true,
         jquery: true,
-        predef: ["html2json", "CKEDITOR", "EJS"]
+        predef: ["Dali", "html2json", "jsPlumb", "CKEDITOR", "EJS"]
     }
 };

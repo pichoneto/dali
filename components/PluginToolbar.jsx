@@ -3,7 +3,7 @@ import {Tooltip, FormControl, OverlayTrigger, FormGroup, Radio, ControlLabel, Ch
 import ReactDOM from 'react-dom';
 import GridConfigurator from '../components/GridConfigurator.jsx';
 import Select from 'react-select';
-
+import Dali from './../core/main';
 
 export default class PluginToolbar extends Component {
     constructor(props) {
@@ -131,7 +131,7 @@ export default class PluginToolbar extends Component {
                              style={{display: this.props.carouselShow? 'block':'none'}}
                              className={this.state.open ? 'carouselListTitle toolbarSpread':'carouselListTitle toolbarHide'}>
 
-                            <div className="toolbarTitle"><i className="material-icons">palette</i><span
+                            <div className="toolbarTitle"><i className="material-icons">settings</i><span
                                 className="toolbarTitletxt">Propiedades</span></div>
                             <div className="pluginTitleInToolbar"> {toolbar.config.name || ""}</div>
                         </div>
