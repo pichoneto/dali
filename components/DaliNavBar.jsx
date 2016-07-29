@@ -95,17 +95,6 @@ export default class DaliNavBar extends Component {
                                 a Scorm
                             </button>
                         </MenuItem>
-
-                        <MenuItem divider/>
-                        <MenuItem eventKey="3">
-                            <button className="dropdownButton"
-                                    onClick={(e) => {
-                                        this.props.serverModalOpen()
-                                        this.props.opens()
-                               }}>
-                                <i className="material-icons">folder_open</i> Abrir
-                            </button>
-                        </MenuItem>
                     </Dropdown.Menu>
                 </Dropdown>
 
