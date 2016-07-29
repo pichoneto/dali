@@ -8,6 +8,7 @@ import DaliApp from './containers/DaliApp';
 import DevTools from './containers/DevTools';
 import GlobalState from './reducers';
 
+require('es6-promise').polyfill();
 require('expose?Dali!./core/temp_hack');
 
 //Require CSS files

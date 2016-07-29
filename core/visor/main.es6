@@ -86,7 +86,7 @@ export default {
                 var navs = state.navItemsById;
 
                 state.navItemsIds.map(function (page) {
-                    var inner = parseEJS(Dali.Config.visor_ejs, page, state);
+                    var inner = parseEJS(Dali.Config.scorm_visor_ejs, page, state);
                     var nombre = navs[page].name;
                     zip.file(nombre + ".html", inner);
                 });
@@ -118,7 +118,7 @@ export default {
                 var navs = state.navItemsById;
                 var sections = [];
                 state.navItemsIds.map(function (page) {
-                    var inner = parseEJS(Dali.Config.visor_ejs, page, state);
+                    var inner = parseEJS(Dali.Config.scorm_visor_ejs, page, state);
                     var nombre = navs[page].name;
                     sections.push(nombre);
                     zip.file(nombre + ".html", inner);
