@@ -257,3 +257,28 @@ export function fetchVishResourcesAsync(query) {
             });
     };
 }
+
+export function deleteAsync() {
+    return dispatch => {
+        dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
+        if (url_to_save !== "/dali_documents/create_document"){
+            return fetch()
+                .then(response => {
+                    if (response.status >= 400) {
+                        throw new Error("Error while searching");
+                    }
+                    return response.text();
+                })
+                .then(result => {
+                    //dispatch(fetchVishResourcesSuccess(JSON.parse(result)));
+                    return true;
+                })
+                .then(() => {
+                    dispatch(setBusy(false, "No results found"));
+                })
+                .catch(e => {
+                    dispatch(setBusy(false, e.message));
+                });
+        }
+    };
+}
