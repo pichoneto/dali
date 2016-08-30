@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import {Col, Row, Input, Button, OverlayTrigger, Popover, Dropdown, Tooltip, MenuItem} from 'react-bootstrap';
+import DaliIndexTitle from '../components/DaliIndexTitle';
 
 export default class DaliNavBar extends Component {
 
@@ -18,7 +19,9 @@ export default class DaliNavBar extends Component {
                 <img src="images/icon.png"/>
 
                 <div className="navBarSpace">
+                    {/*
                     <i className="material-icons">mode_edit</i>
+
                   <span className="tituloCurso" contentEditable suppressContentEditableWarning id="mainTitle"
                         onKeyDown={(e) => {
                             if (e.keyCode == 13) { // Enter Key
@@ -45,6 +48,10 @@ export default class DaliNavBar extends Component {
                             }
                          }>
                    {this.props.title}</span>
+                   */}
+                    <DaliIndexTitle className="tituloCurso"
+                                    title={this.props.title}
+                                    onTitleChange={this.props.changeTitle}/>
                 </div>
 
 
