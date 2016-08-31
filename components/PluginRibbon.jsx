@@ -78,6 +78,14 @@ export default class PluginRibbon extends Component {
                             }}>
                         <i className="material-icons">save</i>
                     </button>
+                    <button className="ribShortcut" 
+                            title="FullScreen" 
+                            disabled={this.props.boxSelected.id == -1} 
+                            onClick={() => {
+                                this.props.fullscreen();
+                            }}>
+                        <i className="material-icons">fullscreen</i>
+                    </button>
                 </div>
             </Col>
             /* jshint ignore:end */

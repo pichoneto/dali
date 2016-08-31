@@ -8,6 +8,7 @@ import {addNavItem, selectNavItem, expandNavItem, removeNavItem, reorderNavItem,
     togglePageModal, toggleTextEditor, toggleTitleMode,
     changeDisplayMode, updateToolbar, collapseToolbar,
     exportStateAsync, importStateAsync, importState,
+    deleteAsync, fullscreen,
     fetchVishResourcesSuccess, fetchVishResourcesAsync} from '../actions';
 import {ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER, BOX_TYPES} from '../constants';
 import DaliCanvas from '../components/DaliCanvas';
@@ -58,10 +59,10 @@ class DaliApp extends Component {
                                 boxSelected={boxSelected}
                                 undo={() => {this.dispatchAndSetState(ActionCreators.undo())}}
                                 redo={() => {this.dispatchAndSetState(ActionCreators.redo())}}
-                                visor={() =>{this.setState({visorVisible: true })}}
+				visor={() =>{this.setState({visorVisible: true })}}
                                 export={() => {Dali.Visor.exports(this.props.store.getState().present)}}
                                 scorm={() => {Dali.Visor.exportScorm(this.props.store.getState().present)}}
-                                delete={() => {this.props}}
+                                delete={() => {this.dispatchAndSetState(this.props.deleteAsync())}}
                                 categoria={this.state.pluginTab}
                                 opens={() => {this.dispatchAndSetState(importStateAsync())}}
                                 serverModalOpen={()=>{this.setState({serverModal: true })}}
@@ -125,7 +126,8 @@ class DaliApp extends Component {
                                           undo={() => {this.dispatchAndSetState(ActionCreators.undo())}}
                                           redo={() => {this.dispatchAndSetState(ActionCreators.redo())}}
                                           save={() => {this.dispatchAndSetState(exportStateAsync({present: this.props.store.getState().present}))}}
-                                          ribbonHeight={ribbonHeight+'px'}
+                                	  fullscreen={() => {this.dispatchAndSetState(fullscreen())}}
+					  ribbonHeight={ribbonHeight+'px'}
                                           serverModalOpen={()=>{this.setState({serverModal: true })}}/>
                         </Row>
                         <Row id="canvasRow" style={{height: 'calc(100% - '+ribbonHeight+'px)'}}>

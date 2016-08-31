@@ -282,3 +282,13 @@ export function deleteAsync() {
         }
     };
 }
+
+
+export function fullScreen() {
+
+    return dispatch => {
+        dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
+    	alert("hallo");
+	return true;
+    };
+}
