@@ -284,11 +284,40 @@ export function deleteAsync() {
 }
 
 
-export function fullScreen() {
+export function fullscreen() {
 
     return dispatch => {
-        dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
-    	alert("hallo");
+        dispatch(setBusy(true, "Deleting..."));
+	var i = parent.document.getElementsByTagName("iframe")[0];
+	if (i !== null){
+		if(
+			parent.document.fullscreenElement ||
+			parent.document.webkitFullscreenElement ||
+			parent.document.mozFullScreenElement ||
+			parent.document.msFullscreenElement
+		  ){
+			if (parent.document.exitFullscreen) {
+				parent.document.exitFullscreen();
+			} else if (document.webkitExitFullscreen) {
+				parent.document.webkitExitFullscreen();
+			} else if (document.mozCancelFullScreen) {
+				parent.document.mozCancelFullScreen();
+			} else if (document.msExitFullscreen) {
+				parent.document.msExitFullscreen();
+			}
+		}
+		else{	
+		if (i.requestFullscreen) {
+			i.requestFullscreen();
+		} else if (i.webkitRequestFullscreen) {
+			i.webkitRequestFullscreen();
+		} else if (i.mozRequestFullScreen) {
+			i.mozRequestFullScreen();
+		} else if (i.msRequestFullscreen) {
+			i.msRequestFullscreen();
+		}
+		}
+	}
 	return true;
     };
 }
