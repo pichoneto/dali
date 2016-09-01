@@ -23,7 +23,9 @@ export const SELECT_NAV_ITEM = 'SELECT_NAV_ITEM';
 export const EXPAND_NAV_ITEM = 'EXPAND_NAV_ITEM';
 export const REMOVE_NAV_ITEM = 'REMOVE_NAV_ITEM';
 export const REORDER_NAV_ITEM = 'REORDER_NAV_ITEM';
+export const TOGGLE_NAV_ITEM = 'TOGGLE_NAV_ITEM';
 export const CHANGE_SECTION_TITLE = 'CHANGE_SECTION_TITLE';
+export const CHANGE_UNIT_NUMBER = 'CHANGE_UNIT_NUMBER';
 
 export const TOGGLE_PAGE_MODAL = 'TOGGLE_PAGE_MODAL';
 export const TOGGLE_TEXT_EDITOR = 'TOGGLE_TEXT_EDITOR';
@@ -58,8 +60,16 @@ export function reorderNavItem(itemId, newParent, type, newIndId, newChildrenInO
     return {type: REORDER_NAV_ITEM, payload: {itemId, newParent, type, newIndId, newChildrenInOrder}};
 }
 
+export function toggleNavItem(id) {
+    return {type: TOGGLE_NAV_ITEM, payload: {id}};
+}
+
 export function changeSectionTitle(id, title) {
     return {type: CHANGE_SECTION_TITLE, payload: {id, title}};
+}
+
+export function changeUnitNumber(id, value) {
+    return {type: CHANGE_UNIT_NUMBER, payload: {id, value}};
 }
 
 export function addBox(ids, type, draggable, resizable, content, toolbar, config, state, initialParams) {

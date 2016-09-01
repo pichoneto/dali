@@ -10,7 +10,12 @@ export default class CarrouselList extends Component {
         return (
             /* jshint ignore:start */
             <div style={{height: 'calc(100% - 25px)'}}>
-                <div ref="sortableList" className="carList connectedSortables">
+                <div ref="sortableList"
+                     className="carList connectedSortables"
+                     onClick={e => {
+                        this.props.onNavItemSelected(0);
+                        e.stopPropagation();
+                     }}>
                     {
                         this.props.navItems[0].children.map((id, index) => {
                             if (id.indexOf(ID_PREFIX_SECTION) !== -1) {
@@ -25,20 +30,24 @@ export default class CarrouselList extends Component {
                                                 onBoxAdded={this.props.onBoxAdded}
                                                 onNavItemSelected={this.props.onNavItemSelected}
                                                 onNavItemExpanded={this.props.onNavItemExpanded}
-                                                onNavItemReorded={this.props.onNavItemReorded}/>;
+                                                onNavItemReorded={this.props.onNavItemReorded}
+                                                onNavItemToggled={this.props.onNavItemToggled}/>;
                             } else if (id.indexOf(ID_PREFIX_PAGE) !== -1) {
                                 let classSelected = (this.props.navItemSelected === id) ? 'selected drag-handle' : 'notSelected drag-handle';
                                 return <h4 key={index}
                                            id={id}
                                            className={'navItemBlock ' +classSelected}
-                                           onMouseDown={e => {
+                                           onClick={e => {
                                                     this.props.onNavItemSelected(id);
                                                     e.stopPropagation();
                                                }}>
                                         <span style={{marginLeft: 20*(this.props.navItems[id].level-1)}}>
                                             <i className="material-icons fileIcon">insert_drive_file</i>   <DaliIndexTitle
-                                            id={id} title={this.props.navItems[id].name}
-                                            onTitleChange={this.props.onTitleChange}/></span>
+                                            id={id}
+                                            title={this.props.navItems[id].name}
+                                            hidden={this.props.navItems[id].hidden}
+                                            onTitleChange={this.props.onTitleChange}
+                                            onNavItemToggled={this.props.onNavItemToggled}/></span>
                                 </h4>
 
 
@@ -46,12 +55,30 @@ export default class CarrouselList extends Component {
                         })}
                 </div>
                 <div style={{width: '100%', borderTop: '1px solid grey', marginTop: '0px', padding: '5px'}}>
-                    <Button className="carrouselButton" onClick={e => {
-                                    let idnuevo = ID_PREFIX_SECTION + Date.now();
-                                    this.props.onSectionAdded(idnuevo, "Section "+this.sections(), 0, [], 1, 'section', this.props.navItemsIds.length+1, 'expanded');
-                                    this.props.onBoxAdded({parent: idnuevo, container: 0, id: ID_PREFIX_SORTABLE_BOX + Date.now()}, BOX_TYPES.SORTABLE, false, false);
-                                    e.stopPropagation();
-                                }}>
+                    <Button className="carrouselButton"
+                            disabled={this.props.navItems[this.props.navItemSelected].type !== "section" && this.props.navItemSelected !== 0}
+                            onClick={e => {
+                                let idnuevo = ID_PREFIX_SECTION + Date.now();
+                                this.props.onSectionAdded(
+                                    idnuevo,
+                                    "Section " + this.sections(),
+                                    this.props.navItemSelected,
+                                    [],
+                                    this.props.navItems[this.props.navItemSelected].level + 1,
+                                    'section',
+                                    this.calculateNewPosition(),
+                                    'expanded'
+                                );
+                                this.props.onBoxAdded({
+                                    parent: idnuevo,
+                                    container: 0,
+                                    id: ID_PREFIX_SORTABLE_BOX + Date.now()},
+                                    BOX_TYPES.SORTABLE,
+                                    false,
+                                    false
+                                );
+                                e.stopPropagation();
+                            }}>
                         <i className="material-icons">create_new_folder</i>
                     </Button>
 
@@ -82,21 +109,35 @@ export default class CarrouselList extends Component {
                                     style={{float: 'right'}}  >
                                     Cancelar
                                 </Button>
-
                          </Popover>}>
-
-
                         <Button className="carrouselButton"
                                 disabled={this.props.navItemSelected === 0}
                                 style={{float: 'right'}}>
                             <i className="material-icons">delete</i>
                         </Button>
-
                     </OverlayTrigger>
                 </div>
             </div>
             /* jshint ignore:end */
         );
+    }
+
+    calculateNewPosition() {
+        var navItem = this.props.navItems[this.props.navItemSelected];
+        var nextPosition;
+
+        if (this.props.navItems[this.props.navItemSelected].type === "section") {
+            if (this.props.navItems[navItem.id].children.length > 0) {
+                nextPosition = this.props.navItems[this.props.navItems[navItem.id].children[this.props.navItems[navItem.id].children.length - 1]].position;
+            } else {
+                nextPosition = navItem.position;
+            }
+        } else {
+            nextPosition = navItem.children.length;
+        }
+        nextPosition++;
+
+        return nextPosition;
     }
 
     findChildren(ids) {
@@ -111,20 +152,17 @@ export default class CarrouselList extends Component {
             }
         }
         return ids;
-
     }
 
     sections() {
         var current = 1;
         for (let i in this.props.navItemsIds) {
-
             if (this.props.navItemsIds[i].indexOf(ID_PREFIX_SECTION) !== -1) {
                 current++;
             }
         }
         return current;
     }
-
 
     findBoxes(ids) {
         let boxesIds = [];
@@ -140,7 +178,6 @@ export default class CarrouselList extends Component {
 
     getBoxDescendants(box) {
         let selected = [];
-
         if (box.children) {
             for (let i = 0; i < box.children.length; i++) {
                 for (let j = 0; j < box.sortableContainers[box.children[i]].children.length; j++) {
