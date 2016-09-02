@@ -89,7 +89,7 @@ export default {
                     if(navs[page].hidden){
                         return;
                     }
-              	    var inner = parseEJS(Dali.Config.scorm_visor_ejs, page, state);
+              	    var inner = parseEJS(Dali.Config.visor_ejs, page, state);
                     var nombre = navs[page].name;
                     zip.file(nombre + ".html", inner);
                 });
@@ -102,7 +102,7 @@ export default {
         });
     },
     exportPage: function (state) {
-        return new EJS({url: Dali.Config.visor_ejs}).render({
+        return new EJS({url: Dali.Config.previsor_ejs}).render({
             title: state.title,
             scripts: getScripts(state, state.navItemSelected),
             page: state.navItemSelected,
@@ -124,10 +124,27 @@ export default {
                     if(navs[page].hidden){
                         return;
                     }
+
+                    var nombre = navs[page].name.replace(/ /g, "_");
+                    var path = "unidad" + navs[page].unitNumber + "/";
+                    sections.push(path + nombre);
+                    if(Object.keys(navs[page].extraFiles).length !== 0){
+                        for(var boxKey in navs[page].extraFiles){
+                            $.ajax({
+                                url: navs[page].extraFiles[boxKey],
+                                async: false,
+                                success: function (response, status, xhr) {
+                                    zip.file(path + nombre + "_ejer.xml", xhr.responseText);
+                                    state.toolbarsById[boxKey].state.__xml_path = path + nombre + "_ejer.xml";
+                                },
+                                error: function (xhr, status) {
+                                    console.error("Error while downloading XML file");
+                                }
+                            });
+                        }
+                    }
                     var inner = parseEJS(Dali.Config.scorm_visor_ejs, page, state);
-                    var nombre = navs[page].name;
-                    sections.push(nombre);
-                    zip.file(nombre + ".html", inner);
+                    zip.file(path + nombre + ".html", inner);
                 });
                 zip.file("index.html", Dali.Scorm.getIndex(navs));
                 zip.file("imsmanifest.xml", Dali.Scorm.testXML(state.title, sections));

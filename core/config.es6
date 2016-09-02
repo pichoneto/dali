@@ -1,6 +1,7 @@
 export default {
     xml_path: "/dali_documents/add_xml",
     exercise_render_template_iframe_src: "/dist/exercises/index.html",
+    previsor_ejs: "/assets/lib/visor/previsor_index.js",
     scorm_ejs: "/assets/lib/scorm/scorm_nav.js",
     scorm_visor_ejs: "/assets/lib/scorm/index.js",
     visor_ejs: "/assets/lib/visor/index.js",
