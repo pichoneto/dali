@@ -323,6 +323,8 @@ export function fullscreen() {
 			parent.document.mozFullScreenElement ||
 			parent.document.msFullscreenElement
 		  ){
+			i.className ="";
+			//Rewrite deault attibutes
 			if (parent.document.exitFullscreen) {
 				parent.document.exitFullscreen();
 			} else if (document.webkitExitFullscreen) {
@@ -334,6 +336,8 @@ export function fullscreen() {
 			}
 		}
 		else{	
+		i.className = "fullScreen";
+		
 		if (i.requestFullscreen) {
 			i.requestFullscreen();
 		} else if (i.webkitRequestFullscreen) {
@@ -343,7 +347,8 @@ export function fullscreen() {
 		} else if (i.msRequestFullscreen) {
 			i.msRequestFullscreen();
 		}
-		}
+		
+	     }
 	}
 	return true;
     };
