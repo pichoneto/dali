@@ -192,10 +192,11 @@ export function exportStateAsync(state) {
         // This is not required by thunk middleware, but it is convenient for us.
 
         var data = {
-            user_data:dali_editor_params.id,
-            dali_document: state
+    	    authenticity_token: dali_editor_params.authenticity_token,
+    	    dali_document: {user: {name: dali_editor_params.name, id: dali_editor_params.id}, json:state}
         };
         return fetch(url_to_save, {             //   return fetch(Dali.Config.export_url, {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -281,13 +282,15 @@ export function deleteAsync() {
 		var course_id = url_to_save.replace(/\D/g, '');
 		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
 
-        var data = {
-	    user: dali_editor_params,
-	    authenticity_token: dali_editor_params.token 
-        };
+        var data = { 
+	    authenticity_token: dali_editor_params.authenticity_token,
+        user: {name: dali_editor_params.name, id: dali_editor_params.id}
+	
+	};
 
 	return fetch(delete_url, {             //   return fetch(Dali.Config.export_url, {
 	    method: 'POST',
+        credentials: 'same-origin',
 	    headers: {
 		'Accept': 'application/json',
 		'Content-Type': 'application/json'
@@ -301,7 +304,7 @@ export function deleteAsync() {
 		    return response.text();
 		})
 		.then(result => {
-		    //dispatch(fetchVishResourcesSuccess(JSON.parse(result)));
+            parent.window.location = JSON.parse(result).redirect_url;
 		    return true;
 		})
 		.then(() => {
