@@ -453,7 +453,7 @@ function navItemCreator(state = {}, action = {}) {
                 type: action.payload.type,
                 position: action.payload.position,
                 unitNumber: (action.payload.parent === 0 ? state[action.payload.parent].children.length + 1 : state[action.payload.parent].unitNumber),
-                hidden: false,
+                hidden: state[action.payload.parent].hidden,
                 extraFiles: {},
                 titlesReduced: action.payload.titlesReduced || 'expanded'
             };
@@ -825,7 +825,7 @@ function createAliasButton(controls, alias) {
     if (!controls.main) {
         controls.main = {
             __name: "Alias",
-            icon: 'link',
+            icon: 'rate_review',
             accordions: {
                 '~extra': {
                     __name: "Alias",
@@ -836,7 +836,7 @@ function createAliasButton(controls, alias) {
     } else if (!controls.main.accordions['~extra']) {
         controls.main.accordions['~extra'] = {
             __name: "Alias",
-            icon: 'link',
+            icon: 'rate_review',
             buttons: {}
         };
     }

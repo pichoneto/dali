@@ -64,7 +64,7 @@ export default class DaliNavBar extends Component {
                 <button
                     className={ this.props.hideTab == 'show' && this.props.categoria == 'image' ? 'navButtonPlug active':'navButtonPlug' }
                     title='Images' disabled={false /*disablePlugins*/}
-                    onClick={() => { this.openPlugin('image')}}><i className="material-icons">panorama</i><br/><span
+                    onClick={() => { this.openPlugin('image')}}><i className="material-icons">image</i><br/><span
                     className="hideonresize"> Imagen</span></button>
                 <button
                     className={ this.props.hideTab == 'show' && this.props.categoria == 'multimedia' ? 'navButtonPlug active':'navButtonPlug' }
@@ -123,5 +123,3 @@ export default class DaliNavBar extends Component {
         );
     }
 }
-
-
