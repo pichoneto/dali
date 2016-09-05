@@ -1073,7 +1073,7 @@ function setVishId(state = 0, action = {}){
         case SET_VISH_ID:
             return action.payload.id;
         case IMPORT_STATE:
-            return action.payload.present.vishId;
+            return action.payload.present.vishId || state;
         default:
             return state;
     }
