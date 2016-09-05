@@ -10,7 +10,7 @@ import {addNavItem, selectNavItem, expandNavItem, removeNavItem, reorderNavItem,
     changeDisplayMode, updateToolbar, collapseToolbar,
     exportStateAsync, importStateAsync, importState,
     deleteAsync, fullscreen,
-    fetchVishResourcesSuccess, fetchVishResourcesAsync} from '../actions';
+    fetchVishResourcesSuccess, setVishId, fetchVishResourcesAsync} from '../actions';
 import {ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX, ID_PREFIX_SORTABLE_CONTAINER, BOX_TYPES} from '../constants';
 import DaliCanvas from '../components/DaliCanvas';
 import DaliCarousel from '../components/DaliCarousel';
@@ -44,7 +44,7 @@ class DaliApp extends Component {
 
     render() {
         const { dispatch, boxes, boxesIds, boxSelected, boxLevelSelected, navItemsIds, navItems, navItemSelected,
-            pageModalToggled, undoDisabled, redoDisabled, displayMode, isBusy, toolbars, title, fetchVishResults } = this.props;
+            pageModalToggled, undoDisabled, redoDisabled, displayMode, isBusy, toolbars, title, vishId, fetchVishResults } = this.props;
         let ribbonHeight = this.state.hideTab === 'hide' ? 0 : 47;
         return (
             /* jshint ignore:start */
@@ -55,6 +55,7 @@ class DaliApp extends Component {
                                 redoDisabled={redoDisabled}
                                 navItemsIds={navItemsIds}
                                 title={title}
+                                vishId={vishId}
                                 changeTitle={(id, title) => {this.dispatchAndSetState(changeTitle(title))}}
                                 navItemSelected={navItemSelected}
                                 boxSelected={boxSelected}
@@ -418,6 +419,7 @@ class DaliApp extends Component {
 
 function mapStateToProps(state) {
     return {
+        vishId: state.present.vishId,
         title: state.present.title,
         boxes: state.present.boxesById,
         boxesIds: state.present.boxes,

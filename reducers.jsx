@@ -6,7 +6,7 @@ import {ADD_BOX, SELECT_BOX, MOVE_BOX, DUPLICATE_BOX, RESIZE_BOX, UPDATE_BOX, DE
     ADD_NAV_ITEM, SELECT_NAV_ITEM, EXPAND_NAV_ITEM, REMOVE_NAV_ITEM, REORDER_NAV_ITEM, TOGGLE_NAV_ITEM, UPDATE_NAV_ITEM_EXTRA_FILES,
     CHANGE_SECTION_TITLE, CHANGE_UNIT_NUMBER,
     TOGGLE_PAGE_MODAL, TOGGLE_TEXT_EDITOR, TOGGLE_TITLE_MODE, CHANGE_TITLE,
-    CHANGE_DISPLAY_MODE, SET_BUSY, UPDATE_TOOLBAR, COLLAPSE_TOOLBAR, IMPORT_STATE, FETCH_VISH_RESOURCES_SUCCESS
+    CHANGE_DISPLAY_MODE, SET_BUSY, UPDATE_TOOLBAR, COLLAPSE_TOOLBAR, IMPORT_STATE, FETCH_VISH_RESOURCES_SUCCESS, SET_VISH_ID
 } from './actions';
 import {ID_PREFIX_SECTION, ID_PREFIX_PAGE, ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX} from './constants';
 
@@ -1068,6 +1068,17 @@ function changeDisplayMode(state = "", action = {}) {
     }
 }
 
+function setVishId(state = 0, action = {}){
+    switch(action.type){
+        case SET_VISH_ID:
+            return action.payload.id;
+        case IMPORT_STATE:
+            return action.payload.present.vishId;
+        default:
+            return state;
+    }
+}
+
 function isBusy(state = "", action = {}) {
     switch (action.type) {
         case SET_BUSY:
@@ -1089,6 +1100,7 @@ function fetchVishResults(state = {results: []}, action = {}) {
 }
 
 const GlobalState = undoable(combineReducers({
+    vishId: setVishId,
     title: changeTitle,
     pageModalToggled: togglePageModal,
     boxesById: boxesById, //{0: box0, 1: box1}
