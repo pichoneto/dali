@@ -19,7 +19,7 @@ export function Youtube(base) {
                     accordions: {
                         basic: {
                             __name: "Video",
-                            icon: 'build',
+                            icon: 'link',
                             buttons: {
                                 url: {
                                     __name: 'URL',
@@ -103,17 +103,6 @@ export function Youtube(base) {
                                     step: 0.05
                                 }
 
-                            }
-                        },
-                        '~extra': {
-                            __name: "Alias",
-                            icon: 'link',
-                            buttons: {
-                                test: {
-                                    __name: 'Test',
-                                    type: 'text',
-                                    isAttribute: true
-                                }
                             }
                         }
                     }

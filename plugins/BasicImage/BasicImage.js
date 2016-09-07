@@ -11,7 +11,7 @@ export function BasicImage(base) {
                     location: ["main", "_sortable"],
                     defaultValue: "checked"
                 },
-                icon: 'panorama'
+                icon: 'image'
             };
         },
         getToolbar: function () {
@@ -21,7 +21,7 @@ export function BasicImage(base) {
                     accordions: {
                         basic: {
                             __name: "URL",
-                            icon: 'build',
+                            icon: 'link',
                             buttons: {
                                 url: {
                                     __name: 'URL',
@@ -88,17 +88,6 @@ export function BasicImage(base) {
                                     min: 0,
                                     max: 1,
                                     step: 0.01
-                                }
-                            }
-                        },
-                        '~extra': {
-                            __name: "Alias",
-                            icon: 'link',
-                            buttons: {
-                                test: {
-                                    __name: 'Test',
-                                    type: 'text',
-                                    isAttribute: true
                                 }
                             }
                         }
