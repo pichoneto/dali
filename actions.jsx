@@ -38,6 +38,7 @@ export const COLLAPSE_TOOLBAR = 'COLLAPSE_TOOLBAR';
 
 export const IMPORT_STATE = 'IMPORT_STATE';
 export const CHANGE_TITLE = 'CHANGE_TITLE';
+export const SET_VISH_ID = 'SET_VISH_ID';
 
 export const FETCH_VISH_RESOURCES_SUCCESS = "FETCH_VISH_RESOURCES_SUCCESS";
 
@@ -172,6 +173,10 @@ export function collapseToolbar(id) {
     return {type: COLLAPSE_TOOLBAR, payload: {id}};
 }
 
+export function setVishId(id){
+    return {type: SET_VISH_ID, payload: {id}};
+}
+
 export function fetchVishResourcesSuccess(result) {
     return {type: FETCH_VISH_RESOURCES_SUCCESS, payload: {result}};
 }
@@ -217,6 +222,7 @@ export function exportStateAsync(state) {
                     url_to_save = "/dali_documents/" + dali_id;
                 }
                 dispatch(setBusy(false, "Success!"));
+                dispatch(setVishId(dali_id));
             })
             .then(data => console.log(data))
             .catch(e =>{
@@ -282,10 +288,10 @@ export function deleteAsync() {
 		var course_id = url_to_save.replace(/\D/g, '');
 		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
 
-        var data = { 
+        var data = {
 	    authenticity_token: dali_editor_params.authenticity_token,
         user: {name: dali_editor_params.name, id: dali_editor_params.id}
-	
+
 	};
 
 	return fetch(delete_url, {             //   return fetch(Dali.Config.export_url, {
@@ -296,7 +302,7 @@ export function deleteAsync() {
 		'Content-Type': 'application/json'
 	    },
 	     body: JSON.stringify(data)
-	
+
 	    }).then(response => {
 		    if (response.status >= 400) {
 			throw new Error("Error while searching");
@@ -343,9 +349,9 @@ export function fullscreen() {
 				parent.document.msExitFullscreen();
 			}
 		}
-		else{	
+		else{
 		i.className = "fullScreen";
-		
+
 		if (i.requestFullscreen) {
 			i.requestFullscreen();
 		} else if (i.webkitRequestFullscreen) {
@@ -355,7 +361,7 @@ export function fullscreen() {
 		} else if (i.msRequestFullscreen) {
 			i.msRequestFullscreen();
 		}
-		
+
 	     }
 	}
 	return true;
