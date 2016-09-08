@@ -84,7 +84,7 @@ export default class PluginRibbon extends Component {
                             onClick={() => {
                                 this.props.fullscreen();
                             }}>
-                        <i className="material-icons">fullscreen</i>
+                        <i className="material-icons js_fullscreen_accessor">fullscreen</i>
                     </button>
                 </div>
             </Col>

@@ -339,7 +339,9 @@ export function fullscreen() {
 		  ){
 			i.className ="";
 			//Rewrite deault attibutes
-			if (parent.document.exitFullscreen) {
+
+        	document.getElementsByClassName("js_fullscreen_accessor")[0].innerHTML = "fullscreen";
+            if (parent.document.exitFullscreen) {
 				parent.document.exitFullscreen();
 			} else if (document.webkitExitFullscreen) {
 				parent.document.webkitExitFullscreen();
@@ -352,15 +354,16 @@ export function fullscreen() {
 		else{
 		i.className = "fullScreen";
 
-		if (i.requestFullscreen) {
-			i.requestFullscreen();
-		} else if (i.webkitRequestFullscreen) {
-			i.webkitRequestFullscreen();
-		} else if (i.mozRequestFullScreen) {
-			i.mozRequestFullScreen();
-		} else if (i.msRequestFullscreen) {
-			i.msRequestFullscreen();
-		}
+            document.getElementsByClassName("js_fullscreen_accessor")[0].innerHTML = "fullscreen_exit";
+    		if (i.requestFullscreen) {
+    			i.requestFullscreen();
+    		} else if (i.webkitRequestFullscreen) {
+    			i.webkitRequestFullscreen();
+    		} else if (i.mozRequestFullScreen) {
+    			i.mozRequestFullScreen();
+    		} else if (i.msRequestFullscreen) {
+    			i.msRequestFullscreen();
+    		}
 
 	     }
 	}
