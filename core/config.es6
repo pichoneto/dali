@@ -1,5 +1,5 @@
 export default {
-<<<<<<< HEAD
+
     xml_path: "/dali_documents/add_xml",
     xml_fake_path: "exercises/ua2_ue10_ejer7.xml",
     exercise_render_template_iframe_src: "/dist/exercises/index.html",

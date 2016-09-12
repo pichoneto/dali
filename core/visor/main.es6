@@ -73,7 +73,8 @@ var parseEJS = function (path, page, state, fromScorm) {
         boxes: state.boxes,
         toolbarsById: state.toolbarsById,
         relativePath: fromScorm ? "../" : ""
-    }));
+
+	}));
 };
 
 export default {
@@ -112,6 +113,7 @@ export default {
             boxes: state.boxes,
             toolbarsById: state.toolbarsById,
             relativePath: "/",
+            vishPath: "/assets/"
         });
     },
     exportScorm: function (state) {
