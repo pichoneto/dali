@@ -30,6 +30,7 @@ export default function () {
             } else {
                 if (state.__pluginContainerIds[key]) {
                     json.attr['plugin-data-id'] = state.__pluginContainerIds[key].id;
+                    json.attr['plugin-data-display-name'] = state.__pluginContainerIds[key].name;
                     json.attr['plugin-data-height'] = state.__pluginContainerIds[key].height;
                 }
             }
@@ -49,7 +50,8 @@ export default function () {
                     id !== 'handleToolbar' &&
                     id !== 'afterRender' &&
                     id !== 'getConfigTemplate' &&
-                    id !== 'getRenderTemplate') {
+                    id !== 'getRenderTemplate' &&
+                    id !== 'getLocales') {
                     plugin[id] = descendant[id];
                 }
             });
@@ -59,10 +61,18 @@ export default function () {
                 descendant.init();
             }
         },
+        getLocales: function(){
+            try {
+                let currentLanguage = Dali.i18n.language;
+                let texts = require('./../plugins/' + this.getConfig().name + "/locales/" + currentLanguage);
+                Dali.i18n.addResourceBundle(currentLanguage, 'translation', texts, true, false);
+            }catch(e){}
+        },
         getConfig: function () {
-            var name, category, callback, needsConfigModal, needsTextEdition, needsXMLEdition, icon, aspectRatioButtonConfig;
+            var name, displayName, category, callback, needsConfigModal, needsTextEdition, needsXMLEdition, icon, aspectRatioButtonConfig;
             if (descendant.getConfig) {
                 name = descendant.getConfig().name;
+                displayName = descendant.getConfig().displayName;
                 category = descendant.getConfig().category;
                 icon = descendant.getConfig().icon;
                 needsConfigModal = descendant.getConfig().needsConfigModal;
@@ -72,6 +82,7 @@ export default function () {
             }
 
             name = defaultFor(name, 'PluginName', "Plugin name not assigned");
+            displayName = defaultFor(displayName, 'Plugin', "Plugin displayName not assigned");
             category = defaultFor(category, 'text', "Plugin category not assigned");
             needsConfigModal = defaultFor(needsConfigModal, false);
             needsTextEdition = defaultFor(needsTextEdition, false);
@@ -94,7 +105,7 @@ export default function () {
                 }
                 if (needsTextEdition) {
                     if (!state.__text) {
-                        state.__text = "Text goes here";
+                        state.__text = Dali.i18n.t("text_here");
                     }
                     if (!descendant.getRenderTemplate) {
                         descendant.getRenderTemplate = function (state) {
@@ -117,6 +128,7 @@ export default function () {
 
             return {
                 name: name,
+                displayName: displayName,
                 category: category,
                 callback: callback,
                 needsConfigModal: needsConfigModal,

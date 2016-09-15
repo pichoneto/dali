@@ -5,6 +5,7 @@ import interact from 'interact.js';
 import DaliBox from '../components/DaliBox';
 import {ID_PREFIX_SORTABLE_CONTAINER} from '../constants';
 import Dali from './../core/main';
+import i18n from 'i18next';
 
 export default class DaliBoxSortable extends Component {
     render() {
@@ -35,6 +36,7 @@ export default class DaliBoxSortable extends Component {
                                         height: container.height == 'auto' ? container.height : container.height + 'px',
                                         minHeight: '35px', 
                                         textAlign: 'center',
+                                        lineHeight: '100%',
                                         /* overflow: 'hidden',*/
                                         /* border: 0,
                                         borderBottom: '5px solid rgba(255,121,32,0.5)',*/
@@ -69,6 +71,7 @@ export default class DaliBoxSortable extends Component {
                                                                                  onBoxMoved={this.props.onBoxMoved}
                                                                                  onBoxResized={this.props.onBoxResized}
                                                                                  onBoxDropped={this.props.onBoxDropped}
+                                                                                 onVerticallyAlignBox={this.props.onVerticallyAlignBox}
                                                                                  onBoxModalToggled={this.props.onBoxModalToggled}
                                                                                  onBoxesInsideSortableReorder={this.props.onBoxesInsideSortableReorder}
                                                                                  onSortableContainerResized={this.props.onSortableContainerResized}
@@ -94,7 +97,7 @@ export default class DaliBoxSortable extends Component {
                     })}
                 </div>
                 <div className="dragContentHere">
-                    Drag content here
+                    {i18n.t("messages.drag_content")}
                 </div>
             </div>
             /* jshint ignore:end */

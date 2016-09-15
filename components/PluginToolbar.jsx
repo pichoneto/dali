@@ -2,9 +2,11 @@ import React, {Component} from 'react';
 import {Tooltip, FormControl, OverlayTrigger, FormGroup, Radio, ControlLabel, Checkbox,  Button, ButtonGroup, PanelGroup, Accordion, Panel, Tabs, Tab} from 'react-bootstrap';
 import ReactDOM from 'react-dom';
 import GridConfigurator from '../components/GridConfigurator.jsx';
+import RadioButtonFormGroup from '../components/RadioButtonFormGroup.jsx';
 import Select from 'react-select';
 import VishSearcher from './VishSearcher';
 import Dali from './../core/main';
+import i18n from 'i18next';
 
 export default class PluginToolbar extends Component {
     constructor(props) {
@@ -127,27 +129,22 @@ export default class PluginToolbar extends Component {
                 <div className="pestana" onClick={() => {this.setState({open: !this.state.open})}}></div>
                 <div id="tools" style={{width:  this.state.open? '250px':'40px'}} className="toolbox">
                     <OverlayTrigger placement="left"
-                                    overlay={ <Tooltip className={this.state.open ? 'hidden':''} id="tooltip_props" >propiedades</Tooltip>}>
+                                    overlay={ <Tooltip className={this.state.open ? 'hidden':''} id="tooltip_props" >{i18n.t('Properties')}</Tooltip>}>
                         <div onClick={() => {this.setState({open: !this.state.open})}}
                              style={{display: this.props.carouselShow? 'block':'none'}}
                              className={this.state.open ? 'carouselListTitle toolbarSpread':'carouselListTitle toolbarHide'}>
 
                             <div className="toolbarTitle"><i className="material-icons">settings</i><span
-                                className="toolbarTitletxt">Propiedades</span></div>
-                            <div className="pluginTitleInToolbar"> {toolbar.config.name || ""}</div>
+                                className="toolbarTitletxt">{i18n.t('Properties')}</span></div>
+                            <div className="pluginTitleInToolbar"> {toolbar.config.displayName || toolbar.config.name || ""}</div>
                         </div>
                     </OverlayTrigger>
                     <div id="insidetools" style={{display: this.state.open? 'block':'none'}}>
                         <div className="toolbarTabs" id="controlledTabs">
-                            {/*<Tabs className="toolbarTabs" ref="tabs" activeKey={this.state.activeKey} animation={false}
-                             onSelect={(key) => this.handleSelect(key)} id="controlledTabs">*/}
                             {Object.keys(toolbar.controls).map((tabKey, index) => {
                                 let tab = toolbar.controls[tabKey];
                                 return (
                                     <div key={'key_'+index} className={"toolbarTab"}>
-                                        {/*<Tab key={index} className={"toolbarTab"} eventKey={index} title={tab.__name}>
-                                         <ButtonGroup style={{width: '100%'}}> {deletebutton} {duplicateButton} </ButtonGroup>
-                                         <br/><br/>*/}
                                         <PanelGroup >
                                             {Object.keys(tab.accordions).sort().map((accordionKey, index) => {
                                                 let accordion = tab.accordions[accordionKey];
@@ -162,7 +159,7 @@ export default class PluginToolbar extends Component {
                                                                collapsible
                                                                onEnter={(panel) => {panel.parentNode.classList.add("extendedPanel")}}
                                                                onExited={(panel) => {panel.parentNode.classList.remove("extendedPanel")}}
-                                                               header={<span><i className="toolbarIcons material-icons">web_asset</i>{'Bloque '+ (index + 1)}</span>}>
+                                                               header={<span><i className="toolbarIcons material-icons">web_asset</i>{(this.props.toolbars[this.props.box.id].state && this.props.toolbars[this.props.box.id].state.__pluginContainerIds && this.props.toolbars[this.props.box.id].state.__pluginContainerIds[container.key].name) ? this.props.toolbars[this.props.box.id].state.__pluginContainerIds[container.key].name : (i18n.t('Block') + ' '+ (index + 1))}</span>}>
                                                             <GridConfigurator id={id}
                                                                               parentId={this.props.box.id}
                                                                               container={container}
@@ -179,11 +176,9 @@ export default class PluginToolbar extends Component {
                                         {textButton}
                                         {xmlButton}
                                         {configButton}
-                                        {/* </Tab>*/}
                                     </div>
                                 );
                             })}
-                            {/*</Tabs>*/}
                         </div>
                     </div>
                 </div>
@@ -236,7 +231,23 @@ export default class PluginToolbar extends Component {
                     </div>
                     /* jshint ignore:end */
                 );
+
             }
+
+        }
+        
+        if (accordion.key === 'structure' && this.props.box.container !== 0){
+            children.push(
+                /* jshint ignore:start */
+                <RadioButtonFormGroup   key="verticalalignment"  
+                                        title={i18n.t('Vertical_align')}
+                                        options={['top', 'middle', 'bottom']}
+                                        selected={this.props.box.verticalAlign ? this.props.box.verticalAlign : 'top'}
+                                        click={(option) => {this.props.onVerticallyAlignBox(this.props.boxSelected, option)}}
+                                        tooltips={[i18n.t('messages.align_top'),i18n.t('messages.align_middle'),i18n.t('messages.align_bottom')]}
+                                        icons={['vertical_align_top', 'vertical_align_center', 'vertical_align_bottom']} /> 
+                /* jshint ignore:end */
+            );
         }
         return React.createElement(Panel, props, children);
     }

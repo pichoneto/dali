@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import GlobalState from '../reducers';
 import DaliApp from './DaliApp';
+import i18n from 'i18next';
+
 
 export default class ReduxProvider extends Component {
     constructor(props) {
@@ -9,13 +11,13 @@ export default class ReduxProvider extends Component {
 
         this.initialState = {
             present: {
-                title: "Título Curso",
+                title: i18n.t('course_title'),
                 displayMode: "list",
                 navItemsById: {
                     0: {id: 0, children: ["se-1467887497411"], boxes: [], level: 0, type: '', hidden: false},
                     "se-1467887497411": {
                         id: "se-1467887497411",
-                        name: "Section 1",
+                        name: i18n.t('section') + " 1",
                         isExpanded: true,
                         parent: 0,
                         children: [],
@@ -59,7 +61,7 @@ export default class ReduxProvider extends Component {
                         id: "bs-1467887497412",
                         state: undefined,
                         controls: {},
-                        config: {name: "Contenedor"},
+                        config: {name: i18n.t('Container')},
                         showTextEditor: false,
                         isCollapsed: false
                     }

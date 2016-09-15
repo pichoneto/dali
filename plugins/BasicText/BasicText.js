@@ -3,6 +3,7 @@ export function BasicText(base) {
         getConfig: function () {
             return {
                 name: 'BasicText',
+                displayName: Dali.i18n.t('BasicText.PluginName'),
                 category: 'text',
                 needsConfigModal: false,
                 needsTextEdition: true,
@@ -15,7 +16,7 @@ export function BasicText(base) {
                     __name: "Main",
                     accordions: {
                         style: {
-                            __name: "Estilo caja",
+                            __name: Dali.i18n.t('BasicText.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
@@ -27,7 +28,7 @@ export function BasicText(base) {
                                     units: 'px'
                                 },
                                 borderWidth: {
-                                    __name: 'Grosor de borde',
+                                    __name: Dali.i18n.t('BasicText.border_size'),
                                     type: 'number',
                                     value: '0px',
                                     min: 0,
@@ -35,18 +36,18 @@ export function BasicText(base) {
                                     units: 'px'
                                 },
                                 borderStyle: {
-                                    __name: 'Estilo de borde',
+                                    __name: Dali.i18n.t('BasicText.border_style'),
                                     type: 'select',
                                     value: 'solid',
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit']
                                 },
                                 borderColor: {
-                                    __name: 'Color de borde',
+                                    __name: Dali.i18n.t('BasicText.border_color'),
                                     type: 'color',
                                     value: '#000000'
                                 },
                                 borderRadius: {
-                                    __name: 'Radio',
+                                    __name: Dali.i18n.t('BasicText.radius'),
                                     type: 'number',
                                     value: '0%',
                                     min: '0',
@@ -55,7 +56,7 @@ export function BasicText(base) {
                                     units: '%'
                                 },
                                 opacity: {
-                                    __name: 'Opacidad',
+                                    __name: Dali.i18n.t('BasicText.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,

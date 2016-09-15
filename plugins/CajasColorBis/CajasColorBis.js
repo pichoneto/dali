@@ -4,6 +4,7 @@ export function CajasColorBis(base) {
         getConfig: function () {
             return {
                 name: 'CajasColorBis',
+                displayName: Dali.i18n.t('CajasColorBis.PluginName'),
                 category: 'animations',
                 icon: 'view_column'
             };
@@ -14,21 +15,21 @@ export function CajasColorBis(base) {
                     __name: "Main",
                     accordions: {
                         b_general: {
-                            __name: "General",
+                            __name: Dali.i18n.t('CajasColorBis.general'),
                             icon: 'build',
                             buttons: {
                                 nBoxes: {
-                                    __name: "Número de cajas",
+                                    __name: Dali.i18n.t('CajasColorBis.number_of_boxes'),
                                     type: 'number',
-                                    value: 2,
+                                    value: this.getInitialState().nBoxes,
                                     max: 8,
                                     min: 1,
                                     autoManaged: false
                                 },
                                 rounded: {
-                                    __name: "Borde redondeado",
+                                    __name: Dali.i18n.t('CajasColorBis.rounded_border'),
                                     type: 'checkbox',
-                                    value: 'unchecked',
+                                    value: this.getInitialState().rounded,
                                     units: '%',
                                     autoManaged: false
                                 },
@@ -49,7 +50,7 @@ export function CajasColorBis(base) {
                                  autoManaged: false
                                  },*/
                                 radios: {
-                                    __name: 'Tipo de cajas color',
+                                    __name: Dali.i18n.t('CajasColorBis.cajascolor_type'),
                                     type: 'radio',
                                     value: 'HorizontalNoImagen',
                                     options: ['HorizontalNoImagen', 'HorizontalSiImagen', 'VerticalNoImagen', 'VerticalSiImagen'],
@@ -65,10 +66,10 @@ export function CajasColorBis(base) {
              var buttonsSC = {};
              var objAux;
              */
-            toolBar.main.accordions.buttonStyle = {__name: "Estilo títulos",icon: 'palette', buttons: {}};
+            toolBar.main.accordions.buttonStyle = {__name: "Estilo títulos", icon: 'palette', buttons: {}};
             for (var i = 0; i < base.getState().nBoxes; i++) {
                 toolBar.main.accordions.buttonStyle.buttons["box" + i] = {
-                    __name: 'Caja ' + i,
+                    __name: Dali.i18n.t('CajasColorBis.Box') + i,
                     type: 'select',
                     value: this.defaultColors[i],
                     options: ['verdeoscuro', 'cyan', 'granate', 'naranja', 'rojo', 'azul', 'marron', 'rojizo', 'azulpuro', 'azulverdoso', 'violeta', 'marronvivo', 'gris', 'amarillo'],
@@ -92,7 +93,7 @@ export function CajasColorBis(base) {
             var i;
 
             if (state.image) {
-                template += "<div style='height: 20%; max-height: 100px;' ><plugin plugin-data-key='image' plugin-data-default='BasicImage' /></div>";
+                template += "<div style='height: 20%; max-height: 100px;' ><plugin plugin-data-display-name='" + Dali.i18n.t('CajasColorBis.image_box_name') + "' plugin-data-key='image' plugin-data-default='BasicImage' /></div>";
             }
 
             var rounded = '';
@@ -104,7 +105,7 @@ export function CajasColorBis(base) {
                 template += "<div class='tabla_colores'><div class='fila_colores'>";
                 var width = 100 / state.nBoxes;
                 for (i = 0; i < state.nBoxes; i++) {
-                    template += "<div value='ffd' class='celda_colores " + state.colors[i] + " " + rounded + "'  onclick='$dali$.click()' style='max-height:50px; height: 10%; width: " + width + "%'><plugin plugin-data-key='title" + i + "' plugin-data-default='BasicText'  plugin-data-resizable plugin-data-initialHeight='50px' /></div>";
+                    template += "<div value='ffd' class='celda_colores " + state.colors[i] + " " + rounded + "'  onclick='$dali$.click()' style='max-height:50px; height: 10%; width: " + width + "%'><plugin plugin-data-key='title" + i + "' plugin-data-display-name='" + Dali.i18n.t('CajasColorBis.title_box_name') + (i + 1) + "' plugin-data-default='BasicText' plugin-data-resizable plugin-data-initialHeight='50px' /></div>";
                     if (i !== (state.nBoxes - 1)) {
                         template += "<div class='sep'></div>";
                     }
@@ -112,16 +113,16 @@ export function CajasColorBis(base) {
                 template += "</div></div>";
 
                 for (i = 0; i < state.nBoxes; i++) {
-                    template += "<div class='bloque_colores capa_" + state.colors[i] + " " + rounded + "'  style='min-height: 40px; height: 15%  !important; display:" + disp + "'><plugin plugin-data-key='box" + i + "' plugin-data-resizable /></div>";
+                    template += "<div class='bloque_colores capa_" + state.colors[i] + " " + rounded + "'  style='min-height: 40px; height: 15%  !important; display:" + disp + "'><plugin plugin-data-key='box" + i + "' plugin-data-display-name='" + Dali.i18n.t('CajasColorBis.content_box_name') + (i + 1) + "' plugin-data-resizable /></div>";
                 }
 
                 template += "</div>";
             } else {
                 for (i = 0; i < state.nBoxes; i++) {
                     template += "<div class='tabla_colores'><div class='fila_colores'>";
-                    template += "<div class='celda_colores " + state.colors[i] + " " + rounded + "'   onclick='$dali$.click()' style='max-height: 50px; height: 10%;'><plugin plugin-data-key='title" + i + "' plugin-data-default='BasicText'  " + (i % 2 === 0 ? " plugin-data-resizable plugin-data-fontSize plugin-data-initialHeight='100px'" : "") + " /></div>";
+                    template += "<div class='celda_colores " + state.colors[i] + " " + rounded + "' onclick='$dali$.click()' style='max-height: 50px; height: 10%;'><plugin plugin-data-key='title" + i + "' plugin-data-display-name='" + Dali.i18n.t('CajasColorBis.title_box_name') + (i + 1) + "' plugin-data-default='BasicText'  " + (i % 2 === 0 ? " plugin-data-resizable plugin-data-fontSize plugin-data-initialHeight='100px'" : "") + " /></div>";
                     template += "</div></div>";
-                    template += "<div class='bloque_colores capa_" + state.colors[i] + " " + rounded + "'  style='min-height: 40px; height: 15% !important; display:" + disp + "'><plugin plugin-data-key='box" + i + "'  plugin-data-resizable /></div>";
+                    template += "<div class='bloque_colores capa_" + state.colors[i] + " " + rounded + "'  style='min-height: 40px; height: 15% !important; display:" + disp + "'><plugin plugin-data-key='box" + i + "' plugin-data-display-name='" + Dali.i18n.t('CajasColorBis.content_box_name') + (i + 1) + "' plugin-data-resizable /></div>";
                 }
             }
 

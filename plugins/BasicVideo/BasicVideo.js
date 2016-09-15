@@ -3,6 +3,7 @@ export function BasicVideo(base) {
         getConfig: function () {
             return {
                 name: 'BasicVideo',
+                displayName: Dali.i18n.t('BasicVideo.PluginName'),
                 category: 'multimedia',
                 aspectRatioButtonConfig: {
                     name: "Aspect Ratio",
@@ -18,24 +19,24 @@ export function BasicVideo(base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: "Video",
+                            __name: Dali.i18n.t('BasicVideo.Video'),
                             icon: 'link',
                             buttons: {
                                 url: {
-                                    __name: 'URL',
+                                    __name: Dali.i18n.t('BasicVideo.URL'),
                                     type: 'text',
                                     autoManaged: false,
                                     value: 'http://video.webmfiles.org/big-buck-bunny_trailer.webm'
                                 },
                                 allowFullScreen: {
-                                    __name: 'Allow FullScreen',
+                                    __name: Dali.i18n.t('BasicVideo.Allow_fullscreen'),
                                     type: 'checkbox',
                                     value: 'unchecked',
                                     checked: 'false',
                                     autoManaged: false
                                 },
                                 controls: {
-                                    __name: 'Show Controls',
+                                    __name: Dali.i18n.t('BasicVideo.Show_controls'),
                                     type: 'checkbox',
                                     value: 'unchecked',
                                     checked: 'false',
@@ -44,11 +45,11 @@ export function BasicVideo(base) {
                             }
                         },
                         style: {
-                            __name: "Estilo caja",
+                            __name: Dali.i18n.t('BasicVideo.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
-                                    __name: 'Padding',
+                                    __name: Dali.i18n.t('BasicVideo.padding'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -57,7 +58,7 @@ export function BasicVideo(base) {
                                     autoManaged: false
                                 },
                                 borderSize: {
-                                    __name: 'Grosor de borde',
+                                    __name: Dali.i18n.t('BasicVideo.border_size'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -66,20 +67,20 @@ export function BasicVideo(base) {
                                     autoManaged: false
                                 },
                                 borderStyle: {
-                                    __name: 'Estilo de borde',
+                                    __name: Dali.i18n.t('BasicVideo.border_style'),
                                     type: 'select',
                                     value: 'solid',
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
                                     autoManaged: false
                                 },
                                 borderColor: {
-                                    __name: 'Color de borde',
+                                    __name: Dali.i18n.t('BasicVideo.border_color'),
                                     type: 'color',
                                     value: '#000000',
                                     autoManaged: false
                                 },
                                 borderRadius: {
-                                    __name: 'Radio',
+                                    __name: Dali.i18n.t('BasicVideo.radius'),
                                     type: 'number',
                                     value: '0',
                                     min: '0',
@@ -88,7 +89,7 @@ export function BasicVideo(base) {
                                     autoManaged: false
                                 },
                                 opacity: {
-                                    __name: 'Opacidad',
+                                    __name: Dali.i18n.t('BasicVideo.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,

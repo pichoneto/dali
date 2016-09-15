@@ -5,7 +5,7 @@ import thunkMiddleware from 'redux-thunk';
 import sortable from 'jquery-ui/ui/widgets/sortable';
 import DevTools from './containers/DevTools';
 import ReduxProvider from './containers/ReduxProvider';
-
+import i18n from './i18n';
 
 require('es6-promise').polyfill();
 require('expose?Dali!./core/temp_hack');

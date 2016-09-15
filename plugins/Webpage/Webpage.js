@@ -3,6 +3,7 @@ export function Webpage(base) {
         getConfig: function () {
             return {
                 name: 'Webpage',
+                displayName: Dali.i18n.t('Webpage.PluginName'),
                 category: 'multimedia',
                 icon: 'public'
             };
@@ -13,7 +14,7 @@ export function Webpage(base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: "URL",
+                            __name: Dali.i18n.t('Webpage.URL'),
                             icon: 'link',
                             buttons: {
                                 url: {
@@ -25,7 +26,7 @@ export function Webpage(base) {
                             }
                         },
                         style: {
-                            __name: "Estilo caja",
+                            __name: Dali.i18n.t('Webpage.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
@@ -38,7 +39,7 @@ export function Webpage(base) {
                                     autoManaged: false
                                 },
                                 borderSize: {
-                                    __name: 'Grosor de borde',
+                                    __name: Dali.i18n.t('Webpage.border_size'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -47,20 +48,20 @@ export function Webpage(base) {
                                     autoManaged: false
                                 },
                                 borderStyle: {
-                                    __name: 'Estilo de borde',
+                                    __name: Dali.i18n.t('Webpage.border_style'),
                                     type: 'select',
                                     value: 'solid',
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
                                     autoManaged: false
                                 },
                                 borderColor: {
-                                    __name: 'Color de borde',
+                                    __name: Dali.i18n.t('Webpage.border_color'),
                                     type: 'color',
                                     value: '#000000',
                                     autoManaged: false
                                 },
                                 borderRadius: {
-                                    __name: 'Radio',
+                                    __name: Dali.i18n.t('Webpage.radius'),
                                     type: 'number',
                                     value: '0',
                                     min: '0',
@@ -69,7 +70,7 @@ export function Webpage(base) {
                                     autoManaged: false
                                 },
                                 opacity: {
-                                    __name: 'Opacidad',
+                                    __name: Dali.i18n.t('Webpage.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,

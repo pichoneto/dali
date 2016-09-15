@@ -22,5 +22,9 @@ export default {
         'Container',
         'ListaNumerada',
         'RelacionaAll'
+    ],
+    availableLanguages:[
+        'en',
+        'es'
     ]
 };

@@ -4,24 +4,25 @@ import './utils';
 import {ADD_BOX, SELECT_BOX, MOVE_BOX, DUPLICATE_BOX, RESIZE_BOX, UPDATE_BOX, DELETE_BOX, REORDER_BOX, DROP_BOX, INCREASE_LEVEL,
     RESIZE_SORTABLE_CONTAINER, CHANGE_COLS, CHANGE_ROWS, CHANGE_SORTABLE_PROPS, REORDER_BOXES,
     ADD_NAV_ITEM, SELECT_NAV_ITEM, EXPAND_NAV_ITEM, REMOVE_NAV_ITEM, REORDER_NAV_ITEM, TOGGLE_NAV_ITEM, UPDATE_NAV_ITEM_EXTRA_FILES,
-    CHANGE_SECTION_TITLE, CHANGE_UNIT_NUMBER,
+    CHANGE_SECTION_TITLE, CHANGE_UNIT_NUMBER, VERTICALLY_ALIGN_BOX,
     TOGGLE_PAGE_MODAL, TOGGLE_TEXT_EDITOR, TOGGLE_TITLE_MODE, CHANGE_TITLE,
     CHANGE_DISPLAY_MODE, SET_BUSY, UPDATE_TOOLBAR, COLLAPSE_TOOLBAR, IMPORT_STATE, FETCH_VISH_RESOURCES_SUCCESS, SET_VISH_ID
 } from './actions';
 import {ID_PREFIX_SECTION, ID_PREFIX_PAGE, ID_PREFIX_BOX, ID_PREFIX_SORTABLE_BOX} from './constants';
-
+import i18n from 'i18next';
 
 function boxCreator(state = {}, action = {}) {
     switch (action.type) {
         case ADD_BOX:
             let position, width, height;
+            let verticalAlign = 'middle';
             let level = (state[action.payload.ids.parent]) ? state[action.payload.ids.parent].level + 1 : 0;
             switch (action.payload.type) {
                 case 'sortable':
                     position = {x: 0, y: 0, type: 'relative'};
                     width = '100%';
                     level = -1;
-                    break;
+                     break;
                 default:
                     position = {
                         x: Math.floor(Math.random() * 200),
@@ -77,6 +78,7 @@ function boxCreator(state = {}, action = {}) {
                                 textAlign: 'center'
                             },
                             height: pluginContainers[key].height || 'auto',
+                            key: key,
                             colDistribution: [100],
                             cols: [
                                 [100]
@@ -97,6 +99,7 @@ function boxCreator(state = {}, action = {}) {
                 position: position,
                 width: width,
                 height: height,
+                verticalAlign: verticalAlign,
                 content: action.payload.content,
                 text: null,
                 draggable: action.payload.draggable,
@@ -238,6 +241,12 @@ function boxesById(state = {}, action = {}) {
                     height: action.payload.height
                 })
             });
+        case VERTICALLY_ALIGN_BOX:
+            return Object.assign({}, state, {
+                [action.payload.id]: Object.assign({}, state[action.payload.id], {
+                    verticalAlign: action.payload.verticalAlign
+                })
+            });
         case RESIZE_SORTABLE_CONTAINER:
             return Object.assign({}, state, {
                 [action.payload.parent]: Object.assign({}, state[action.payload.parent], {
@@ -262,6 +271,7 @@ function boxesById(state = {}, action = {}) {
                                 borderStyle: 'solid',
                                 opacity: '1'
                             },
+                            key: containerKey,
                             height: container.height,
                             colDistribution: [100],
                             cols: [
@@ -479,7 +489,7 @@ function recalculateNames(state = {}, old = {}, resta = 0, numeroBorrados = 0) {
         }
     }
     // Rename pages
-    /*var pages = */
+    var pages = 
     Object.keys(state).filter(page => {
         if (state[page].type === 'slide' || state[page].type === 'document') {
             return page;
@@ -520,7 +530,7 @@ function navItemsIds(state = [], action = {}) {
     switch (action.type) {
         case ADD_NAV_ITEM:
             let nState = state.slice();
-            nState.splice(action.payload.position - 1, 0, action.payload.id);
+            nState.splice(action.payload.position-1 , 0, action.payload.id);
             return nState;
         case REMOVE_NAV_ITEM:
             let newState = state.slice();
@@ -614,7 +624,7 @@ function navItemsById(state = {}, action = {}) {
 
                 action.payload.newIndId.forEach(elem => {
                     newSt = Object.assign({}, newSt, {
-                        [elem]: Object.assign({}, newSt[elem], {position: action.payload.newIndId.indexOf(elem)})
+                        [elem]: Object.assign({}, newSt[elem], {position: action.payload.newIndId.indexOf(elem)+1})
                     });
                 });
             }
@@ -720,7 +730,8 @@ function createSortableButtons(controls, width) {
             __name: "Main",
             accordions: {
                 _sortable: {
-                    __name: "Estructura",
+                    key: 'structure',
+                    __name: i18n.t('Structure'),
                     icon: 'border_all',
                     buttons: {}
                 }
@@ -728,13 +739,14 @@ function createSortableButtons(controls, width) {
         };
     } else if (!controls.main.accordions._sortable) {
         controls.main.accordions._sortable = {
-            __name: "Estructura",
+            key: 'structure',
+            __name: i18n.t('Structure'),
             icon: 'border_all',
             buttons: {}
         };
     }
     controls.main.accordions._sortable.buttons.width = {
-        __name: 'Width (%)',
+        __name: i18n.t('Width_percentage'),
         type: 'number',
         value: width || 100,
         min: 0,
@@ -744,7 +756,7 @@ function createSortableButtons(controls, width) {
         autoManaged: true
     };
     controls.main.accordions._sortable.buttons.height = {
-        __name: 'Height (%)',
+        __name: i18n.t('Height_percentage'),
         type: 'number',
         value: 'auto',
         min: 0,
@@ -754,19 +766,20 @@ function createSortableButtons(controls, width) {
         autoManaged: true
     };
     controls.main.accordions._sortable.buttons.___heightAuto = {
-        __name: 'Height Auto',
+        __name: i18n.t('Height_auto'),
         type: 'checkbox',
         value: 'checked',
         checked: 'true',
         autoManaged: true
     };
     controls.main.accordions._sortable.buttons.___position = {
-        __name: 'Position',
+        __name: i18n.t('Position'),
         type: 'radio',
         value: 'relative',
         options: ['absolute', 'relative'],
         autoManaged: true
     };
+    
 
 }
 
@@ -776,7 +789,8 @@ function createFloatingBoxButtons(controls, width) {
             __name: "Main",
             accordions: {
                 _sortable: {
-                    __name: "Estructura",
+                    key: 'structure',
+                    __name: i18n.t('Structure'),
                     icon: 'border_all',
                     buttons: {}
                 }
@@ -784,14 +798,15 @@ function createFloatingBoxButtons(controls, width) {
         };
     } else if (!controls.main.accordions._sortable) {
         controls.main.accordions._sortable = {
-            __name: "Estructura",
+            key: 'structure',
+            __name: i18n.t('Structure'),
             icon: 'border_all',
             buttons: {}
         };
     }
 
     controls.main.accordions._sortable.buttons.width = {
-        __name: 'Width (px)',
+        __name: i18n.t('Width_pixels'),
         type: 'number',
         value: width || 100,
         min: 0,
@@ -801,7 +816,7 @@ function createFloatingBoxButtons(controls, width) {
         autoManaged: true
     };
     controls.main.accordions._sortable.buttons.height = {
-        __name: 'Height (px)',
+        __name: i18n.t('Height_pixels'),
         type: 'number',
         value: 'auto',
         min: 0,
@@ -811,7 +826,7 @@ function createFloatingBoxButtons(controls, width) {
         autoManaged: true
     };
     controls.main.accordions._sortable.buttons.___heightAuto = {
-        __name: 'Height Auto',
+        __name: i18n.t('Height_auto'),
         type: 'checkbox',
         value: 'checked',
         checked: 'true',
@@ -864,7 +879,7 @@ function toolbarsById(state = {}, action = {}) {
             };
             if (action.payload.type && action.payload.type === 'sortable') {
                 if (toolbar.config) {
-                    toolbar.config.name = 'Contenedor';
+                    toolbar.config.name = i18n.t('Container_');
                 }
             }
 

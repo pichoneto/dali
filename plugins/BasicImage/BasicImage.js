@@ -3,6 +3,7 @@ export function BasicImage(base) {
         getConfig: function () {
             return {
                 name: 'BasicImage',
+                displayName: Dali.i18n.t('BasicImage.PluginName'),
                 category: 'image',
                 needsConfigModal: false,
                 needsTextEdition: false,
@@ -20,7 +21,7 @@ export function BasicImage(base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: "URL",
+                            __name: Dali.i18n.t('BasicImage.source'),
                             icon: 'link',
                             buttons: {
                                 url: {
@@ -32,11 +33,11 @@ export function BasicImage(base) {
                             }
                         },
                         style: {
-                            __name: "Estilo caja",
+                            __name: Dali.i18n.t('BasicImage.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
-                                    __name: 'Padding',
+                                    __name: Dali.i18n.t('BasicImage.padding'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -45,13 +46,13 @@ export function BasicImage(base) {
                                     autoManaged: false
                                 },
                                 backgroundColor: {
-                                    __name: 'Color de fondo',
+                                    __name: Dali.i18n.t('BasicImage.background_color'),
                                     type: 'color',
                                     value: '#ffffff',
                                     autoManaged: false
                                 },
                                 borderSize: {
-                                    __name: 'Grosor de borde',
+                                    __name: Dali.i18n.t('BasicImage.box_style'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -60,20 +61,20 @@ export function BasicImage(base) {
                                     autoManaged: false
                                 },
                                 borderStyle: {
-                                    __name: 'Estilo de borde',
+                                    __name: Dali.i18n.t('BasicImage.box_style'),
                                     type: 'select',
                                     value: 'solid',
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
                                     autoManaged: false
                                 },
                                 borderColor: {
-                                    __name: 'Color de borde',
+                                    __name: Dali.i18n.t('BasicImage.border_color'),
                                     type: 'color',
                                     value: '#000000',
                                     autoManaged: false
                                 },
                                 borderRadius: {
-                                    __name: 'Radio',
+                                    __name:  Dali.i18n.t('BasicImage.radius'),
                                     type: 'number',
                                     value: '0',
                                     min: '0',
@@ -82,7 +83,7 @@ export function BasicImage(base) {
                                     autoManaged: false
                                 },
                                 opacity: {
-                                    __name: 'Opacidad',
+                                    __name: Dali.i18n.t('BasicImage.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,

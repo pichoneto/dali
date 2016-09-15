@@ -3,6 +3,7 @@ export function Youtube(base) {
         getConfig: function () {
             return {
                 name: 'Youtube',
+                displayName: Dali.i18n.t('Youtube.PluginName'),
                 category: 'multimedia',
                 aspectRatioButtonConfig: {
                     name: "Aspect Ratio",
@@ -18,11 +19,11 @@ export function Youtube(base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: "Video",
+                            __name: Dali.i18n.t('Youtube.Video'),
                             icon: 'link',
                             buttons: {
                                 url: {
-                                    __name: 'URL',
+                                    __name: Dali.i18n.t('Youtube.URL'),
                                     type: 'text',
                                     autoManaged: false,
                                     value: 'https://www.youtube.com/watch?v=S9M3c1_yl-E'
@@ -51,11 +52,11 @@ export function Youtube(base) {
                             }
                         },
                         style: {
-                            __name: "Estilo caja",
+                            __name: Dali.i18n.t('Youtube.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
-                                    __name: 'Padding',
+                                    __name: Dali.i18n.t('Youtube.padding'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -64,7 +65,7 @@ export function Youtube(base) {
                                     autoManaged: false
                                 },
                                 borderSize: {
-                                    __name: 'Grosor de borde',
+                                    __name: Dali.i18n.t('Youtube.border_size'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -73,20 +74,20 @@ export function Youtube(base) {
                                     autoManaged: false
                                 },
                                 borderStyle: {
-                                    __name: 'Estilo de borde',
+                                    __name: Dali.i18n.t('Youtube.border_style'),
                                     type: 'select',
                                     value: 'solid',
                                     options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
                                     autoManaged: false
                                 },
                                 borderColor: {
-                                    __name: 'Color de borde',
+                                    __name: Dali.i18n.t('Youtube.border_color'),
                                     type: 'color',
                                     value: '#000000',
                                     autoManaged: false
                                 },
                                 borderRadius: {
-                                    __name: 'Radio',
+                                    __name: Dali.i18n.t('Youtube.radius'),
                                     type: 'number',
                                     units: '%',
                                     value: '0',
@@ -95,7 +96,7 @@ export function Youtube(base) {
                                     autoManaged: false
                                 },
                                 opacity: {
-                                    __name: 'Opacidad',
+                                    __name: Dali.i18n.t('Youtube.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,

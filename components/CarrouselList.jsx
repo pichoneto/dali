@@ -4,6 +4,7 @@ import {ID_PREFIX_SECTION, ID_PREFIX_PAGE, ID_PREFIX_SORTABLE_BOX, BOX_TYPES} fr
 import Section from '../components/Section';
 import PageMenu from '../components/PageMenu';
 import DaliIndexTitle from '../components/DaliIndexTitle';
+import i18n from 'i18next';
 
 export default class CarrouselList extends Component {
     render() {
@@ -37,12 +38,17 @@ export default class CarrouselList extends Component {
                                 return <h4 key={index}
                                            id={id}
                                            className={'navItemBlock ' +classSelected}
-                                           onClick={e => {
+                                           onMouseDown={e => {
                                                     this.props.onNavItemSelected(id);
                                                     e.stopPropagation();
-                                               }}>
+                                               }}
+                                            onClick={e => {
+                                                this.props.onNavItemSelected(navItem.id);
+                                                e.stopPropagation();
+                                             }}
+                                               >
                                         <span style={{marginLeft: 20*(this.props.navItems[id].level-1)}}>
-                                            <i className="material-icons fileIcon">{this.props.navItems[id].type == 'slide' ? "slideshow" : "insert_drive_file"}</i>   
+                                            <i className="material-icons fileIcon">{this.props.navItems[id].type == 'slide' ? "slideshow" : "insert_drive_file"}</i>
                                         <DaliIndexTitle
                                             id={id}
                                             title={this.props.navItems[id].name}
@@ -62,7 +68,7 @@ export default class CarrouselList extends Component {
                                 let idnuevo = ID_PREFIX_SECTION + Date.now();
                                 this.props.onSectionAdded(
                                     idnuevo,
-                                    "Section " + this.sections(),
+                                    i18n.t("section") + " " + this.sections(),
                                     this.props.navItemSelected,
                                     [],
                                     this.props.navItems[this.props.navItemSelected].level + 1,
@@ -91,8 +97,8 @@ export default class CarrouselList extends Component {
                               onPageAdded={this.props.onSectionAdded}/>
 
                     <OverlayTrigger trigger={["click", "focus"]} placement="top" overlay={
-                        <Popover id="popov" title="Eliminar página">
-                            <i style={{color: 'yellow', fontSize: '13px'}} className="material-icons">warning</i> Esta acción borrará todo el contenido de la página.<br/>
+                        <Popover id="popov" title={i18n.t("delete_page")}>
+                            <i style={{color: 'yellow', fontSize: '13px'}} className="material-icons">warning</i> {i18n.t("messages.delete_page")}<br/>
                                 <Button className="popoverButton"
                                     disabled={this.props.navItemSelected === 0}
                                     style={{float: 'right'}}
@@ -103,12 +109,12 @@ export default class CarrouselList extends Component {
                                                 this.props.onNavItemRemoved(ids, this.props.navItems[this.props.navItemSelected].parent, boxes );
                                             }
                                         }>
-                                    Aceptar
+                                    {i18n.t("Accept")}
                                 </Button>
                                 <Button className="popoverButton"
                                     disabled={this.props.navItemSelected === 0}
                                     style={{float: 'right'}}  >
-                                    Cancelar
+                                    {i18n.t("Cancel")}
                                 </Button>
                          </Popover>}>
                         <Button className="carrouselButton"
@@ -124,21 +130,16 @@ export default class CarrouselList extends Component {
     }
 
     calculateNewPosition() {
-        var navItem = this.props.navItems[this.props.navItemSelected];
-        var nextPosition;
 
-        if (this.props.navItems[this.props.navItemSelected].type === "section") {
-            if (this.props.navItems[navItem.id].children.length > 0) {
-                nextPosition = this.props.navItems[this.props.navItems[navItem.id].children[this.props.navItems[navItem.id].children.length - 1]].position;
-            } else {
-                nextPosition = navItem.position;
+        if(this.props.navItems[this.props.navItemSelected].type === "section"){
+            for(var i = this.props.navItemsIds.indexOf(this.props.navItemSelected)+1; i < this.props.navItemsIds.length; i++ ){
+                if( this.props.navItems[this.props.navItemsIds[i]].level <= this.props.navItems[this.props.navItemSelected].level){
+                    return i+1;
+                }
             }
-        } else {
-            nextPosition = navItem.children.length;
         }
-        nextPosition++;
 
-        return nextPosition;
+        return this.props.navItemsIds.length+1;
     }
 
     findChildren(ids) {
@@ -207,7 +208,6 @@ export default class CarrouselList extends Component {
             },
             start: (event, ui) => {
                 $("#" + this.props.navItemSelected).css("opacity", "0.5");
-                // console.log($(".selected").css("background-color"));
             },
             stop: (event, ui) => {
                 //$(".selected").css("background-color", "rgba(84, 84, 84 , 1)");
