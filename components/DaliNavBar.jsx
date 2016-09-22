@@ -105,7 +105,7 @@ export default class DaliNavBar extends Component {
 				    {i18n.t('messages.export_to_SCORM')}
                             </button>
                         </MenuItem>
-                        <MenuItem disabled={this.props.undoDisabled || this.props.vishId === 0} eventKey="3">
+                        <MenuItem disabled={ this.props.vishId === 0} eventKey="3">
                             <button className="dropdownButton" title="Delete Course"
                                     onClick={() => this.props.delete() }><i className="material-icons">delete_forever</i> Eliminar curso
                             </button>

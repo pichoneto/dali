@@ -216,6 +216,9 @@ class DaliApp extends Component {
     componentDidMount() {
         if( dali_document_json !== undefined && dali_document_json !== ""){
           this.props.dispatch(importState(JSON.parse(dali_document_json)));
+          if( dali_editor_params.dali_vish_id !== undefined ){
+            this.props.dispatch(setVishId(dali_editor_params.dali_vish_id));
+          }
         }
 
         Dali.Plugins.loadAll();

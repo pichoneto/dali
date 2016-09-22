@@ -229,7 +229,7 @@ export function exportStateAsync(state) {
                 dispatch(setBusy(false, "Success!"));
                 dispatch(setVishId(dali_id));
             })
-            .then(data => console.log(data))
+            
             .catch(e =>{
                 dispatch(setBusy(false, e.message));
             });
