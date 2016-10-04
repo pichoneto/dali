@@ -19,7 +19,8 @@ export default {
         'CajasColorBis',
         'Container',
         'ListaNumerada',
-        'RelacionaAll'
+        'RelacionaAll',
+        'Prueba'
     ],
     availableLanguages:[
         'en',
