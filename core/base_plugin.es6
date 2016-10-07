@@ -148,7 +148,6 @@ export default function () {
                 toolbar = descendant.getToolbar();
             }
             toolbar = defaultFor(toolbar, {});
-
             for (var tabKey in toolbar) {
                 toolbar[tabKey].__name = defaultFor(toolbar[tabKey].__name, tabKey);
                 var accordions = defaultFor(toolbar[tabKey].accordions, {}, "Property accordions in tab '" + tabKey + "' not found");
@@ -169,6 +168,7 @@ export default function () {
                     if (accordions[accordionKey].accordions || accordions[accordionKey].order) {
                         var accordions2 = defaultFor(accordions[accordionKey].accordions, {}, "Property accordions in accordion '" + accordionKey + "' not found");
                         accordions[accordionKey].accordions = accordions2;
+
                         accordions[accordionKey].order = defaultFor(accordions[accordionKey].order, [], "Property order in accordion '" + accordionKey + "' not found");
                         if (accordions[accordionKey].order.length !== (Object.keys(buttons).length + Object.keys(accordions2).length)) {
                             console.warn("Accordion '%s' in tab '%s' malformed. Order property length differs from expected", accordionKey, tabKey);

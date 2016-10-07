@@ -20,7 +20,7 @@ export default {
         'Container',
         'ListaNumerada',
         'RelacionaAll',
-        'Prueba'
+        'Chart'
     ],
     availableLanguages:[
         'en',

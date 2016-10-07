@@ -5,7 +5,7 @@ export function BasicImage(base) {
                 name: 'BasicImage',
                 displayName: Dali.i18n.t('BasicImage.PluginName'),
                 category: 'image',
-                needsConfigModal: false,
+                needsConfigModal: true,
                 needsTextEdition: false,
                 aspectRatioButtonConfig: {
                     name: "Aspect Ratio",
