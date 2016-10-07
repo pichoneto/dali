@@ -13,7 +13,7 @@ export default class DaliCanvas extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showTitle: false
+            showTitle: false 
         };
     }
 
@@ -65,12 +65,7 @@ export default class DaliCanvas extends Component {
                                    onUnitNumberChanged={this.props.onUnitNumberChanged}
                                    showButton={true}/>
                         <br/>
-                        <DaliShortcuts
-                            box={this.props.boxSelected == -1 ? -1 : this.props.boxes[this.props.boxSelected]}
-                            onTextEditorToggled={this.props.onTextEditorToggled}
-                            onBoxResized={this.props.onBoxResized}
-                            onBoxDeleted={this.props.onBoxDeleted}
-                            toolbar={this.props.toolbars[this.props.boxSelected]}/>
+                    
 
 
                         <div style={{
@@ -126,6 +121,12 @@ export default class DaliCanvas extends Component {
                                                         onBoxModalToggled={this.props.onBoxModalToggled}
                                                         onTextEditorToggled={this.props.onTextEditorToggled}/>
                         })}
+                            <DaliShortcuts
+                            box={this.props.boxSelected == -1 ? -1 : this.props.boxes[this.props.boxSelected]}
+                            onTextEditorToggled={this.props.onTextEditorToggled}
+                            onBoxResized={this.props.onBoxResized}
+                            onBoxDeleted={this.props.onBoxDeleted}
+                            toolbar={this.props.toolbars[this.props.boxSelected]}/>
                     </div>
                 </div>
             </Col>
@@ -158,8 +159,8 @@ export default class DaliCanvas extends Component {
             },
             ondrop: function (event) {
                 let position = {
-                    x: event.dragEvent.clientX - event.target.getBoundingClientRect().left - document.getElementById('maincontent').offsetLeft,
-                    y: event.dragEvent.clientY - event.target.getBoundingClientRect().top + document.getElementById('maincontent').scrollTop,
+                    x: (event.dragEvent.clientX - event.target.getBoundingClientRect().left - document.getElementById('maincontent').offsetLeft)+'px',
+                    y: (event.dragEvent.clientY - event.target.getBoundingClientRect().top + document.getElementById('maincontent').scrollTop)+'px',
                     type: 'absolute'
                 };
                 let initialParams = {
