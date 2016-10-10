@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import Dali from './core/main';
-import i18n from 'i18next';
 
 export const ADD_BOX = 'ADD_BOX';
 export const SELECT_BOX = 'SELECT_BOX';
@@ -18,8 +17,6 @@ export const RESIZE_SORTABLE_CONTAINER = 'RESIZE_SORTABLE_CONTAINER';
 export const CHANGE_SORTABLE_PROPS = 'CHANGE_SORTABLE_PROPS';
 export const CHANGE_COLS = 'CHANGE_COLS';
 export const CHANGE_ROWS = 'CHANGE_ROWS';
-
-//this is to move a box that has absolute position inside a container
 export const REORDER_BOXES = 'REORDER_BOXES';
 
 export const ADD_NAV_ITEM = 'ADD_NAV_ITEM';
@@ -38,8 +35,6 @@ export const TOGGLE_TITLE_MODE = 'TOGGLE_TITLE_MODE';
 export const CHANGE_DISPLAY_MODE = 'CHANGE_DISPLAY_MODE';
 export const SET_BUSY = 'SET_BUSY';
 export const UPDATE_TOOLBAR = 'UPDATE_TOOLBAR';
-export const UPDATE_INTERMEDIATE_TOOLBAR = 'UPDATE_INTERMEDIATE_TOOLBAR';
-//remove this action
 export const COLLAPSE_TOOLBAR = 'COLLAPSE_TOOLBAR';
 
 export const IMPORT_STATE = 'IMPORT_STATE';
@@ -179,10 +174,6 @@ export function updateToolbar(id, tab, accordions, name, value) {
     return {type: UPDATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
 }
 
-export function updateIntermediateToolbar(id, tab, accordions, name, value) {
-    return {type: UPDATE_INTERMEDIATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
-}
-
 export function collapseToolbar(id) {
     return {type: COLLAPSE_TOOLBAR, payload: {id}};
 }
@@ -202,7 +193,7 @@ export function exportStateAsync(state) {
 
         // First dispatch: the app state is updated to inform
         // that the API call is starting.
-        dispatch(setBusy(true, i18n.t("error.exporting")));
+        dispatch(setBusy(true, "Exporting..."));
 
         // The function called by the thunk middleware can return a value,
         // that is passed on as the return value of the dispatch method.
@@ -225,19 +216,20 @@ export function exportStateAsync(state) {
         })
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error(i18n.t("error.exporting"));
+                    throw new Error("Error while exporting");
                 }
                 return response.text();
             })
             .then(result => {
                 var dali_id = JSON.parse(result).dali_id;
-                if(url_to_save === "/dali_documents/new"){
+                if(url_to_save === "/dali_documents"){
                     window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
                 }
-                dispatch(setBusy(false, i18n.t("success_transaction")));
+                dispatch(setBusy(false, "Success!"));
                 dispatch(setVishId(dali_id));
             })
+            
             .catch(e =>{
                 dispatch(setBusy(false, e.message));
             });
@@ -247,12 +239,12 @@ export function exportStateAsync(state) {
 
 export function importStateAsync() {
     return dispatch => {
-        dispatch(setBusy(true, i18n.t("Importing")));
+        dispatch(setBusy(true, "Importing..."));
 
         return fetch(Dali.Config.import_url)
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error(i18n.t("error.importing"));
+                    throw new Error("Error while importing");
                 }
                 return response.text();
             })
@@ -261,7 +253,7 @@ export function importStateAsync() {
                 return true;
             })
             .then(() => {
-                dispatch(setBusy(false, i18n.t("success_transaction")));
+                dispatch(setBusy(false, "Success!"));
             })
             .catch(e => {
                 dispatch(setBusy(false, e.message));
@@ -271,12 +263,12 @@ export function importStateAsync() {
 
 export function fetchVishResourcesAsync(query) {
     return dispatch => {
-        dispatch(setBusy(true, i18n.t("Searching")));
+        dispatch(setBusy(true, "Searching..."));
 
         return fetch(query)
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error(i18n.t("error.searching"));
+                    throw new Error("Error while searching");
                 }
                 return response.text();
             })
@@ -285,7 +277,7 @@ export function fetchVishResourcesAsync(query) {
                 return true;
             })
             .then(() => {
-                dispatch(setBusy(false, i18n.t("no_results")));
+                dispatch(setBusy(false, "No results found"));
             })
             .catch(e => {
                 dispatch(setBusy(false, e.message));
@@ -297,7 +289,7 @@ export function deleteAsync() {
     return dispatch => {
 	dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
 	var delete_url = "";
-	if (url_to_save !== "/dali_documents/new"){
+	if (url_to_save !== "/dali_documents"){
 		var course_id = url_to_save.replace(/\D/g, '');
 		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
 
