@@ -231,14 +231,13 @@ export function exportStateAsync(state) {
             })
             .then(result => {
                 var dali_id = JSON.parse(result).dali_id;
-                if(url_to_save === "/dali_documents/create_document"){
+                if(url_to_save === "/dali_documents/new"){
                     window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
                 }
-                dispatch(i18n.t("success_transaction"));
+                dispatch(setBusy(false, i18n.t("success_transaction")));
                 dispatch(setVishId(dali_id));
             })
-            
             .catch(e =>{
                 dispatch(setBusy(false, e.message));
             });
@@ -298,7 +297,7 @@ export function deleteAsync() {
     return dispatch => {
 	dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
 	var delete_url = "";
-	if (url_to_save !== "/dali_documents/create_document"){
+	if (url_to_save !== "/dali_documents/new"){
 		var course_id = url_to_save.replace(/\D/g, '');
 		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
 
