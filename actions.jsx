@@ -229,19 +229,14 @@ export function exportStateAsync(state) {
                 }
                 return response.text();
             })
-<<<<<<< HEAD
             .then(result => {
                 var dali_id = JSON.parse(result).dali_id;
                 if(url_to_save === "/dali_documents/create_document"){
                     window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
                 }
-                dispatch(setBusy(false, "Success!"));
+                dispatch(i18n.t("success_transaction"));
                 dispatch(setVishId(dali_id));
-=======
-            .then(() => {
-                dispatch(setBusy(false, i18n.t("success_transaction")));
->>>>>>> 885d2e3cac1fea4469e82c1a45dc0824b6477c1e
             })
             
             .catch(e =>{
@@ -298,7 +293,6 @@ export function fetchVishResourcesAsync(query) {
             });
     };
 }
-<<<<<<< HEAD
 
 export function deleteAsync() {
     return dispatch => {
@@ -390,5 +384,3 @@ export function fullscreen() {
 	return true;
     };
 }
-=======
->>>>>>> 885d2e3cac1fea4469e82c1a45dc0824b6477c1e
