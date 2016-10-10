@@ -10,7 +10,7 @@ export function Prueba(base) {
 
 			const {LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, Tooltip} = Recharts;
 
-			return ReactServer.renderToStaticMarkup(
+			var html = ReactServer.renderToStaticMarkup(
 				/* jshint ignore:start */
 				<LineChart
 					width={700} height={300}
@@ -18,21 +18,27 @@ export function Prueba(base) {
 					<XAxis
 						dataKey={state.chartXKey}
 						name={state.chartXKey}/>
-					<YAxis dataKey={state.chartYKey} name={state.chartYKey}/>
+					<YAxis dataKey={state.chartYKey}
+						name={state.chartYKey}/>
 					<CartesianGrid
 						horizontal={state.showYGrid == "checked" ? true : false}
 						vertical={state.showXGrid == "checked" ? true : false} />
 					<Line type="monotone"
 						dataKey={state.chartYKey}
-						stroke={state.chartLineColor}
-						strokeDasharray="3 3" />
-					<Tooltip/>
+						stroke={state.chartLineColor}/>
+					<Tooltip active={true}/>
 					<Legend/>
 				</LineChart>
 				/* jshint ignore:end */
 
-
 			);
+
+			html = html.replace(/text-anchor/g, 'textAnchor');
+			html = html.replace(/stroke-width/g, 'strokeWidth');
+			html = html.replace(/stroke-dasharray/g, 'strokeDasharray');
+
+			console.log(html);
+			return html;
 
 		},
 		handleToolbar: function (name, value) {
