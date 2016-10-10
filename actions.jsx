@@ -193,7 +193,7 @@ export function exportStateAsync(state) {
 
         // First dispatch: the app state is updated to inform
         // that the API call is starting.
-        dispatch(setBusy(true, "Exporting..."));
+        dispatch(setBusy(true, i18n.t("exporting")));
 
         // The function called by the thunk middleware can return a value,
         // that is passed on as the return value of the dispatch method.
@@ -216,7 +216,7 @@ export function exportStateAsync(state) {
         })
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error("Error while exporting");
+                    throw new Error(i18n.t("error.exporting"));
                 }
                 return response.text();
             })
@@ -226,7 +226,7 @@ export function exportStateAsync(state) {
                     window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
                 }
-                dispatch(setBusy(false, "Success!"));
+                dispatch(setBusy(false, i18n.t("success_transaction")));
                 dispatch(setVishId(dali_id));
             })
             
@@ -239,12 +239,12 @@ export function exportStateAsync(state) {
 
 export function importStateAsync() {
     return dispatch => {
-        dispatch(setBusy(true, "Importing..."));
+        dispatch(setBusy(true, i18n.t("Importing"));
 
         return fetch(Dali.Config.import_url)
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error("Error while importing");
+                    throw new Error(i18n.t("error.importing"));
                 }
                 return response.text();
             })
@@ -253,7 +253,7 @@ export function importStateAsync() {
                 return true;
             })
             .then(() => {
-                dispatch(setBusy(false, "Success!"));
+                dispatch(setBusy(false, i18n.t("success_transaction")));
             })
             .catch(e => {
                 dispatch(setBusy(false, e.message));
@@ -263,12 +263,12 @@ export function importStateAsync() {
 
 export function fetchVishResourcesAsync(query) {
     return dispatch => {
-        dispatch(setBusy(true, "Searching..."));
+        dispatch(setBusy(true, i18n.t("Searching")));
 
         return fetch(query)
             .then(response => {
                 if (response.status >= 400) {
-                    throw new Error("Error while searching");
+                    throw new Error(i18n.t("error.searching"));
                 }
                 return response.text();
             })
@@ -277,7 +277,7 @@ export function fetchVishResourcesAsync(query) {
                 return true;
             })
             .then(() => {
-                dispatch(setBusy(false, "No results found"));
+                dispatch(setBusy(false, i18n.t("no_results")));
             })
             .catch(e => {
                 dispatch(setBusy(false, e.message));
@@ -287,7 +287,7 @@ export function fetchVishResourcesAsync(query) {
 
 export function deleteAsync() {
     return dispatch => {
-	dispatch(setBusy(true, "Deleting...")); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
+	dispatch(setBusy(true, i18n.t("Deleting"))); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
 	var delete_url = "";
 	if (url_to_save !== "/dali_documents"){
 		var course_id = url_to_save.replace(/\D/g, '');
@@ -310,7 +310,7 @@ export function deleteAsync() {
 
 	    }).then(response => {
 		    if (response.status >= 400) {
-			throw new Error("Error while searching");
+			throw new Error(i18n.t("error.deleting"));
 		    }
 		    return response.text();
 		})
@@ -319,7 +319,7 @@ export function deleteAsync() {
 		    return true;
 		})
 		.then(() => {
-		    dispatch(setBusy(false, "No results found"));
+		    dispatch(setBusy(false, i18n.t("no_results")));
 		})
 		.catch(e => {
 		    dispatch(setBusy(false, e.message));
@@ -333,7 +333,7 @@ export function deleteAsync() {
 export function fullscreen() {
 
     return dispatch => {
-        dispatch(setBusy(true, "Deleting..."));
+        dispatch(setBusy(true, i18n.t("fullscreen")));
 	var i = parent.document.getElementsByTagName("iframe")[0];
 	if (i !== null){
 		if(
