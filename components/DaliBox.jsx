@@ -175,7 +175,7 @@ export default class DaliBox extends Component {
                       else if(toolbar.config && toolbar.config.needsTextEdition && this.props.id == this.props.boxSelected){
                         this.props.onTextEditorToggled(this.props.id, true);
                         this.refs.textarea.focus();
-                    }  
+                    }
                  }}
                  style={{
                     position: box.position.type,
@@ -184,7 +184,7 @@ export default class DaliBox extends Component {
                     width: box.width ,
                     height: box.height,
                     maxWidth: '100%',
-                    maxHeight: '100%', 
+                    maxHeight: '100%',
                     verticalAlign: box.verticalAlign ? box.verticalAlign : 'middle' ,
                     /*border: ((box.container !== 0 && vis) ? (this.borderSize + "px dashed #555") : 0),*/
                     touchAction: 'none',
@@ -268,7 +268,9 @@ export default class DaliBox extends Component {
                         onSortableContainerResized: this.props.onSortableContainerResized,
                         onBoxDeleted: this.props.onBoxDeleted,
                         onBoxDropped: this.props.onBoxDropped,
+                        onVerticallyAlignBox: this.props.onVerticallyAlignBox,
                         onBoxModalToggled: this.props.onBoxModalToggled,
+                        onBoxesInsideSortableReorder: this.props.onBoxesInsideSortableReorder,
                         onTextEditorToggled: this.props.onTextEditorToggled
                     });
                 } else {
@@ -309,13 +311,16 @@ export default class DaliBox extends Component {
         this.props.onTextEditorToggled(this.props.id, false);
         let toolbar = this.props.toolbars[this.props.id];
         let data = CKEDITOR.instances[this.props.id].getData();
-        toolbar.state.__text = toolbar.config.extraTextConfig ? data : encodeURI(data);
-        Dali.Plugins.get(toolbar.config.name).forceUpdate(toolbar.state, this.props.id);
+        //toolbar.state.__text = toolbar.config.extraTextConfig ? data : encodeURI(data);
+        Dali.Plugins.get(toolbar.config.name).forceUpdate(Object.assign({}, toolbar.state, {
+            __text: toolbar.config.extraTextConfig ? data : encodeURI(data)
+        }),  this.props.id);
     }
 
     componentWillUpdate(nextProps, nextState) {
         if ((this.props.boxSelected === this.props.id) && (nextProps.boxSelected !== this.props.id) && this.props.toolbars[this.props.id].showTextEditor) {
             CKEDITOR.instances[this.props.id].focusManager.blur(true);
+            this.blurTextarea();
         }
     }
 
@@ -346,7 +351,6 @@ export default class DaliBox extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        this.recalculatePosition(this.props.boxSelected);
         let toolbar = this.props.toolbars[this.props.id];
         let node = ReactDOM.findDOMNode(this);
 
@@ -374,7 +378,6 @@ export default class DaliBox extends Component {
     }
 
     componentDidMount() {
-        this.recalculatePosition(this.props.boxSelected);
         let toolbar = this.props.toolbars[this.props.id];
         let box = this.props.boxes[this.props.id];
         if (toolbar.config && toolbar.config.needsTextEdition) {
@@ -383,9 +386,6 @@ export default class DaliBox extends Component {
                 CKEDITOR.config[key] += toolbar.config.extraTextConfig[key] + ",";
             }
             let editor = CKEDITOR.inline(this.refs.textarea);
-            editor.on("blur", function (e) {
-                this.blurTextarea();
-            }.bind(this));
             if (toolbar.state.__text) {
                 editor.setData(decodeURI(toolbar.state.__text));
             }
@@ -500,8 +500,8 @@ export default class DaliBox extends Component {
 
                     this.props.onBoxMoved(
                         this.props.id,
-                        box.container !== 0 ? left : Math.max(parseInt(target.style.left), 0),
-                        box.container !== 0 ? top : Math.max(parseInt(target.style.top), 0),
+                        box.container !== 0 ? left : Math.max(parseInt(target.style.left), 0)+'px',
+                        box.container !== 0 ? top : Math.max(parseInt(target.style.top), 0)+'px',
                         this.props.boxes[this.props.id].position.type
                     );
 
@@ -646,23 +646,13 @@ export default class DaliBox extends Component {
     componentWillUnmount() {
         interact(ReactDOM.findDOMNode(this)).unset();
         if (CKEDITOR.instances[this.props.id]) {
+            if(CKEDITOR.instances[this.props.id].focusManager.hasFocus){
+                this.blurTextarea();
+            }
             CKEDITOR.instances[this.props.id].destroy();
         }
     }
 
-    recalculatePosition(id) {
-        let element = document.getElementById('box-' + id);
-        let bar = document.getElementById('daliBoxIcons');
-        if (element && bar) {
-            var rect = element.getBoundingClientRect();
-            var main = document.getElementById('maincontent');
-            var canvas = main.getBoundingClientRect();
-            bar.style.left = (rect.left - canvas.left) + 'px';
-            bar.style.top = (rect.top - canvas.top + main.scrollTop) + 'px';
-            bar.style.width = element.clientWidth + 'px';
-
-        }
-        return null;
-    }
+ 
 }
 
