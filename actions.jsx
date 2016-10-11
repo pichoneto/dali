@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import Dali from './core/main';
+import i18n from 'i18next';
 
 export const ADD_BOX = 'ADD_BOX';
 export const SELECT_BOX = 'SELECT_BOX';
@@ -35,6 +36,7 @@ export const TOGGLE_TITLE_MODE = 'TOGGLE_TITLE_MODE';
 export const CHANGE_DISPLAY_MODE = 'CHANGE_DISPLAY_MODE';
 export const SET_BUSY = 'SET_BUSY';
 export const UPDATE_TOOLBAR = 'UPDATE_TOOLBAR';
+export const UPDATE_INTERMEDIATE_TOOLBAR = 'UPDATE_INTERMEDIATE_TOOLBAR';
 export const COLLAPSE_TOOLBAR = 'COLLAPSE_TOOLBAR';
 
 export const IMPORT_STATE = 'IMPORT_STATE';
@@ -174,6 +176,10 @@ export function updateToolbar(id, tab, accordions, name, value) {
     return {type: UPDATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
 }
 
+export function updateIntermediateToolbar(id, tab, accordions, name, value) {
+    return {type: UPDATE_INTERMEDIATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
+}
+
 export function collapseToolbar(id) {
     return {type: COLLAPSE_TOOLBAR, payload: {id}};
 }
@@ -239,7 +245,7 @@ export function exportStateAsync(state) {
 
 export function importStateAsync() {
     return dispatch => {
-        dispatch(setBusy(true, i18n.t("Importing"));
+        dispatch(setBusy(true, i18n.t("Importing")));
 
         return fetch(Dali.Config.import_url)
             .then(response => {
