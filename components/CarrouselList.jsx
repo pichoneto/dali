@@ -52,6 +52,7 @@ export default class CarrouselList extends Component {
                                         <DaliIndexTitle
                                             id={id}
                                             title={this.props.navItems[id].name}
+                                            index={this.props.navItems[this.props.navItems[id].parent].children.indexOf(id)+1+'.'}
                                             hidden={this.props.navItems[id].hidden}
                                             onTitleChange={this.props.onTitleChange}
                                             onNavItemToggled={this.props.onNavItemToggled}/></span>
@@ -68,7 +69,7 @@ export default class CarrouselList extends Component {
                                 let idnuevo = ID_PREFIX_SECTION + Date.now();
                                 this.props.onSectionAdded(
                                     idnuevo,
-                                    i18n.t("section") + " " + this.sections(),
+                                    i18n.t("section"),
                                     this.props.navItemSelected,
                                     [],
                                     this.props.navItems[this.props.navItemSelected].level + 1,
