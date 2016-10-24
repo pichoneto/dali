@@ -1,11 +1,13 @@
 var webpack = require('webpack');
 
 module.exports = {
-    entry: [
-        'bootstrap-loader', //Loads Twitter Bootstrap
-        './index.jsx'
-
-    ],
+    entry: {
+        app: [
+            'bootstrap-loader', //Loads Twitter Bootstrap
+            './index.jsx' // Appʼs entry point
+            ],
+        visor: './core/visor_entrypoint.es6'
+    },
     module: {
         preLoaders: [
             {
@@ -72,7 +74,7 @@ module.exports = {
     output: {
         path: './dist',
         publicPath: '/', //This is used to generate URLs to e.g. images
-        filename: 'bundle.js'
+        filename: '[name]-bundle.js'
     },
     devServer: {
         contentBase: './dist',

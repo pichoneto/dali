@@ -1,11 +1,17 @@
-export function Webpage(base) {
+export function EnrichedVideo(base) {
     return {
         getConfig: function () {
             return {
-                name: 'Webpage',
-                displayName: Dali.i18n.t('Webpage.PluginName'),
+                name: 'EnrichedVideo',
+                displayName: Dali.i18n.t('EnrichedVideo.PluginName'),
                 category: 'multimedia',
-                icon: 'public'
+                aspectRatioButtonConfig: {
+                    name: "Aspect Ratio",
+                    location: ["main", "__sortable"],
+                    defaultValue: "checked"
+                },
+                isRich: true,
+                icon: 'play_arrow'
             };
         },
         getToolbar: function () {
@@ -14,22 +20,32 @@ export function Webpage(base) {
                     __name: "Main",
                     accordions: {
                         basic: {
-                            __name: Dali.i18n.t('Webpage.URL'),
+                            __name: Dali.i18n.t('EnrichedVideo.Video'),
                             icon: 'link',
                             buttons: {
                                 url: {
-                                    __name: '',
+                                    __name: Dali.i18n.t('EnrichedVideo.URL'),
                                     type: 'text',
                                     value: base.getState().url
+                                },
+                                controls: {
+                                    __name: Dali.i18n.t('EnrichedVideo.Show_controls'),
+                                    type: 'checkbox',
+                                    value: base.getState().controls
+                                },
+                                autoplay: {
+                                    __name: Dali.i18n.t('EnrichedVideo.Autoplay'),
+                                    type: 'checkbox',
+                                    value: base.getState().autoplay
                                 }
                             }
                         },
                         style: {
-                            __name: Dali.i18n.t('Webpage.box_style'),
+                            __name: Dali.i18n.t('EnrichedVideo.box_style'),
                             icon: 'palette',
                             buttons: {
                                 padding: {
-                                    __name: 'Padding',
+                                    __name: Dali.i18n.t('EnrichedVideo.padding'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -37,7 +53,7 @@ export function Webpage(base) {
                                     max: 100
                                 },
                                 borderWidth: {
-                                    __name: Dali.i18n.t('Webpage.border_size'),
+                                    __name: Dali.i18n.t('EnrichedVideo.border_size'),
                                     type: 'number',
                                     value: 0,
                                     min: 0,
@@ -45,18 +61,18 @@ export function Webpage(base) {
                                     units: 'px'
                                 },
                                 borderStyle: {
-                                    __name: Dali.i18n.t('Webpage.border_style'),
+                                    __name: Dali.i18n.t('EnrichedVideo.border_style'),
                                     type: 'select',
                                     value: 'solid',
-                                    options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit']
+                                    options: ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial', 'inherit'],
                                 },
                                 borderColor: {
-                                    __name: Dali.i18n.t('Webpage.border_color'),
+                                    __name: Dali.i18n.t('EnrichedVideo.border_color'),
                                     type: 'color',
                                     value: '#000000'
                                 },
                                 borderRadius: {
-                                    __name: Dali.i18n.t('Webpage.radius'),
+                                    __name: Dali.i18n.t('EnrichedVideo.radius'),
                                     type: 'number',
                                     value: '0',
                                     min: '0',
@@ -64,7 +80,7 @@ export function Webpage(base) {
                                     units: '%'
                                 },
                                 opacity: {
-                                    __name: Dali.i18n.t('Webpage.opacity'),
+                                    __name: Dali.i18n.t('EnrichedVideo.opacity'),
                                     type: 'range',
                                     value: 1,
                                     min: 0,
@@ -78,13 +94,17 @@ export function Webpage(base) {
                 }
             };
         },
+        // TEST URL http://video.webmfiles.org/big-buck-bunny_trailer.webm
+        // Posibilidad: http://modernizr.com/
         getInitialState: function () {
             return {
-                url: 'http://www.adams.es/'
+                url: 'http://video.webmfiles.org/big-buck-bunny_trailer.webm',
+                controls: "checked",
+                autoplay: "unchecked"
             };
         },
         getRenderTemplate: function (state) {
-            return "<iframe style=\"width: 100%; height: 100%; z-index:0;\" src=\"" + state.url + "\"></iframe>";
+            return "<video " + ((state.controls === "checked") ? " controls " : "") + ((state.autoplay === "checked") ? " autoplay " : "") + " style=\"width: 100%; height: 100%; pointer-events: 'none'; z-index:0;\" src=\"" + state.url + "\"></video>";
         },
         handleToolbar: function (name, value) {
             base.setState(name, value);
