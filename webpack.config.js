@@ -129,4 +129,4 @@ module.exports = {
         jquery: true,
         predef: ["Dali", "html2json", "jsPlumb", "CKEDITOR", "EJS"]
     }
-};
+
