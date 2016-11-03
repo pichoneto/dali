@@ -17,5 +17,9 @@ module.exports = {
         "x_grid": "Rejilla eje x",
         "y_grid": "Rejilla eje y",
         "line_color": "Color de línea",
+        "file": "Archivo",
+        "x_axis": "Datos Eje X",
+        "y_axis": "Datos Eje Y",
+        "order_by": "Ordenar Por",
     }
 };

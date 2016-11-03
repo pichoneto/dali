@@ -1,7 +1,8 @@
 import React from "react";
 import ReactServer from "react-dom/server";
 import { Form, Button, FormGroup, FormControl, ControlLabel, Col } from "react-bootstrap";
-import Recharts from "recharts";
+import {LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, Tooltip} from "recharts";
+import ChartRender from "./chartrender";
 
 export function Chart(base) {
 	return {
@@ -230,7 +231,7 @@ export function Chart(base) {
 		},
 		getInitialState: function () {
 			return {
-				chartTitle:		Dali.i18n.t("Chart.chart_title"),
+				chartTitle:		Dali.i18n.t("Chart.title"),
 				chartWidth:		700,
 				chartHeight:	300,
 				showXGrid:		"checked",
@@ -243,29 +244,11 @@ export function Chart(base) {
 		},
 		getRenderTemplate: function (state) {
 
-			var Recharts = require("recharts");
-
-			const {LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, Tooltip} = Recharts;
+			const Chart = ChartRender.getBarChart(state);
 
 			var html = ReactServer.renderToStaticMarkup(
 				/* jshint ignore:start */
-				<LineChart
-					width={700} height={300}
-					data={state.chartData}>
-					<XAxis
-						dataKey={state.chartXKey}
-						name={state.chartXKey}/>
-					<YAxis dataKey={state.chartYKey}
-						name={state.chartYKey}/>
-					<CartesianGrid
-						horizontal={state.showYGrid == "checked" ? true : false}
-						vertical={state.showXGrid == "checked" ? true : false} />
-					<Line type="monotone"
-						dataKey={state.chartYKey}
-						stroke={state.chartLineColor}/>
-					<Tooltip active={true}/>
-					<Legend/>
-				</LineChart>
+				<Chart />
 				/* jshint ignore:end */
 
 			);
@@ -274,7 +257,6 @@ export function Chart(base) {
 			html = html.replace(/stroke-width/g, 'strokeWidth');
 			html = html.replace(/stroke-dasharray/g, 'strokeDasharray');
 
-			console.log(html);
 			return html;
 
 		},
@@ -283,30 +265,29 @@ export function Chart(base) {
 			return ReactServer.renderToStaticMarkup(
 				/* jshint ignore:start */
 				<Form horizontal={true}>
-					<FormGroup >
+					<FormGroup>
 						<Col componentClass={ControlLabel}
 							sm={2}>
-							File
+							{Dali.i18n.t("Chart.file")}
 						</Col>
 						<Col dangerouslySetInnerHTML={{__html: "<input type=\"file\" onchange=\"$dali$.fileChanged(event, this)\">"}}
 							sm={10} />
 
 					</FormGroup>
-					<FormGroup controlId="formHorizontalEmail">
+					<FormGroup>
 						<Col componentClass={ControlLabel}
 							sm={2}>
-							XAxis
+							{Dali.i18n.t("Chart.x_axis")}
 						</Col>
 						<Col sm={10}
 							dangerouslySetInnerHTML={{__html: "<input type=\"text\" name=\"chartXKey\" onchange=\"$dali$.valueChanged(event, this)\">" }}/>
 
 					</FormGroup>
 
-					<FormGroup
-						controlId="formHorizontalPassword">
+					<FormGroup>
 						<Col componentClass={ControlLabel}
 							sm={2}>
-							YAxis
+							{Dali.i18n.t("Chart.y_axis")}
 						</Col>
 						<Col sm={10}
 							dangerouslySetInnerHTML={{__html: "<input type=\"text\" name=\"chartYKey\" onchange=\"$dali$.valueChanged(event, this)\">"}}/>
@@ -333,6 +314,40 @@ export function Chart(base) {
 		handleToolbar: function (name, value) {
 
 			base.setState(name, value);
+		},
+		getLineChart: function (state) {
+
+			console.log("hola");
+
+			const Chart = React.createClass({
+				render(){
+					return (
+					/* jshint ignore:start */
+					<LineChart
+						width={700} height={300}
+						data={state.chartData}>
+						<XAxis
+							dataKey={state.chartXKey}
+							name={state.chartXKey}/>
+						<YAxis dataKey={state.chartYKey}
+							name={state.chartYKey}
+							label={state.chartYKey}/>
+						<CartesianGrid
+							horizontal={state.showYGrid == "checked" ? true : false}
+							vertical={state.showXGrid == "checked" ? true : false} />
+						<Line type="monotone"
+							dataKey={state.chartYKey}
+							stroke={state.chartLineColor}
+							strokeDasharray="3 3"/>
+						<Tooltip active={true}/>
+						<Legend/>
+					</LineChart>
+					/* jshint ignore:end */
+				);
+				}
+			});
+
+			return Chart;
 		}
 	};
 }

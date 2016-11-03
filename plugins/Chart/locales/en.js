@@ -17,5 +17,9 @@ module.exports = {
         "x_grid": "X axis grid",
         "y_grid": "Y axis grid",
         "line_color": "Line color",
+        "file": "File",
+        "x_axis": "X Axis Data",
+        "y_axis": "Y Axis Data",
+        "order_by": "Order By",
     }
 };
