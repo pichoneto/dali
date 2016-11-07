@@ -1486,6 +1486,15 @@ ul li a {
   display: inline-block;
   vertical-align: top; }
 
+.basicImageClass{
+  top:0; left: 0;
+  position: absolute;
+}
+
+.automaticallySizedBox .basicImageClass{
+  position: relative;
+}
+
 .daliBoxSortableContainer {
   border-bottom: 1px dashed black; }
 
