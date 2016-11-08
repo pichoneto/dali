@@ -15,8 +15,8 @@ var parseEJS = function (path, page, state, fromScorm) {
         boxesById: state.boxesById,
         boxes: state.boxes,
         toolbarsById: state.toolbarsById,
-        relativePath: fromScorm ? ".." : "",
-        DaliDocumentsPath: ""
+        relativePath: fromScorm ? ".." : ".",
+        DaliDocumentsPath: "/css"
 	}));
 };
 
