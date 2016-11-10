@@ -6,7 +6,7 @@ module.exports = {
             'bootstrap-loader', //Loads Twitter Bootstrap
             './index.jsx' // Appʼs entry point
             ],
-        visor: './core/visor_entrypoint.es6'
+        'js/visor': './core/visor_entrypoint.es6',
     },
     module: {
         preLoaders: [
