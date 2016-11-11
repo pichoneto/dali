@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var ZipBundlePlugin = require('./webpack_plugins/bundle_zip_plugin.js');
 
 module.exports = {
     entry: {
@@ -69,7 +70,8 @@ module.exports = {
             '$': 'jquery',
             'jQuery': 'jquery',
             'window.jQuery': 'jquery'
-        })
+        }),
+        new ZipBundlePlugin()
     ],
     output: {
         path: './dist',
