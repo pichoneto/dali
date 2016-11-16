@@ -1,5 +1,7 @@
 export default {
-    xml_path: "/dali_documents/add_xml",
+    xml_path1: "/dali_documents/",
+    xml_path2: "/add_xml",
+    path_before_saving: "/dali_documents/new",
     xml_fake_path: "exercises/ua2_ue10_ejer7.xml",
     exercise_render_template_iframe_src: "/dist/exercises/index.html",
     previsor_ejs: "/assets/lib/visor/previsor_index.js",

@@ -6,10 +6,14 @@ import Dali from './../main';
 import Plugins from './plugins';
 import {ID_PREFIX_SECTION} from './../../constants';
 
-var parseEJS = function (path, page, state, fromScorm) {
-    if (Object.keys(page.extraFiles).length !== 0){
+var parseEJS = function (path, page, state) {
+
+    if (Object.keys(state.navItemsById[page].extraFiles).length !== 0){
         return (new EJS({url: path + "_exercise.js"}).render({
-            state: state
+            title: state.navItemsById[state.navItemSelected].name,
+            state: state,
+            relativePath: "../",
+            daliDocumentsPath: "css/"
         }));
     }
     return (new EJS({url: path + ".js"}).render({
@@ -20,8 +24,7 @@ var parseEJS = function (path, page, state, fromScorm) {
         boxesById: state.boxesById,
         boxes: state.boxes,
         toolbarsById: state.toolbarsById,
-        relativePath: fromScorm ? ".." : ".",
-        DaliDocumentsPath: "/css"
+        relativePath: ".."
 	}));
 };
 
@@ -43,9 +46,9 @@ export default {
                     if(page.indexOf(ID_PREFIX_SECTION) !== -1){
                         return;
                     }
-                    var inner = parseEJS(Dali.Config.visor_ejs, page, state, false);
+                    var inner = parseEJS(Dali.Config.visor_ejs, page, state);
                     var nombre = navs[page].name;
-                    zip.file(nombre + ".html", inner);
+                    zip.file("/views/" + nombre + ".html", inner);
                 });
                 return zip;
             }).then(function (zip) {
@@ -58,7 +61,10 @@ export default {
     exportPage: function (state) {
         if (Object.keys(state.navItemsById[state.navItemSelected].extraFiles).length !== 0){
             return (new EJS({url: Dali.Config.visor_ejs + "_exercise.js"}).render({
-                state: state
+                title: state.navItemsById[state.navItemSelected].name,
+                state: state,
+                relativePath: "/assets/",
+                daliDocumentsPath: "dali_documents/"
             }));
         }
         return new EJS({url: Dali.Config.visor_ejs + ".js"}).render({
@@ -70,7 +76,7 @@ export default {
             boxes: state.boxes,
             toolbarsById: state.toolbarsById,
             relativePath: "/assets",
-            DaliDocumentsPath: "/dali_documents"
+            daliDocumentsPath: "/dali_documents"
         });
     },
     exportScorm: function (state) {
@@ -110,7 +116,7 @@ export default {
                             });
                         }
                     }
-                    var inner = parseEJS(Dali.Config.visor_ejs, page, state, true);
+                    var inner = parseEJS(Dali.Config.visor_ejs, page, state);
                     zip.file(path + nombre + ".html", inner);
                 });
                 zip.file("index.html", Dali.Scorm.getIndex(navs));
