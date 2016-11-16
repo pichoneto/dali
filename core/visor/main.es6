@@ -9,9 +9,20 @@ import {ID_PREFIX_SECTION} from './../../constants';
 var parseEJS = function (path, page, state) {
 
     if (Object.keys(state.navItemsById[page].extraFiles).length !== 0){
+
+        /*** CHAPUZA:BEGIN ***/
+        var bsId = state.navItemsById[page].boxes[0];
+        var scId = state.boxesById[bsId].children[0];
+        var boxId = state.boxesById[bsId].sortableContainers[scId].children[0];
+        var tb = state.toolbarsById[boxId];
+
+        /*** CHAPUZA:END ***/
+
         return (new EJS({url: path + "_exercise.js"}).render({
-            title: state.navItemsById[state.navItemSelected].name,
-            state: state,
+            title: state.title,
+            subtitle: state.navItemsById[state.navItemSelected].name,
+            myXmlFile: page.replace("-", "_") + "_ejer.xml",
+            ejerType: tb.state.ejerType,
             relativePath: "../",
             daliDocumentsPath: "css/"
         }));
@@ -60,9 +71,20 @@ export default {
     },
     exportPage: function (state) {
         if (Object.keys(state.navItemsById[state.navItemSelected].extraFiles).length !== 0){
+
+             /*** CHAPUZA:BEGIN ***/
+            var bsId = state.navItemsById[state.navItemSelected].boxes[0];
+            var scId = state.boxesById[bsId].children[0];
+            var boxId = state.boxesById[bsId].sortableContainers[scId].children[0];
+            var tb = state.toolbarsById[boxId];
+
+            /*** CHAPUZA:END ***/
+
             return (new EJS({url: Dali.Config.visor_ejs + "_exercise.js"}).render({
-                title: state.navItemsById[state.navItemSelected].name,
-                state: state,
+                title: state.title,
+                subtitle: state.navItemsById[state.navItemSelected].name,
+                myXmlFile: tb.state.__xml_path,
+                ejerType: tb.state.ejerType,
                 relativePath: "/assets/",
                 daliDocumentsPath: "dali_documents/"
             }));

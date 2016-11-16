@@ -247,11 +247,12 @@ export function exportStateAsync(state) {
                 if(url_to_save === "/dali_documents"){
                     window.parent.history.replaceState("","","/dali_documents/" + dali_id + "/edit");
                     url_to_save = "/dali_documents/" + dali_id;
+                    dali_editor_params.dali_vish_id = dali_id;
                 }
                 dispatch(setBusy(false, i18n.t("success_transaction")));
                 dispatch(setVishId(dali_id));
             })
-            
+
             .catch(e =>{
                 dispatch(setBusy(false, e.message));
             });
