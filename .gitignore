@@ -7,6 +7,7 @@ webpack.config.js~
 .sass-cache
 style.scss~
 dali_server/config.json
+dist/lib/visor/index_exercise.ejs
 dist/src/*
 dist/js/*
 dist/plugins
