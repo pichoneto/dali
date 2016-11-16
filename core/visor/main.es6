@@ -7,7 +7,12 @@ import Plugins from './plugins';
 import {ID_PREFIX_SECTION} from './../../constants';
 
 var parseEJS = function (path, page, state, fromScorm) {
-    return (new EJS({url: path}).render({
+    if (Object.keys(page.extraFiles).length !== 0){
+        return (new EJS({url: path + "_exercise.js"}).render({
+            state: state
+        }));
+    }
+    return (new EJS({url: path + ".js"}).render({
         state: state,
         title: state.title,
         page: page,
@@ -51,8 +56,13 @@ export default {
         });
     },
     exportPage: function (state) {
-        return new EJS({url: Dali.Config.visor_ejs}).render({
-            title: state.navItemSelected.name,
+        if (Object.keys(state.navItemsById[state.navItemSelected].extraFiles).length !== 0){
+            return (new EJS({url: Dali.Config.visor_ejs + "_exercise.js"}).render({
+                state: state
+            }));
+        }
+        return new EJS({url: Dali.Config.visor_ejs + ".js"}).render({
+            title: state.navItemsById[state.navItemSelected].name,
             state: state,
             page: state.navItemSelected,
             navs: state.navItemsById,
@@ -92,6 +102,7 @@ export default {
                                 success: function (response, status, xhr) {
                                     zip.file(path + nombre + "_ejer.xml", xhr.responseText);
                                     state.toolbarsById[boxKey].state.__xml_path = path + nombre + "_ejer.xml";
+                                     state.toolbarsById[boxKey].state.isScorm = true;
                                 },
                                 error: function (xhr, status) {
                                     console.error("Error while downloading XML file");
@@ -99,7 +110,7 @@ export default {
                             });
                         }
                     }
-                    var inner = parseEJS(Dali.Config.scorm_visor_ejs, page, state, true);
+                    var inner = parseEJS(Dali.Config.visor_ejs, page, state, true);
                     zip.file(path + nombre + ".html", inner);
                 });
                 zip.file("index.html", Dali.Scorm.getIndex(navs));
