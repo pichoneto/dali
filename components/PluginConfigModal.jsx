@@ -13,6 +13,14 @@ export default class PluginConfigModal extends Component {
         };
     }
 
+    componentWillUpdate(){
+        var updating = true;
+        if ( dali_editor_params.dali_vish_id === undefined && this.state.show && updating ){
+                updating = false;
+                this.props.save();
+        }    
+    }
+
     render() {
         return (
             /* jshint ignore:start */

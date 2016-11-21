@@ -67,7 +67,7 @@ class DaliApp extends Component {
                                 boxSelected={boxSelected}
                                 undo={() => {this.dispatchAndSetState(ActionCreators.undo())}}
                                 redo={() => {this.dispatchAndSetState(ActionCreators.redo())}}
-				visor={() =>{this.setState({visorVisible: true })}}
+				                        visor={() =>{this.setState({visorVisible: true })}}
                                 export={() => {Dali.Visor.exports(this.props.store.getState().present)}}
                                 scorm={() => {Dali.Visor.exportScorm(this.props.store.getState().present)}}
                                 delete={() => {this.dispatchAndSetState(deleteAsync())}}
@@ -195,7 +195,8 @@ class DaliApp extends Component {
                        visorVisible={this.state.visorVisible}
                        onVisibilityToggled={()=> this.setState({visorVisible: !this.state.visorVisible })}
                        state={this.props.store.getState().present}/>
-                <PluginConfigModal />
+                <PluginConfigModal
+                  save={() => {this.dispatchAndSetState(exportStateAsync({present: this.props.store.getState().present}))}} />
                 <XMLConfigModal id={boxSelected}
                                 toolbar={toolbars[boxSelected]}
                                 visible={this.state.xmlEditorVisible}
