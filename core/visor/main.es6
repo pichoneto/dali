@@ -64,13 +64,13 @@ export default {
                         return;
                     }
                     var name = navs[page].name;
-                    
+
                     if( nav_names_used[name] === undefined ){
                         nav_names_used[name] = 0;
                     } else {
                         name = getDistinctName(name, nav_names_used);
                     }
-                    
+
 
                     var inner = parseEJS(Dali.Config.visor_ejs, page, state);
                     zip.file(name + ".html", inner);
@@ -94,7 +94,7 @@ export default {
 
             /*** CHAPUZA:END ***/
 
-            return (new EJS({url: Dali.Config.visor_ejs + "_exercise.js"}).render({
+            return (new EJS({url: Dali.Config.visor_ejs + "_exercise.ejs"}).render({
                 title: state.title,
                 subtitle: state.navItemsById[state.navItemSelected].name,
                 myXmlFile: tb.state.__xml_path,
@@ -103,7 +103,7 @@ export default {
                 daliDocumentsPath: "dali_documents/"
             }));
         }
-        return new EJS({url: Dali.Config.visor_ejs + ".js"}).render({
+        return new EJS({url: Dali.Config.visor_ejs + ".ejs"}).render({
             title: state.navItemsById[state.navItemSelected].name,
             state: state,
             page: state.navItemSelected,
