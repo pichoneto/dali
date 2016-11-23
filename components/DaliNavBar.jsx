@@ -93,20 +93,30 @@ export default class DaliNavBar extends Component {
                         <span className="hideonresize" style={{fontSize: '12px'}}>Menu</span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu id="topMenu" className="pageMenu  super-colors topMenu">
-                        <MenuItem disabled={this.props.undoDisabled} eventKey="1">
+                        <MenuItem eventKey="1">
+                            <button className="dropdownButton" title={i18n.t('Open_Catalog')}
+                                    onClick={() => {
+                                        this.props.onVishCatalogToggled();
+                                    }}><i className="material-icons">grid_on</i>
+                            {i18n.t('Open_Catalog')}
+                            </button>
+                        </MenuItem>
+                        <MenuItem divider/>
+                        <MenuItem disabled={this.props.undoDisabled} eventKey="2">
                             <button className="dropdownButton" title={i18n.t('messages.export_to_HTML')}
                                     disabled={this.props.undoDisabled}
                                     onClick={() => this.props.export() }><i className="material-icons">file_download</i>
 				    {i18n.t('messages.export_to_HTML')}
                             </button>
                         </MenuItem>
-                        <MenuItem disabled={this.props.undoDisabled} eventKey="2">
+                        <MenuItem disabled={this.props.undoDisabled} eventKey="3">
                             <button className="dropdownButton" title={i18n.t('messages.export_to_SCORM')} disabled={this.props.undoDisabled}
                                     onClick={() => this.props.scorm() }><i className="material-icons">class</i>
 				    {i18n.t('messages.export_to_SCORM')}
                             </button>
                         </MenuItem>
-                        <MenuItem style={{display: (this.props.vishId === 0) ? "none" : "initial"}} eventKey="3">
+                        <MenuItem divider/>
+                        <MenuItem style={{display: (this.props.vishId === 0) ? "none" : "initial"}} eventKey="4">
                             <button className="dropdownButton" title="Delete Course"
                                     onClick={() => this.props.delete() }><i className="material-icons">delete_forever</i> Eliminar curso
                             </button>

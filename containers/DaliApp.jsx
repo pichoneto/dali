@@ -19,6 +19,7 @@ import DaliCarousel from '../components/DaliCarousel';
 import PluginConfigModal from '../components/PluginConfigModal';
 import XMLConfigModal from '../components/XMLConfigModal';
 import PluginToolbar from '../components/PluginToolbar';
+import VishCatalogModal from '../components/vish_provider/VishCatalogModal';
 import Visor from '../components/visor/Visor';
 import PluginRibbon from '../components/PluginRibbon';
 import DaliNavBar from '../components/DaliNavBar';
@@ -41,13 +42,14 @@ class DaliApp extends Component {
             carouselShow: true,
             carouselFull: false,
             serverModal: false,
+            catalogModal: false,
             lastAction: ""
         };
     }
 
     render() {
         const { dispatch, boxes, boxesIds, boxSelected, boxLevelSelected, navItemsIds, navItems, navItemSelected,
-            containedViews, containedViewSelected,
+            containedViews, containedViewSelected, imagesUploaded,
             undoDisabled, redoDisabled, displayMode, isBusy, toolbars, title, vishId, fetchVishResults } = this.props;
         let ribbonHeight = this.state.hideTab === 'hide' ? 0 : 47;
         return (
@@ -73,6 +75,7 @@ class DaliApp extends Component {
                                 categoria={this.state.pluginTab}
                                 opens={() => {this.dispatchAndSetState(importStateAsync())}}
                                 serverModalOpen={()=>{this.setState({serverModal: true })}}
+                                onVishCatalogToggled={() => this.setState({catalogModal: true})}
                                 setcat={(categoria) => {this.setState({ pluginTab: categoria, hideTab:'show' })}}/>
                 </Row>
                 <Row style={{height: 'calc(100% - 60px)'}}>
@@ -199,6 +202,9 @@ class DaliApp extends Component {
                                 toolbar={toolbars[boxSelected]}
                                 visible={this.state.xmlEditorVisible}
                                 onXMLEditorToggled={() => this.setState({xmlEditorVisible: !this.state.xmlEditorVisible})}/>
+                <VishCatalogModal images={imagesUploaded}
+                                  visible={this.state.catalogModal}
+                                  onVishCatalogToggled={() => this.setState({catalogModal: !this.state.catalogModal})}/>
                 <RichMarksModal boxSelected={boxSelected}
                                 navItems={navItems}
                                 navItemsIds={navItemsIds}
@@ -555,6 +561,7 @@ function mapStateToProps(state) {
     return {
         vishId: state.present.vishId,
         title: state.present.title,
+        imagesUploaded: state.present.imagesUploaded,
         boxes: state.present.boxesById,
         boxesIds: state.present.boxesIds,
         boxSelected: state.present.boxSelected,
