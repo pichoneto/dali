@@ -11,7 +11,7 @@ export default {
     visor_zip: "/assets/lib/visor/dist.zip",
     export_url: "http://127.0.0.1:8081/saveConfig",
     import_url: "http://127.0.0.1:8081/getConfig",
-    search_vish_url: "http://vish.virtualadams.com/apis/search/",
+    search_vish_url: "/apis/search/",
     show_numbers_before_navitems: false,
     sections_have_content: false,
     upload_vish_url: "/documents.json",
