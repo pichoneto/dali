@@ -21,10 +21,10 @@ export default class VishUploaderModal extends Component {
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Description</ControlLabel>
-                            <FormControl componentClass="textarea" style={{resize: 'none'}}/>
+                            <FormControl ref="desc" componentClass="textarea" style={{resize: 'none'}}/>
                         </FormGroup>
                         <FormGroup>
-                            <VishDropzone />
+                            <VishDropzone ref="dropZone"/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>{this.props.isBusy.value ? this.props.isBusy.msg : ""}</ControlLabel>
@@ -39,7 +39,13 @@ export default class VishUploaderModal extends Component {
                     <Button bsStyle="primary"
                             disabled={this.props.isBusy.value}
                             onClick={e => {
-                                this.props.onUploadVishResource("");
+                                this.props.onUploadVishResource(
+                                    {
+                                        title: ReactDOM.findDOMNode(this.refs.title).value,
+                                        description: ReactDOM.findDOMNode(this.refs.desc).value,
+                                        file: this.refs.dropZone.state.file
+                                    }
+                                );
                             }}>
                         Upload
                     </Button>
@@ -68,7 +74,6 @@ var VishDropzone = React.createClass({
     onDrop: function (acceptedFile, rejectedFile) {
 
         if (acceptedFile.length === 1) {
-            console.log(acceptedFile[0]);
             this.setState({file : acceptedFile[0]});
         }
     },

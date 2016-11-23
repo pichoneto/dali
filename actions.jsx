@@ -400,14 +400,19 @@ export function fullscreen() {
 export function uploadVishResourceAsync(query) {
     return dispatch => {
         dispatch(setBusy(true, i18n.t("Uploading")));
+        var form = new FormData();
+
+        form.append("document[title]", query.title);
+        form.append("document[description]", query.description);
+        form.append("document[scope]", 0);
+        form.append("document[owner_id]", dali_editor_params.id);
+        form.append("authenticity_token", dali_editor_params.authenticity_token);
+        form.append("document[file]", query.file);
 
         return fetch(Dali.Config.upload_vish_url, {
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: query
+            credentials: 'same-origin',
+            body: form
         }).then(response => {
                 if (response.status >= 400) {
                     throw new Error(i18n.t("error.generic"));
@@ -415,7 +420,7 @@ export function uploadVishResourceAsync(query) {
                 return response.text();
             })
             .then((result) => {
-                dispatch(setBusy(false, result));
+                dispatch(setBusy(false, JSON.parse(result).src));
             })
             .catch(e => {
                 dispatch(setBusy(false, e.message));

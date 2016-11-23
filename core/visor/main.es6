@@ -23,7 +23,7 @@ var parseEJS = function (path, page, state, fromScorm) {
 
         /*** CHAPUZA:END ***/
 
-        return (new EJS({url: path + "_exercise.js"}).render({
+        return (new EJS({url: path + "_exercise.ejs"}).render({
             title: state.title,
             subtitle: state.navItemsById[state.navItemSelected].name,
             myXmlFile: page.replace("-", "_") + "_ejer.xml",
@@ -32,7 +32,7 @@ var parseEJS = function (path, page, state, fromScorm) {
             daliDocumentsPath: "css/"
         }));
     }
-    return (new EJS({url: path + ".js"}).render({
+    return (new EJS({url: path + ".ejs"}).render({
         state: state,
         title: state.title,
         page: page,
