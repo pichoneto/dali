@@ -9,16 +9,19 @@ export default class PluginConfigModal extends Component {
         this.state = {
             show: false,
             pluginActive: '',
-            reason: null
+            reason: null,
+            save_commanded: false,
+            needsXMLEdition: false
         };
     }
 
-    componentWillUpdate(){
-        var updating = true;
-        if ( dali_editor_params.dali_vish_id === undefined && this.state.show && updating ){
-                updating = false;
-                this.props.save();
-        }    
+    componentWillUpdate(nextProps, nextState){
+        if(nextState.needsXMLEdition && !this.state.show && nextState.show && !this.state.save_commanded){
+            if ( !dali_editor_params.dali_vish_id){
+                    this.setState({save_commanded: true});
+                    this.props.save();
+            }
+        }
     }
 
     render() {
@@ -57,7 +60,7 @@ export default class PluginConfigModal extends Component {
 
     componentDidMount() {
         Dali.API_Private.listenEmission(Dali.API_Private.events.openConfig, (e) => {
-            this.setState({show: true, pluginActive: e.detail.name, reason: e.detail.reason});
+            this.setState({show: true, pluginActive: e.detail.name, reason: e.detail.reason, needsXMLEdition: e.detail.needsXMLEdition});
         });
     }
 }

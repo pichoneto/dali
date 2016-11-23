@@ -5,11 +5,11 @@ export function api() {
         addMenuButtons: function (json) {
             Dali.API_Private.emit(Dali.API_Private.events.addMenuButtons, json);
         },
-        openConfig: function (name, reason) {
+        openConfig: function (name, needsXMLEdition, reason) {
             var promise = new Promise(function (resolve) {
                 Dali.API_Private.listenAnswer(Dali.API_Private.events.openConfig, resolve);
             });
-            Dali.API_Private.emit(Dali.API_Private.events.openConfig, {name: name, reason: reason});
+            Dali.API_Private.emit(Dali.API_Private.events.openConfig, {name: name, needsXMLEdition: needsXMLEdition, reason: reason});
             return promise;
         },
         renderPlugin: function (html, toolbar, config, state, ids, initialParams, reason) {
