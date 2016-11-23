@@ -138,7 +138,7 @@ export default function () {
                     initialParams.width = descendant.getConfig().initialWidth;
                 }
                 if (needsConfigModal) {
-                    this.openConfigModal(reason, needsXMLEdition, state);
+                    this.openConfigModal(reason, state);
                 } else {
                     this.render(reason);
                 }

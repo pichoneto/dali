@@ -12,7 +12,7 @@ var getDistinctName = function(name, namesUsed){
     return name + namesUsed[name];
 };
 
-var parseEJS = function (path, page, state, fromScorm) {
+var parseEJS = function (path, page, state) {
     if (Object.keys(state.navItemsById[page].extraFiles).length !== 0){
 
         /*** CHAPUZA:BEGIN ***/
@@ -71,9 +71,25 @@ export default {
                         name = getDistinctName(name, nav_names_used);
                     }
 
+                     if(Object.keys(navs[page].extraFiles).length !== 0){
+                        for(var boxKey in navs[page].extraFiles){
+                            $.ajax({
+                                url: navs[page].extraFiles[boxKey],
+                                async: false,
+                                success: function (response, status, xhr) {
+                                    zip.file("views/" + page.replace("-", "_") + "_ejer.xml", xhr.responseText);
+                                    state.toolbarsById[boxKey].state.__xml_path = "views/" + page.replace("-", "_") + "_ejer.xml";
+                                     state.toolbarsById[boxKey].state.isScorm = true;
+                                },
+                                error: function (xhr, status) {
+                                    console.error("Error while downloading XML file");
+                                }
+                            });
+                        }
+                    }
 
                     var inner = parseEJS(Dali.Config.visor_ejs, page, state);
-                    zip.file(name + ".html", inner);
+                    zip.file("views/" + name + ".html", inner);
                 });
                 return zip;
             }).then(function (zip) {
