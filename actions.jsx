@@ -35,7 +35,8 @@ export const TOGGLE_TITLE_MODE = 'TOGGLE_TITLE_MODE';
 export const CHANGE_DISPLAY_MODE = 'CHANGE_DISPLAY_MODE';
 export const SET_BUSY = 'SET_BUSY';
 export const UPDATE_TOOLBAR = 'UPDATE_TOOLBAR';
-export const UPDATE_INTERMEDIATE_TOOLBAR = 'UPDATE_INTERMEDIATE_TOOLBAR';
+
+//remove this action
 export const COLLAPSE_TOOLBAR = 'COLLAPSE_TOOLBAR';
 
 export const IMPORT_STATE = 'IMPORT_STATE';
@@ -43,7 +44,6 @@ export const CHANGE_TITLE = 'CHANGE_TITLE';
 export const SET_VISH_ID = 'SET_VISH_ID';
 
 export const FETCH_VISH_RESOURCES_SUCCESS = "FETCH_VISH_RESOURCES_SUCCESS";
-
 
 export const ADD_RICH_MARK = 'ADD_RICH_MARK';
 export const EDIT_RICH_MARK = 'EDIT_RICH_MARK';
@@ -89,8 +89,8 @@ export function changeUnitNumber(id, value) {
     return {type: CHANGE_UNIT_NUMBER, payload: {id, value}};
 }
 
-export function addBox(ids, type, draggable, resizable, content, toolbar, config, state, initialParams) {
-    return {type: ADD_BOX, payload: {ids, type, draggable, resizable, content, toolbar, config, state, initialParams}};
+export function addBox(ids, draggable, resizable, content, toolbar, config, state, initialParams) {
+    return {type: ADD_BOX, payload: {ids, draggable, resizable, content, toolbar, config, state, initialParams}};
 }
 
 export function selectBox(id) {
@@ -192,10 +192,6 @@ export function updateToolbar(id, tab, accordions, name, value) {
     return {type: UPDATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
 }
 
-export function updateIntermediateToolbar(id, tab, accordions, name, value) {
-    return {type: UPDATE_INTERMEDIATE_TOOLBAR, payload: {id, tab, accordions, name, value}};
-}
-
 export function collapseToolbar(id) {
     return {type: COLLAPSE_TOOLBAR, payload: {id}};
 }
@@ -215,7 +211,8 @@ export function exportStateAsync(state) {
 
         // First dispatch: the app state is updated to inform
         // that the API call is starting.
-        dispatch(setBusy(true, i18n.t("exporting")));
+        dispatch(setBusy(true, i18n.t("Exporting")));
+
 
         // The function called by the thunk middleware can return a value,
         // that is passed on as the return value of the dispatch method.
@@ -396,5 +393,32 @@ export function fullscreen() {
 	     }
 	}
 	return true;
+    };
+}
+
+
+export function uploadVishResourceAsync(query) {
+    return dispatch => {
+        dispatch(setBusy(true, i18n.t("Uploading")));
+
+        return fetch(Dali.Config.upload_vish_url, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: query
+        }).then(response => {
+                if (response.status >= 400) {
+                    throw new Error(i18n.t("error.generic"));
+                }
+                return response.text();
+            })
+            .then((result) => {
+                dispatch(setBusy(false, result));
+            })
+            .catch(e => {
+                dispatch(setBusy(false, e.message));
+            });
     };
 }
