@@ -312,47 +312,51 @@ export function fetchVishResourcesAsync(query) {
 }
 
 export function deleteAsync() {
-    return dispatch => {
-	dispatch(setBusy(true, i18n.t("Deleting"))); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
-	var delete_url = "";
-	if (url_to_save !== "/dali_documents"){
-		var course_id = url_to_save.replace(/\D/g, '');
-		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
+        
+        return dispatch => {
+        if(confirm(i18n.t("messages.delete_document"))){
+    	dispatch(setBusy(true, i18n.t("Deleting"))); //TODO: Say they cannot erase if it is not saved yet, erase and see execution
+    	var delete_url = "";
+    	if (url_to_save !== "/dali_documents"){
+    		var course_id = url_to_save.replace(/\D/g, '');
+    		if(course_id !== null ) { delete_url = "/dali_documents/" + course_id + "/delete";}
 
-        var data = {
-	    authenticity_token: dali_editor_params.authenticity_token,
-        user: {name: dali_editor_params.name, id: dali_editor_params.id}
+            var data = {
+    	    authenticity_token: dali_editor_params.authenticity_token,
+            user: {name: dali_editor_params.name, id: dali_editor_params.id}
 
-	};
+    	};
 
-	return fetch(delete_url, {             //   return fetch(Dali.Config.export_url, {
-	    method: 'POST',
-        credentials: 'same-origin',
-	    headers: {
-		'Accept': 'application/json',
-		'Content-Type': 'application/json'
-	    },
-	     body: JSON.stringify(data)
+    	return fetch(delete_url, {             //   return fetch(Dali.Config.export_url, {
+    	    method: 'POST',
+            credentials: 'same-origin',
+    	    headers: {
+    		'Accept': 'application/json',
+    		'Content-Type': 'application/json'
+    	    },
+    	     body: JSON.stringify(data)
 
-	    }).then(response => {
-		    if (response.status >= 400) {
-			throw new Error(i18n.t("error.deleting"));
-		    }
-		    return response.text();
-		})
-		.then(result => {
-            parent.window.location = JSON.parse(result).redirect_url;
-		    return true;
-		})
-		.then(() => {
-		    dispatch(setBusy(false, i18n.t("no_results")));
-		})
-		.catch(e => {
-		    dispatch(setBusy(false, e.message));
-		});
-	}
-	return true;
-    };
+    	    }).then(response => {
+    		    if (response.status >= 400) {
+    			throw new Error(i18n.t("error.deleting"));
+    		    }
+    		    return response.text();
+    		})
+    		.then(result => {
+                parent.window.location = JSON.parse(result).redirect_url;
+    		    return true;
+    		})
+    		.then(() => {
+    		    dispatch(setBusy(false, i18n.t("no_results")));
+    		})
+    		.catch(e => {
+    		    dispatch(setBusy(false, e.message));
+    		});
+    	}
+        }
+    	return true;
+        };
+    
 }
 
 

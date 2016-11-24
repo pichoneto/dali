@@ -38,6 +38,7 @@ var en = {
 			"align_right" : "Align right",
 			"align_top" : "The top of the element is aligned with the top of the tallest element on the line",
 			"columns_distribution": "Columns distribution",
+			"delete_document": "This action will erase your document COMPLETELY and there is no way you can reverse this action, Are you sure you want to do it?",
 			"delete_page" : "This action will erase all the content in this page.",
 			"delete_section" : "This action will erase all the content in this section and it's children.",
 			"drag_content" : "Drag content here",
