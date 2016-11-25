@@ -424,6 +424,7 @@ export function uploadVishResourceAsync(query) {
                     form.append("authenticity_token", dali_editor_params.authenticity_token);        
                     form.append("document[file]", query.file);
 
+
                     return fetch(Dali.Config.upload_vish_url, {
                         method: 'POST',
                         credentials: 'same-origin',
@@ -439,7 +440,8 @@ export function uploadVishResourceAsync(query) {
                             dispatch(uploadImage(JSON.parse(result).src));
                         })
                         .catch(e => {
-                            dispatch(setBusy(false, e.message));
+                            alert(i18n.t("error.generic"));
+                            dispatch(setBusy(false, 'http://nemanjakovacevic.net/wp-content/uploads/2013/07/placeholder.png'));
                         });
                 } else {
                     alert( i18n.t("error.file_extension_invalid"));
