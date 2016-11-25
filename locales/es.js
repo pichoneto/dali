@@ -17,6 +17,9 @@ var es = {
     "Exporting": "Se está exportando...",
     "error":{
       "exporting": "Ha ocurrido un error al exportar",
+      "file_title_not_defined" : "El título no está definido",
+      "file_not_selected" : "No hay un archivo seleccionado",
+      "file_extension_invalid" : "El archivo no tiene una extensión valida",
       "generic" : "Ha ocurrido un error",
       "importing": "Ha ocurrido un error al importar",
       "searching" : "Ha ocurrido un error al buscar",
@@ -46,6 +49,7 @@ var es = {
 			"erase_plugin" : "Borrar plugin",
  			"export_to_HTML" : "Exportar a HTML",
  			"export_to_SCORM" : "Exportar a SCORM",
+ 			"fields_not_defined" : "", 
  			"height_auto_warning" : "Sólo si fijas una altura podrán tener alturas relativas las cajas en su interior"
  		},
 		"Multimedia" : "Multimedia",

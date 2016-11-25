@@ -15,6 +15,9 @@ var en = {
 		"delete_section" : "Delete Section",
     "error":{
       "exporting": "There was an error when exporting",
+      "file_title_not_defined" : "File title is not defined",
+      "file_not_selected" : "There is not file selected",
+      "file_extension_invalid" : "File doesn't have a valid extension",
       "generic" : "There was an error",
       "importing": "There was an error when importing",
       "searching" : "There was an error while searching",
@@ -45,7 +48,7 @@ var en = {
 			"edit_text" : "Edit text",
 			"erase_plugin" : "Erase plugin",
  			"export_to_HTML" : "Export to HTML",
- 			"export_to_SCORM" : "Export to SCORM",
+ 			"export_to_SCORM" : "Export to SCORM", 
  			"height_auto_warning" : "The boxes inside can only have a relative height if you fix the container height"
  		},
 		"Multimedia" : "Multimedia",
