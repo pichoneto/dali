@@ -47,6 +47,7 @@ var es = {
 			"drag_content" : "Arrastra aquí tu contenido",
 			"edit_text" : "Editar texto",
 			"erase_plugin" : "Borrar plugin",
+			"erase_container": "Borrar contenedor",
  			"export_to_HTML" : "Exportar a HTML",
  			"export_to_SCORM" : "Exportar a SCORM",
  			"fields_not_defined" : "", 

@@ -1,5 +1,7 @@
 var webpack = require('webpack');
 var ZipBundlePlugin = require('./webpack_plugins/bundle_zip_plugin.js');
+var dependency_loader = require('./webpack_plugins/dependencies_loader.js');
+
 
 module.exports = {
     entry: {
@@ -21,12 +23,16 @@ module.exports = {
             {
                 test: /\.es6$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader?presets[]=es2015'
+                loader: 'babel-loader',
+                query: {
+                    presets: ['es2015'],
+                    plugins: ['transform-object-rest-spread']
+                }
             },
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'react-hot-loader/webpack!babel-loader?presets[]=es2015,presets[]=react',
+                loader: 'react-hot-loader/webpack!babel-loader?presets[]=es2015,presets[]=react'
             },
             {
                 test: /\.css$/,
@@ -50,10 +56,14 @@ module.exports = {
                 loader: 'file-loader'
             },
             {
+                test: /\.json$/,
+                loader: 'json-loader'
+            },
+            {
                 test: require.resolve('jquery'),
                 loader: 'expose?jQuery!expose?$!expose?window.jQuery'  //expose-loader, exposes as global variable
             }
-        ]
+        ].concat(dependency_loader.getExposeString())
     },
     resolve: {
         extensions: ['', '.js', '.jsx', '.es6']
@@ -64,13 +74,13 @@ module.exports = {
             'NODE_ENV': '"production"'
           }
         }),
-        new webpack.ProvidePlugin({
+        new webpack.ProvidePlugin(Object.assign({
             //'Promise': 'es6-promise', // Thanks Aaron (https://gist.github.com/Couto/b29676dd1ab8714a818f#gistcomment-1584602)
             'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch',
             '$': 'jquery',
             'jQuery': 'jquery',
             'window.jQuery': 'jquery'
-        }),
+        }, dependency_loader.getPluginProvider())),
         new ZipBundlePlugin()
     ],
     output: {
@@ -129,7 +139,8 @@ module.exports = {
         browser: true,
         devel: true,
         jquery: true,
-        predef: ["Dali", "html2json", "jsPlumb", "CKEDITOR", "EJS"]
+        predef: ["Dali", "html2json", "CKEDITOR", "EJS"].concat(dependency_loader.getJSHintExludeNames())
+
     }
 };
 
