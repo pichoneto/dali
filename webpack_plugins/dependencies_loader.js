@@ -22,6 +22,7 @@
 		}
  * */
 
+
 var glob = require("glob");
 
 var toCamelCase = function(str) {
@@ -122,3 +123,4 @@ module.exports = {
 		return final_object;
 	}
 };
+
