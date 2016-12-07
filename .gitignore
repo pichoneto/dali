@@ -1,4 +1,5 @@
 node_modules
+nbproject
 .idea
 dist/*bundle.js
 *.log
@@ -19,3 +20,4 @@ dist/css/default.css
 dist/css/ejercicios.css
 dist/css/style.css
 *.map
+nbproject
