@@ -428,7 +428,6 @@ export function uploadVishResourceAsync(query) {
                     form.append("authenticity_token", dali_editor_params.authenticity_token);
                     form.append("document[file]", query.file);
 
-
                     return fetch(Dali.Config.upload_vish_url, {
                         method: 'POST',
                         credentials: 'same-origin',
