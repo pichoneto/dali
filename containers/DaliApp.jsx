@@ -11,7 +11,7 @@ import {addNavItem, selectNavItem, expandNavItem, removeNavItem, reorderNavItem,
     exportStateAsync, importStateAsync, importState,
     fetchVishResourcesSuccess, setVishId, fetchVishResourcesAsync, uploadVishResourceAsync,
     deleteAsync, fullscreen, selectContainedView,
-    ADD_BOX, ADD_RICH_MARK, addRichMark, EDIT_RICH_MARK, editRichMark, EDIT_PLUGIN_TEXT, DELETE_RICH_MARK, UPDATE_BOX, UPDATE_TOOLBAR} from '../actions';
+    ADD_BOX, ADD_RICH_MARK, addRichMark, EDIT_RICH_MARK, editRichMark, EDIT_PLUGIN_TEXT, DELETE_RICH_MARK, UPDATE_BOX, UPDATE_TOOLBAR, UPDATE_NAV_ITEM_EXTRA_FILES} from '../actions';
 import {ID_PREFIX_BOX, ID_PREFIX_SORTABLE_CONTAINER} from '../constants';
 import DaliCanvas from '../components/canvas/dali_canvas/DaliCanvas';
 import ContainedCanvas from '../components/rich_plugins/contained_canvas/ContainedCanvas';
@@ -340,6 +340,7 @@ class DaliApp extends Component {
                 case EDIT_PLUGIN_TEXT:
                 case UPDATE_BOX:
                 case UPDATE_TOOLBAR:
+                case UPDATE_NAV_ITEM_EXTRA_FILES:
                     this.dispatchAndSetState(updateBox(
                         e.detail.ids.id,
                         e.detail.content,

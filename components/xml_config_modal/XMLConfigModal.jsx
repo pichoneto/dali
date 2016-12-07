@@ -28,20 +28,21 @@ export default class XMLConfigModal extends Component {
                         let state = Object.assign({}, this.props.toolbar.state);
                         let xml = this.generateXMLFromView(state);
                         $.ajax({
-                            url: state["__xml_path"] ? state["__xml_path"] : Dali.Config.xml_path,
-                            type: state["__xml_path"] ? 'PUT' : 'POST',
+                            url: state["__xml_path"],
+                            type: 'PUT',
+                            async: true,
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader('X-CSRF-Token', dali_editor_params.authenticity_token);
+                            },
                             data: {
                                 url: window.location.pathname,
                                 xml: new XMLSerializer().serializeToString(xml)
                             },
                             success: function(response, status, xhr) {
-                                if(!state.__xml_path){
-                                    window.history.pushState({}, "", response.dali_document_path);
-                                }
-                                state.__xml_path = response.dali_exercise_path;
                             },
                             error: function(xhr, status, error) {
                                 console.error("Could not save");
+                                // Show error on dialog
                             },
                             complete: function(xhr, status) {
                                 if(status === "error"){
