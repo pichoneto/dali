@@ -18,7 +18,7 @@ module.exports = {
                 exclude: [/node_modules/, /jquery.jsPlumb-1.4.1-all-min.js/],
                 loader: 'jshint-loader'
             }
-        ].concat( dependency_loader.getExposeString()),
+        ],
         loaders:[
             {
                 test: /\.es6$/,
@@ -63,7 +63,7 @@ module.exports = {
                 test: require.resolve('jquery'),
                 loader: 'expose?jQuery!expose?$!expose?window.jQuery'  //expose-loader, exposes as global variable
             }
-        ]
+        ].concat( dependency_loader.getExposeString())
     },
     resolve: {
         extensions: ['', '.js', '.jsx', '.es6']
