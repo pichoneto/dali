@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var path = require('path');
 var ZipBundlePlugin = require('./webpack_plugins/bundle_zip_plugin.js');
 var dependency_loader = require('./webpack_plugins/dependencies_loader.js');
+var LocalDependenciesPlugin = require('./webpack_plugins/local_dependencies_plugin.js');
 
 module.exports = {
     entry: {
@@ -82,7 +83,8 @@ module.exports = {
             'jQuery': 'jquery',
             'window.jQuery': 'jquery'
         }, dependency_loader.getPluginProvider())),
-        new ZipBundlePlugin()
+        new ZipBundlePlugin(),
+        //new LocalDependenciesPlugin()
     ],
     output: {
         path: './dist',

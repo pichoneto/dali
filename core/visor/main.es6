@@ -160,7 +160,7 @@ export default {
                                 success: function (response, status, xhr) {
                                     zip.file(path + nombre + "_ejer.xml", xhr.responseText);
                                     state.toolbarsById[boxKey].state.__xml_path = path + nombre + "_ejer.xml";
-                                     state.toolbarsById[boxKey].state.isScorm = true;
+                                    state.toolbarsById[boxKey].state.isScorm = true;
                                 },
                                 error: function (xhr, status) {
                                     console.error("Error while downloading XML file");

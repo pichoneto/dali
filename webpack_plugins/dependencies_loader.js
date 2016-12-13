@@ -86,16 +86,6 @@ module.exports = {
 					}
 				});
 			}
-			if(config && config.localDependencies){
-				var localDependencies = config.localDependencies;
-				Object.keys(localDependencies).map(function(e){
-					final_array.push({
-			               test: '/home/berto/Repositories/dali' + localDependencies[e],
-			               loader: 'script'
-					});
-				});
-			}
-
 		}
 		return final_array;
 	},
