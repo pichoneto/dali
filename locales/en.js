@@ -1,5 +1,4 @@
 var en = {
-<<<<<<< HEAD
 	translation:{
 		"Accept" : "Accept",
 		"Animations" : "Animations",
