@@ -121,7 +121,7 @@ export default {
 
             return (new EJS({url: Dali.Config.visor_ejs + "_exercise.ejs"}).render({
                 title: state.title,
-                subtitle: state.navItemsById[state.navItemSelected].name,
+                subtitle: titleModifier(state.navItemsById[state.navItemSelected].name) ,
                 myXmlFile: tb.state.__xml_path,
                 ejerType: tb.state.ejerType,
                 relativePath: "/assets/",
