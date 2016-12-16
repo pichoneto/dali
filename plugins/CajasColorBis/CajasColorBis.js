@@ -7,7 +7,8 @@ export function CajasColorBis(base) {
                 displayName: Dali.i18n.t('CajasColorBis.PluginName'),
                 category: 'animations',
                 icon: 'view_column',
-                initialWidth: '50%'
+				needsConfigModal: true,
+                initialWidth: '60%'
             };
         },
         getToolbar: function () {
@@ -70,10 +71,86 @@ export function CajasColorBis(base) {
             };
 
             for (let i = 0; i < state.nBoxes; i++) {
-                state['color' + i] = 'azul';
+                state['color' + i] = 'verdeoscuro';
             }
 
             return state;
+        },
+        getConfigTemplate: function (state) {
+
+            Element.prototype.setAttributes = function (attrs) {
+                for (var idx in attrs) {
+                    if ((idx === 'styles' || idx === 'style') && typeof attrs[idx] === 'object') {
+                        for (var prop in attrs[idx]){this.style[prop] = attrs[idx][prop];}
+                    } else if (idx === 'html') {
+                        this.innerHTML = attrs[idx];
+                    } else {
+                        this.setAttribute(idx, attrs[idx]);
+                    }
+                }
+            };
+            
+            let template = document.createElement("div");
+            let attrs = {
+                'style' : {
+                    width: '100%',
+                    height: '100%'
+                }
+            };
+            template.setAttributes(attrs);
+            
+            let set = document.createElement("fieldset");
+            attrs = {
+                'style' : {
+                    border: 'none'
+                }
+            };
+            set.setAttributes(attrs);
+            
+            for (let i = 0; i < base.getState().nBoxes; i++) {
+                
+                let select = document.createElement("select");
+                let attrs = {
+                    'id' : i,
+                    'onclick' : '$dali$.colorChanged(event, this)',
+                    'style' : {
+                        width: '100%'
+                    }
+                };
+                select.setAttributes(attrs);
+                
+                let options = ['verdeoscuro', 'cyan', 'granate', 'naranja', 'rojo', 'azul', 'marron', 'rojizo', 'azulpuro', 'azulverdoso', 'violeta', 'marronvivo', 'gris', 'amarillo'];
+                
+                for (let a = 0; a < options.length; a++) {
+                    let option = document.createElement("option");
+                    let attrs = {
+                        'value' : options[a],
+                        'style' : {
+                            width: '100%'
+                        }
+                    };
+                    option.setAttributes(attrs);
+                    
+                    option.appendChild(document.createTextNode(options[a]));
+                    select.appendChild(option);
+                }
+                
+                select.value = base.getState()['color' + i];
+                let label = document.createElement("label");
+                label.appendChild(document.createTextNode('Color ' + i));
+                label.appendChild(select);
+                template.appendChild(label);
+                let br = document.createElement("br");
+                template.appendChild(br);
+            }
+            
+
+            var tmp = document.createElement("div");
+            tmp.appendChild(template);
+            return tmp.innerHTML;
+		},
+        colorChanged: function (event, element, parent) {
+            base.setState('color' + element.id, element.value);
         },
         getRenderTemplate: function (state) {
 
@@ -180,6 +257,7 @@ export function CajasColorBis(base) {
                 attrs = {
                     'plugin-data-key' : 'box' + i,
                     'plugin-data-display-name' : Dali.i18n.t('CajasColorBis.content_box_name') + (i + 1),
+                    'plugin-data-default' : 'BasicText',
                     'plugin-data-resizable' : true
                 };
                 plugin.setAttributes(attrs);
@@ -217,28 +295,21 @@ export function CajasColorBis(base) {
         handleToolbar: function (name, value) {
             var newColors;
 
-            console.log("hola");
-
             if (/color/.test(name)) {
-                console.log(value);
                 var idB = name.replace('color', '');
-                console.log(idB);
                 base.setState('color' + idB, value);
             } else if (name === 'nBoxes') {
                 var diff = value - base.getState().nBoxes;
 
-                console.log(diff);
                 if (diff > 0) {
 
                     for (let i = base.getState().nBoxes; i < value; i++) {
-                        console.log(i);
                         base.setState('color' + i, 'azul');
                     }
                 }
 
                 base.setState(name, value);
             } else if (name === 'rounded') {
-                console.log(value);
                 base.setState(name, value);
             } else if (name === 'image') {
                 base.setState('image', value);

@@ -50,7 +50,7 @@ var es = {
 			"erase_container": "Borrar contenedor",
  			"export_to_HTML" : "Exportar a HTML",
  			"export_to_SCORM" : "Exportar a SCORM",
- 			"fields_not_defined" : "", 
+ 			"fields_not_defined" : "",
  			"height_auto_warning" : "Sólo si fijas una altura podrán tener alturas relativas las cajas en su interior"
  		},
 		"Multimedia" : "Multimedia",
